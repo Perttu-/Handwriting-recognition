@@ -1,2 +1,2 @@
-# Handwriting-recognition
+# Handwriting recognition
 Matlab implementation
