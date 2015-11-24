@@ -13,4 +13,5 @@ Handwritten Script Identification
 For regular photograph resolution should be preferably so that the stroke width is more than 3 px.
 (for smaller resolution it is dificult also for humans to recognize the text)
 
-
+Constraints:
+-resolution & text size!

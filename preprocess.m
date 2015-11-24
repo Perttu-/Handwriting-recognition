@@ -1,4 +1,4 @@
-function boundaries = preprocess(path)
+function [boundaries, rp] = preprocess(path)
     close all;
     [img,map] = imread(path);
 
@@ -9,8 +9,10 @@ function boundaries = preprocess(path)
 
     bwImg2=sauvola(img,[11 11],0.07);
     complementedImg = imcomplement(bwImg2);
-    aOpened = xor(bwareaopen(complementedImg, 80), bwareaopen(complementedImg,8000)); %parameters depend on the text size
+    %following parameters depend on the text size
+    aOpened = xor(bwareaopen(complementedImg, 80), bwareaopen(complementedImg,8000)); 
     boundaries = bwboundaries(aOpened);
+
 %     figure();
 %     subplot(2,2,1), imshow(img);
 %     subplot(2,2,2), imshow(bwImg2);

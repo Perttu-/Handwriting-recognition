@@ -1,4 +1,4 @@
-function boundaries = preprocess(path)
+function [boundaries, rp] = preprocess(path)
     close all;
     [img,map] = imread(path);
 
@@ -9,8 +9,12 @@ function boundaries = preprocess(path)
 
     bwImg2=sauvola(img,[11 11],0.07);
     complementedImg = imcomplement(bwImg2);
-    aOpened = xor(bwareaopen(complementedImg, 80), bwareaopen(complementedImg,3000)); %parameters?
+    %following parameters depend on the text size
+    aOpened = xor(bwareaopen(complementedImg, 80), bwareaopen(complementedImg,8000)); 
     boundaries = bwboundaries(aOpened);
+    
+    rp = regionprops(aOpened,'BoundingBox');
+    area = [rp.Area];
 %     figure();
 %     subplot(2,2,1), imshow(img);
 %     subplot(2,2,2), imshow(bwImg2);
@@ -23,6 +27,8 @@ function boundaries = preprocess(path)
         b = boundaries{i};
         plot(b(:,2),b(:,1),'g','LineWidth',3);
     end
+    
+    for j =1:length()
 
 
 
