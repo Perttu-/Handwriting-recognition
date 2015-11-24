@@ -17,7 +17,5 @@ Constraints:
 -resolution & text size!
 
 Preprocessing functionality:
--Noise reduction 
--Binarization (Done)
--Region analysis
--Cropping
+Noise reduction 
+Binarization D
