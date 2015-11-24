@@ -1,2 +1,0 @@
-# Handwriting-recognition
-MATLAB
