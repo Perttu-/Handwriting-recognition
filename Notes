@@ -15,9 +15,10 @@ For regular photograph resolution should be preferably so that the stroke width 
 
 Constraints:
 -resolution & text size!
+-Arguments for the binarization and opening
 
 Preprocessing functionality:
 -Noise reduction 
--Binarization (Done)
+-Binarization (Done with sauvola method)
 -Region analysis
 -Cropping
