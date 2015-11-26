@@ -15,7 +15,7 @@
 %   See also PADARRAY, RGB2GRAY.
 
 %   For method description see:
-%       http://www.dfki.uni-kl.de/~shafait/papers/Shafait-efficient-binarization-SPIE08.pdf
+%       
 %   Contributed by Jan Motl (jan@motl.us)
 %   $Revision: 1.1 $  $Date: 2013/03/09 16:58:01 $
 

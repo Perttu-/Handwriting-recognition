@@ -12,24 +12,25 @@ function preprocess(path)
     img = rgb2gray(img);
     
     %Noise removal.
-    img = wiener2(img, [10, 10]); %Filter size?
+    %img = wiener2(img, [3, 3]); %Filter size?
     
     %Histogram equalization
-    img = histeq(img);
+    %img = histeq(img);
 
     %Binarization
-    bwImg=sauvola(img,[11 11],0.07);
+    bwImg=sauvola(img,[500, 500],0.06);
     complementedImg = imcomplement(bwImg);
     figure();
     imshow(bwImg);
+
     %imshow(xor(bwImg,bwImg2));
     
     %Remove blobs which areas are between the two thresholds
     %Following parameters depend on the text size
-    low = 60;
+    low = 100;
     high = 90000;
-     aOpened = xor(bwareaopen(complementedImg, low), bwareaopen(complementedImg,high)); 
-     boundaries = bwboundaries(aOpened);
+    aOpened = xor(bwareaopen(complementedImg, low), bwareaopen(complementedImg,high)); 
+    boundaries = bwboundaries(aOpened);
 
 
 %     figure();
