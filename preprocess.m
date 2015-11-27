@@ -5,46 +5,43 @@ function preprocess(path)
     
     %Change color mode to rgb if it already isnt
     if ~isempty(map)
-        img = ind2rgb(img,map);
+        img = ind2rgb(origImg,map);
     end
     
     %Change rgb image to grayscale
-    img = rgb2gray(img);
+    grayImg = rgb2gray(img);
     
     %Noise removal.
-    %img = wiener2(img, [3, 3]); %Filter size?
+    noiselessImg = wiener2(grayImg, [3, 3]); %Filter size?
     
     %Histogram equalization
-    %img = histeq(img);
+    %noiselessImg = histeq(noiselessImg);
 
     %Binarization
-    bwImg=sauvola(img,[500, 500],0.06);
-    complementedImg = imcomplement(bwImg);
-    figure();
-    imshow(bwImg);
+    binImg=sauvola(noiselessImg,[10, 10],0.06);
+    complementedImg = imcomplement(binImg);
 
-    %imshow(xor(bwImg,bwImg2));
-    
-    %Remove blobs which areas are between the two thresholds
-    %Following parameters depend on the text size
+    %Remove blobs which areas are outside the two thresholds
+    %Following arguments depend on the text size
     low = 100;
-    high = 90000;
-    aOpened = xor(bwareaopen(complementedImg, low), bwareaopen(complementedImg,high)); 
-    boundaries = bwboundaries(aOpened);
-
-
-%     figure();
-%     subplot(2,2,1), imshow(img);
-%     subplot(2,2,2), imshow(bwImg2);
-%     subplot(2,2,3), imshow(imcomplement(aOpened)); 
+    high = 9000;
+    openedImg= xor(bwareaopen(complementedImg, low), bwareaopen(complementedImg,high)); 
+    eccentricities = regionprops(openedImg,'eccentricity');
+    boundaries = bwboundaries(openedImg,8,'holes'); 
 
     figure();
-    imshow(img);
+    subplot(2,2,1), imshow(noiselessImg), title('Original image');
+    subplot(2,2,2), imshow(complementedImg), title('Binarized image');
+    subplot(2,2,3), imshow(openedImg), title('Morphologically opened image');
+    subplot(2,2,4), imshow(img), title('Found objects');
     hold on;
+
     for i =1:length(boundaries)
         b = boundaries{i};
         plot(b(:,2),b(:,1),'g','LineWidth',1);
     end
+    
+
 
 
 
