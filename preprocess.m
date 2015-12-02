@@ -1,6 +1,21 @@
-function [boundaries, boundingBoxes] = preprocess(path, inputArray)
+function [boundaries, boundingBoxes] = preprocess(path,...    
+                                            wienerFilterSize,...
+                                            sauvolaNeighbourhoodSize,...
+                                            sauvolaThreshold,...
+                                            morphOpeningLowThreshold,...
+                                            morphOpeningHighThreshold,...
+                                            morphClosingDiscSize)
     %close all;
     
+    %input arguments
+%     wienerFilterSize = inputArray(1);
+%     sauvolaNeighbourhoodSize = inputArray(2);
+%     sauvolaThreshold = inputArray(3);
+%     morphOpeningLowThreshold = inputArray(4);
+%     morphOpeningHighThreshold = inputArray(5);
+%     morphClosingDiscSize = inputArray(6);
+    
+    %read the image from path
     [img,map] = imread(path);
     
     %Change color mode to rgb if it already isn't
@@ -18,23 +33,21 @@ function [boundaries, boundingBoxes] = preprocess(path, inputArray)
    
     
     %Noise removal.
-    noiselessImg = wiener2(grayImg, [3, 3]); %Filter size?
+    noiselessImg = wiener2(grayImg, [wienerFilterSize, wienerFilterSize]); %Filter size?
     
     %Histogram equalization
     %noiselessImg = histeq(noiselessImg);
 
     %Binarization
-    binImg=sauvola(noiselessImg,[10, 10],0.06);
+    binImg=sauvola(noiselessImg, [sauvolaNeighbourhoodSize, sauvolaNeighbourhoodSize], sauvolaThreshold);
     complementedImg = imcomplement(binImg);
 
     %Remove blobs which areas are outside the two thresholds
     %Following arguments depend on the text size
-    low = 400;
-    high = 9000;
-    openedImg = xor(bwareaopen(complementedImg, low), bwareaopen(complementedImg,high)); 
-    
+    openedImg = xor(bwareaopen(complementedImg, morphOpeningLowThreshold), bwareaopen(complementedImg, morphOpeningHighThreshold)); 
+
     %closing to remove gaps
-    closedImg = imdilate(openedImg,strel('disk',4));
+    closedImg = imdilate(openedImg,strel('disk',morphClosingDiscSize));
     %closedImg = openedImg;
     
     eccentricities = regionprops(openedImg,'eccentricity');

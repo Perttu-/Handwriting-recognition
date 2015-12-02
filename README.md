@@ -2,7 +2,8 @@
 Matlab implementation
 
 
-###Text in testimage(1-4)
+###Text in testimages 1-4
+86 characters
 ____________________
 
 ABCDEFGHIJKLMNOPQ

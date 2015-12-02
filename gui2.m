@@ -22,7 +22,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 01-Dec-2015 15:48:08
+% Last Modified by GUIDE v2.5 02-Dec-2015 14:03:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,10 +60,10 @@ guidata(hObject, handles);
 
 
 global filename;
-global preprocessed;
+global imageLoaded;
 
 filename='';
-preprocessed = false;
+imageLoaded = false;
 %[wiener,]
 global inputArray;
 inputArray = [];
@@ -91,12 +91,14 @@ function openImageButton_Callback(hObject, eventdata, handles)
 % hObject    handle to openImageButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    
     global filename;
-    global preprocessed;
+    global imageLoaded;
     [filename, pathname] = uigetfile({'*.jpg';'*.png';'*.gif';'*.tiff';'*.*'},'File Selector');
+    cla;
     imshow(filename, 'parent',handles.imageAxes);
-    preprocessed = false;
-    hold on;
+    imageLoaded = true;
+    
 
 
 
@@ -104,27 +106,49 @@ function openImageButton_Callback(hObject, eventdata, handles)
 function preprocessButton_Callback(hObject, eventdata, handles)
 % hObject    handle to preprocessButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handles    structure witfloath handles and user data (see GUIDATA)
 
     global filename;
-    global preprocessed;
-    global inputArray;
-    if ~isempty(filename) && preprocessed==false
+    global imageLoaded;
+    wienerFilterSize = str2double(get(handles.wienerFilterSize, 'string'));
+    sauvolaNeighbourhoodSize = str2double(get(handles.sauvolaNeighbourhoodSize,'string'));
+	sauvolaThreshold = str2double(get(handles.sauvolaThreshold, 'string'));
+    morphOpeningLowThreshold = str2double(get(handles.morphOpeningLowThreshold, 'string'));
+    morphOpeningHighThreshold = str2double(get(handles.morphOpeningHighThreshold, 'string'));
+    morphClosingDiscSize = str2double(get(handles.morphClosingDiscSize, 'string'));
+
+%     inputArray=[str2double(get(handles.wienerFilterSize, 'string')),...
+%     str2double(get(handles.sauvolaNeighbourhoodSize,'string')),...
+%     str2double(get(handles.sauvolaThreshold, 'string')),...
+%     str2double(get(handles.morphOpeningLowThreshold, 'string')),...
+%     str2double(get(handles.morphOpeningHighThreshold, 'string')),...
+%     str2double(get(handles.morphClosingDiscSize, 'string'))];
+
+   imshow(filename, 'parent',handles.imageAxes);
+   hold on;
+    if ~isempty(filename) && imageLoaded==true
         disp('Preprocessing started.');
-        [boundaries,boundingBoxes] = preprocess(filename,inputArray);
-        preprocessed = true;
+
+        %[boundaries,boundingBoxes] = preprocess(filename,inputArray);
+        [boundaries,boundingBoxes] = preprocess(filename,...    
+                                                                        wienerFilterSize,...
+                                                                        sauvolaNeighbourhoodSize,...
+                                                                        sauvolaThreshold,...
+                                                                        morphOpeningLowThreshold,...
+                                                                        morphOpeningHighThreshold,...
+                                                                        morphClosingDiscSize);
         disp('Preprocessing done.');
         
         for i =1:length(boundaries)
-            b = boundaries{i};
-            plot(b(:,2),b(:,1),'g','LineWidth',1);
+            boundary = boundaries{i};
+            plot(boundary(:,2),boundary(:,1),'g','LineWidth',1);
         end
 
         for i = 1:length(boundingBoxes)
             box = boundingBoxes(i).BoundingBox;
             rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
         end
-        %hold off;
+
     else
         disp('Select file first.');
     end
@@ -132,18 +156,17 @@ function preprocessButton_Callback(hObject, eventdata, handles)
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function wienerFilterSize_Callback(hObject, eventdata, handles)
+% hObject    handle to wienerFilterSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of wienerFilterSize as text
+%        str2double(get(hObject,'String')) returns contents of wienerFilterSize as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function wienerFilterSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to wienerFilterSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -156,19 +179,19 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 
 
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function sauvolaNeighbourhoodSize_Callback(hObject, eventdata, handles)
+% hObject    handle to sauvolaNeighbourhoodSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of sauvolaNeighbourhoodSize as text
+%        str2double(get(hObject,'String')) returns contents of sauvolaNeighbourhoodSize as a double
 
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function sauvolaNeighbourhoodSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sauvolaNeighbourhoodSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -181,18 +204,18 @@ function edit2_CreateFcn(hObject, eventdata, handles)
 
 
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function sauvolaThreshold_Callback(hObject, eventdata, handles)
+% hObject    handle to sauvolaThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of sauvolaThreshold as text
+%        str2double(get(hObject,'String')) returns contents of sauvolaThreshold as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+function sauvolaThreshold_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sauvolaThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -205,18 +228,18 @@ function edit3_CreateFcn(hObject, eventdata, handles)
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function morphOpeningLowThreshold_Callback(hObject, eventdata, handles)
+% hObject    handle to morphOpeningLowThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+% Hints: get(hObject,'String') returns contents of morphOpeningLowThreshold as text
+%        str2double(get(hObject,'String')) returns contents of morphOpeningLowThreshold as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function morphOpeningLowThreshold_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to morphOpeningLowThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -228,18 +251,18 @@ end
 
 
 
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function morphOpeningHighThreshold_Callback(hObject, eventdata, handles)
+% hObject    handle to morphOpeningHighThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+% Hints: get(hObject,'String') returns contents of morphOpeningHighThreshold as text
+%        str2double(get(hObject,'String')) returns contents of morphOpeningHighThreshold as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function morphOpeningHighThreshold_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to morphOpeningHighThreshold (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -252,18 +275,18 @@ end
 
 
 
-function edit6_Callback(hObject, eventdata, handles)
-% hObject    handle to edit6 (see GCBO)
+function morphClosingDiscSize_Callback(hObject, eventdata, handles)
+% hObject    handle to morphClosingDiscSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit6 as text
-%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+% Hints: get(hObject,'String') returns contents of morphClosingDiscSize as text
+%        str2double(get(hObject,'String')) returns contents of morphClosingDiscSize as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit6_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit6 (see GCBO)
+function morphClosingDiscSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to morphClosingDiscSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
