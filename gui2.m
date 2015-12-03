@@ -22,7 +22,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 02-Dec-2015 14:03:10
+% Last Modified by GUIDE v2.5 03-Dec-2015 16:46:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,6 +96,7 @@ function openImageButton_Callback(hObject, eventdata, handles)
     global imageLoaded;
     [filename, pathname] = uigetfile({'*.jpg';'*.png';'*.gif';'*.tiff';'*.*'},'File Selector');
     cla;
+    set(handles.fileNameText,'String',filename);
     imshow(filename, 'parent',handles.imageAxes);
     imageLoaded = true;
     
@@ -291,6 +292,29 @@ function morphClosingDiscSize_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in imageMenu.
+function imageMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to imageMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns imageMenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from imageMenu
+
+
+% --- Executes during object creation, after setting all properties.
+function imageMenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to imageMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

@@ -58,7 +58,7 @@ function [boundaries, boundingBoxes] = preprocess(path,...
 %     subplot(2,2,1), imshow(noiselessImg), title('Original image');
 %     subplot(2,2,2), imshow(complementedImg), title('Binarized image');
 %     subplot(2,2,3), imshow(closedImg), title('Morphologically opened image');
-%     subplot(2,2,4), imshow(img), title('Found objects');
+    %subplot(2,2,4), imshow(img), title('Found objects');
 %     figure();
 %     imshow(closedImg), title('Morphologically opened image');
 %     figure();
