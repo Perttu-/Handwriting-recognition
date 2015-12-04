@@ -59,24 +59,7 @@ function [boundaries, boundingBoxes] = preprocess(path,...
 %     subplot(2,2,2), imshow(complementedImg), title('Binarized image');
 %     subplot(2,2,3), imshow(closedImg), title('Morphologically opened image');
     %subplot(2,2,4), imshow(img), title('Found objects');
-%     figure();
-%     imshow(closedImg), title('Morphologically opened image');
-%     figure();
-%     imshow(img), title('Found objects');
-%     length(boundingBoxes)
-%     length(boundaries)
-%     hold on;
-% 
-%     for i =1:length(boundaries)
-%         b = boundaries{i};
-%         plot(b(:,2),b(:,1),'g','LineWidth',1);
-%     end
-% 
-%     for i = 1:length(boundingBoxes)
-%         box = boundingBoxes(i).BoundingBox;
-%         rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
-%     end
-% hold off;
+
 
 
 

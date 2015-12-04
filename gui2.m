@@ -64,9 +64,9 @@ global imageLoaded;
 
 filename='';
 imageLoaded = false;
-%[wiener,]
-global inputArray;
-inputArray = [];
+
+global p;
+p = preprocessor;
 
 
 
@@ -92,13 +92,23 @@ function openImageButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     
-    global filename;
+%     global filename;
+%     global imageLoaded;
+%     [filename, pathname] = uigetfile({'*.jpg';'*.png';'*.gif';'*.tiff';'*.*'},'File Selector');
+%     cla;
+%     set(handles.fileNameText,'String',filename);
+%     imshow(filename, 'parent',handles.imageAxes);
+%     imageLoaded = true;
+    global p;
     global imageLoaded;
     [filename, pathname] = uigetfile({'*.jpg';'*.png';'*.gif';'*.tiff';'*.*'},'File Selector');
+    p.originalImage = filename;
+    p.map = filename;
     cla;
     set(handles.fileNameText,'String',filename);
     imshow(filename, 'parent',handles.imageAxes);
     imageLoaded = true;
+    hold on;
     
 
 
@@ -108,51 +118,79 @@ function preprocessButton_Callback(hObject, eventdata, handles)
 % hObject    handle to preprocessButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure witfloath handles and user data (see GUIDATA)
+global p;
+global imageLoaded;
+p.wienerFilterSize = str2double(get(handles.wienerFilterSize, 'string'));
+p.sauvolaNeighbourhoodSize = str2double(get(handles.sauvolaNeighbourhoodSize,'string'));
+p.sauvolaThreshold = str2double(get(handles.sauvolaThreshold, 'string'));
+p.morphOpeningLowThreshold = str2double(get(handles.morphOpeningLowThreshold, 'string'));
+p.morphOpeningHighThreshold = str2double(get(handles.morphOpeningHighThreshold, 'string'));
+p.morphClosingDiscSize = str2double(get(handles.morphClosingDiscSize, 'string'));
 
-    global filename;
-    global imageLoaded;
-    wienerFilterSize = str2double(get(handles.wienerFilterSize, 'string'));
-    sauvolaNeighbourhoodSize = str2double(get(handles.sauvolaNeighbourhoodSize,'string'));
-	sauvolaThreshold = str2double(get(handles.sauvolaThreshold, 'string'));
-    morphOpeningLowThreshold = str2double(get(handles.morphOpeningLowThreshold, 'string'));
-    morphOpeningHighThreshold = str2double(get(handles.morphOpeningHighThreshold, 'string'));
-    morphClosingDiscSize = str2double(get(handles.morphClosingDiscSize, 'string'));
-
-%     inputArray=[str2double(get(handles.wienerFilterSize, 'string')),...
-%     str2double(get(handles.sauvolaNeighbourhoodSize,'string')),...
-%     str2double(get(handles.sauvolaThreshold, 'string')),...
-%     str2double(get(handles.morphOpeningLowThreshold, 'string')),...
-%     str2double(get(handles.morphOpeningHighThreshold, 'string')),...
-%     str2double(get(handles.morphClosingDiscSize, 'string'))];
-
-   imshow(filename, 'parent',handles.imageAxes);
-   hold on;
-    if ~isempty(filename) && imageLoaded==true
-        disp('Preprocessing started.');
-
-        %[boundaries,boundingBoxes] = preprocess(filename,inputArray);
-        [boundaries,boundingBoxes] = preprocess(filename,...    
-                                                                        wienerFilterSize,...
-                                                                        sauvolaNeighbourhoodSize,...
-                                                                        sauvolaThreshold,...
-                                                                        morphOpeningLowThreshold,...
-                                                                        morphOpeningHighThreshold,...
-                                                                        morphClosingDiscSize);
-        disp('Preprocessing done.');
+if imageLoaded==true
+    disp('Preprocessing started.');
+    [boundaries, boundingBoxes]=p.preprocess(p);
+    
+    disp('Preprocessing done.');
         
-        for i =1:length(boundaries)
-            boundary = boundaries{i};
-            plot(boundary(:,2),boundary(:,1),'g','LineWidth',1);
-        end
-
-        for i = 1:length(boundingBoxes)
-            box = boundingBoxes(i).BoundingBox;
-            rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
-        end
-
-    else
-        disp('Select file first.');
+    for i =1:length(boundaries)
+        boundary = boundaries{i};
+        plot(boundary(:,2),boundary(:,1),'g','LineWidth',1);
     end
+
+    for i = 1:length(boundingBoxes)
+        box = boundingBoxes(i).BoundingBox;
+        rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
+    end
+
+else
+    disp('Select file first.');
+end
+
+%     global filename;
+%     global imageLoaded;
+%     wienerFilterSize = str2double(get(handles.wienerFilterSize, 'string'));
+%     sauvolaNeighbourhoodSize = str2double(get(handles.sauvolaNeighbourhoodSize,'string'));
+% 	sauvolaThreshold = str2double(get(handles.sauvolaThreshold, 'string'));
+%     morphOpeningLowThreshold = str2double(get(handles.morphOpeningLowThreshold, 'string'));
+%     morphOpeningHighThreshold = str2double(get(handles.morphOpeningHighThreshold, 'string'));
+%     morphClosingDiscSize = str2double(get(handles.morphClosingDiscSize, 'string'));
+% 
+% %     inputArray=[str2double(get(handles.wienerFilterSize, 'string')),...
+% %     str2double(get(handles.sauvolaNeighbourhoodSize,'string')),...
+% %     str2double(get(handles.sauvolaThreshold, 'string')),...
+% %     str2double(get(handles.morphOpeningLowThreshold, 'string')),...
+% %     str2double(get(handles.morphOpeningHighThreshold, 'string')),...
+% %     str2double(get(handles.morphClosingDiscSize, 'string'))];
+% 
+%    imshow(filename, 'parent',handles.imageAxes);
+%    hold on;
+%     if ~isempty(filename) && imageLoaded==true
+%         disp('Preprocessing started.');
+% 
+%         %[boundaries,boundingBoxes] = preprocess(filename,inputArray);
+%         [boundaries,boundingBoxes] = preprocess(filename,...    
+%                                                                         wienerFilterSize,...
+%                                                                         sauvolaNeighbourhoodSize,...
+%                                                                         sauvolaThreshold,...
+%                                                                         morphOpeningLowThreshold,...
+%                                                                         morphOpeningHighThreshold,...
+%                                                                         morphClosingDiscSize);
+%         disp('Preprocessing done.');
+%         
+%         for i =1:length(boundaries)
+%             boundary = boundaries{i};
+%             plot(boundary(:,2),boundary(:,1),'g','LineWidth',1);
+%         end
+% 
+%         for i = 1:length(boundingBoxes)
+%             box = boundingBoxes(i).BoundingBox;
+%             rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
+%         end
+% 
+%     else
+%         disp('Select file first.');
+%     end
 
 
 
@@ -303,7 +341,17 @@ function imageMenu_Callback(hObject, eventdata, handles)
 % hObject    handle to imageMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+contents = cellstr(get(hObject,'String'));
+n = contents{get(hObject,'Value')};
+switch n
+    case 'Original'
+        
+    case 'Binarized'
+        imshow(p.binarizedImage);
+        disp('lklkl');
+    case 'Morphologically opened'
+    case 'Morphologically closed'
+end
 % Hints: contents = cellstr(get(hObject,'String')) returns imageMenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from imageMenu
 
