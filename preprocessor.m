@@ -25,9 +25,6 @@ classdef preprocessor
         eccentricities;
     end
     
-    methods
-        
-    end
     
     methods
         %setters
@@ -71,42 +68,57 @@ classdef preprocessor
             originalImage = obj.originalImage;
         end
         
-        
-    end
-    
-        methods(Static)
-            function [boundaries, boundingBoxes] = preprocess(obj)
-
-                if ~isempty(obj.map)
-                    img = ind2rgb(obj.originalImage,obj.map);
-                else
-                    img = obj.originalImage;
-                end
-
-                [~, ~, numberOfColorChannels] = size(img);
-                if numberOfColorChannels > 1
-                    grayImage = rgb2gray(img);
-                else
-                    grayImage = img; 
-                end
-
-                noiselessImage = wiener2(grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
-                
-                binarizedImage=sauvola(noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
-                obj.binarizedImage = imcomplement(binarizedImage);
-                
-                obj.openedImage = xor(bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold),...
-                                                   bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold)); 
-                                               
-                obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
-                
-                obj.eccentricities = regionprops(obj.closedImage,'eccentricity');
-                obj.boundingBoxes = regionprops(obj.closedImage,'boundingbox');
-                obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
-                boundingBoxes = obj.boundingBoxes;
-                boundaries = obj.boundaries;
-            end
+        function noiselessImage = get.noiselessImage(obj)
+            noiselessImage = obj.noiselessImage;
         end
+        
+        function binarizedImage = get.binarizedImage(obj)
+            binarizedImage = obj.binarizedImage;
+        end
+        
+        function openedImage = get.openedImage(obj)
+            openedImage = obj.openedImage;
+        end
+        
+         function closedImage = get.closedImage(obj)
+            closedImage = obj.closedImage;
+        end
+    
+    
+        %the preprocessing itself
+        function [boundaries, boundingBoxes] = preprocess(obj)
+
+            if ~isempty(obj.map)
+                img = ind2rgb(obj.originalImage,obj.map);
+            else
+                img = obj.originalImage;
+            end
+
+            [~, ~, numberOfColorChannels] = size(img);
+            if numberOfColorChannels > 1
+                grayImage = rgb2gray(img);
+            else
+                grayImage = img; 
+            end
+
+            obj.noiselessImage = wiener2(grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
+
+            bin=sauvola(obj.noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
+            obj.binarizedImage = imcomplement(bin);
+
+            obj.openedImage = xor(bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold),...
+                                               bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold)); 
+
+            obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
+
+            obj.eccentricities = regionprops(obj.closedImage,'eccentricity');
+            obj.boundingBoxes = regionprops(obj.closedImage,'boundingbox');
+            obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
+            boundingBoxes = obj.boundingBoxes;
+            boundaries = obj.boundaries;
+        end
+            
+    end
 end
 
 
