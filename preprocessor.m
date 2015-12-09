@@ -19,10 +19,16 @@ classdef preprocessor<handle
         morphOpeningHighThreshold;
         morphClosingDiscSize;
         
-        %found object properties
+        %found object visualization
         boundaries;
         boundingBoxes;
+        
+        %found object properties
         eccentricities;
+        eulerNumbers;
+        extents;
+        solidities;
+        
     end
     
     
@@ -111,11 +117,18 @@ classdef preprocessor<handle
 
             obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
 
-            obj.eccentricities = regionprops(obj.closedImage,'eccentricity');
+            
             obj.boundingBoxes = regionprops(obj.closedImage,'boundingbox');
             obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
             boundingBoxes = obj.boundingBoxes;
             boundaries = obj.boundaries;
+            
+            %property extraction
+            obj.eccentricities = regionprops(obj.closedImage,'Eccentricity');
+            obj.eulerNumbers = regionprops(obj.closedImage,'EulerNumber');
+            obj.extents = regionprops(obj.closedImage,'Extent');
+            obj.solidities = regionprops(obj.closedImage,'Solidity');
+            
         end
             
     end
