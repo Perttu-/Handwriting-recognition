@@ -21,10 +21,17 @@ function [eccentricities, eulerNumbers, extents, solidities]=preprocess(filename
         extents = p.extents;
         solidities = p.solidities;
         
-        ecc = struct2cell(p.solidities);
-        for i = 1:length(ecc)
-            finalImage = insertText(finalImage,p.boundingBoxes(i).BoundingBox(1:2),num2str(ecc{i}),'BoxOpacity',0,'FontSize',25,'TextColor','yellow');
-        end
+%         propertyCellArray = struct2cell(p.eulerNumbers);
+%         for i = 1:length(propertyCellArray)
+%             finalImage = insertText(finalImage,p.boundingBoxes(i).BoundingBox(1:2),num2str(propertyCellArray{i}),'BoxOpacity',0,'FontSize',25,'TextColor','yellow');
+%         end
+%         min = struct2cell(p.minorAxisLengths);
+%         maj = struct2cell(p.majorAxisLengths);
+%         for i = 1:length(min)
+%             aspectRatio = num2str(min.MinorAxisLength{i}/maj.MajorAxisLength{i});
+%             finalImage = insertText(finalImage,p.boundingBoxes(i).BoundingBox(1:2),aspectRatio,'BoxOpacity',0,'FontSize',25,'TextColor','yellow');
+%         end
+
         
 %         figure();
 %         subplot(2,2,1), imshow(p.binarizedImage);
@@ -44,4 +51,11 @@ function [eccentricities, eulerNumbers, extents, solidities]=preprocess(filename
             box = boundingBoxes(i).BoundingBox;
             handles.boundingBoxes(i) = rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
         end
+        %jotain yrityksiae
+%         regions = detectMSERFeatures(p.grayImage);
+%         figure; imshow(p.grayImage); hold on;
+%         plot(regions, 'showPixelList', false, 'showEllipses', false);
+%         figure();
+%         subImages = regionprops(p.grayImage, 'Image');
+%         imshow(subImages(1));
 end

@@ -6,10 +6,12 @@ classdef preprocessor<handle
         %images
         originalImage;
         map;
+        grayImage;
         noiselessImage;
         binarizedImage;
         openedImage;
         closedImage;
+        finalImage;
         
         %arguments
         wienerFilterSize;
@@ -28,7 +30,9 @@ classdef preprocessor<handle
         eulerNumbers;
         extents;
         solidities;
-        
+        minorAxisLengths;
+        majorAxisLengths;
+        skeletons;
     end
     
     
@@ -88,6 +92,11 @@ classdef preprocessor<handle
         
          function closedImage = get.closedImage(obj)
             closedImage = obj.closedImage;
+         end
+        
+         %change to whichever image is last
+         function finalImage = get.finalImage(obj)
+            finalImage = obj.closedImage;
         end
     
     
@@ -102,12 +111,12 @@ classdef preprocessor<handle
 
             [~, ~, numberOfColorChannels] = size(img);
             if numberOfColorChannels > 1
-                grayImage = rgb2gray(img);
+                obj.grayImage = rgb2gray(img);
             else
-                grayImage = img; 
+                obj.grayImage = img; 
             end
 
-            obj.noiselessImage = wiener2(grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
+            obj.noiselessImage = wiener2(obj.grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
 
             bin=sauvola(obj.noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
             obj.binarizedImage = imcomplement(bin);
@@ -124,13 +133,15 @@ classdef preprocessor<handle
             boundaries = obj.boundaries;
             
             %property extraction
-            obj.eccentricities = regionprops(obj.closedImage,'Eccentricity');
-            obj.eulerNumbers = regionprops(obj.closedImage,'EulerNumber');
-            obj.extents = regionprops(obj.closedImage,'Extent');
-            obj.solidities = regionprops(obj.closedImage,'Solidity');
+            obj.eccentricities = regionprops(obj.finalImage,'Eccentricity');
+            obj.eulerNumbers = regionprops(obj.finalImage,'EulerNumber');
+            obj.extents = regionprops(obj.finalImage,'Extent');
+            obj.solidities = regionprops(obj.finalImage,'Solidity');
+            obj.minorAxisLengths = regionprops(obj.finalImage,'MinorAxisLength');
+            obj.majorAxisLengths = regionprops(obj.finalImage,'MajorAxisLength');
             
         end
-            
+
     end
 end
 
