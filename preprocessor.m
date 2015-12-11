@@ -1,9 +1,7 @@
 classdef preprocessor<handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties
-        %images
+        %Images
         originalImage;
         map;
         grayImage;
@@ -13,7 +11,7 @@ classdef preprocessor<handle
         closedImage;
         finalImage;
         
-        %arguments
+        %Arguments
         wienerFilterSize;
         sauvolaNeighbourhoodSize;
         sauvolaThreshold;
@@ -21,23 +19,26 @@ classdef preprocessor<handle
         morphOpeningHighThreshold;
         morphClosingDiscSize;
         
-        %found object visualization
+        %Found object visualization
         boundaries;
         boundingBoxes;
         
-        %found object properties
+        %Found object properties
         eccentricities;
         eulerNumbers;
         extents;
         solidities;
         minorAxisLengths;
         majorAxisLengths;
-        skeletons;
+        centroids;
+        
+        %Found object extraction
+        subImages;
     end
     
     
     methods
-        %setters
+        %SETTERS
         function obj = set.originalImage(obj,path)
             [i,~] = imread(path);
             obj.originalImage = i;
@@ -73,7 +74,8 @@ classdef preprocessor<handle
             obj.morphClosingDiscSize = newMorphClosingDiscSize;
         end
         
-        %getters
+        %GETTERS 
+        %Images
         function originalImage = get.originalImage(obj)
             originalImage = obj.originalImage;
         end
@@ -94,51 +96,91 @@ classdef preprocessor<handle
             closedImage = obj.closedImage;
          end
         
-         %change to whichever image is last
+         %Change to whichever image is last
          function finalImage = get.finalImage(obj)
             finalImage = obj.closedImage;
-        end
+         end
+         
+         %Properties
+         function subImages = get.subImages(obj)
+             subImages = obj.subImages;
+         end
     
     
-        %the preprocessing itself
+        %The preprocessing itself
+        %Optional phases can be skipped with input -1
         function [boundaries, boundingBoxes] = preprocess(obj)
-
+            
+            %Convert to rgb color mode if it already isn't
             if ~isempty(obj.map)
                 img = ind2rgb(obj.originalImage,obj.map);
             else
                 img = obj.originalImage;
             end
-
+            
+            %Convert to grayscale if it already isn't     
             [~, ~, numberOfColorChannels] = size(img);
             if numberOfColorChannels > 1
                 obj.grayImage = rgb2gray(img);
             else
                 obj.grayImage = img; 
             end
-
-            obj.noiselessImage = wiener2(obj.grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
-
+            
+            %Remove noise with adaptive wiener filter
+            if obj.wienerFilterSize ~= -1
+                obj.noiselessImage = wiener2(obj.grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
+            else
+                obj.noiselessImage = obj.grayImage;
+            end
+            
+            %binarize image with adaptive sauvola algorithm and inverse
+            %colors for further processing
             bin=sauvola(obj.noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
             obj.binarizedImage = imcomplement(bin);
-
+            
+            %Try to remove too small and too big blobs with 
+            %morphological opening operations
+            
+            
+            if obj.morphOpeningLowThreshold ~=-1 && obj.morphOpeningHighThreshold ~= -1
             obj.openedImage = xor(bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold),...
                                                bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold)); 
-
-            obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
-
             
+            elseif obj.morphOpeningLowThreshold ~= -1 && obj.morphOpeningHighThreshold ==-1
+                 obj.openedImage = bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold);
+           
+                 %might need to be redefined...
+            elseif obj.morphOpeningLowThreshold == -1 && obj.morphOpeningHighThreshold ~=-1
+                 obj.openedImage = xor(obj.binarizedImage,...
+                                                   bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold));
+            else
+                obj.openedImage = obj.binarizedImage;
+            end
+            
+            %Morphological closing to remove unnecessary holes
+            if obj.morphClosingDiscSize ~=-1
+                obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
+            else
+                obj.closedImage = obj.openedImage;
+            end
+            
+            
+            %Calculate boundaries and bounding boxes for visualization and
+            %to extract the needed blobs
             obj.boundingBoxes = regionprops(obj.closedImage,'boundingbox');
             obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
             boundingBoxes = obj.boundingBoxes;
             boundaries = obj.boundaries;
             
-            %property extraction
+            %Extract properties which may be of use
             obj.eccentricities = regionprops(obj.finalImage,'Eccentricity');
             obj.eulerNumbers = regionprops(obj.finalImage,'EulerNumber');
             obj.extents = regionprops(obj.finalImage,'Extent');
             obj.solidities = regionprops(obj.finalImage,'Solidity');
             obj.minorAxisLengths = regionprops(obj.finalImage,'MinorAxisLength');
             obj.majorAxisLengths = regionprops(obj.finalImage,'MajorAxisLength');
+            obj.subImages = regionprops(obj.finalImage, 'Image');
+            obj.centroids = regionprops(obj.finalImage, 'Centroid');
             
         end
 

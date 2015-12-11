@@ -8,13 +8,11 @@ function [eccentricities, eulerNumbers, extents, solidities]=preprocess(filename
         p.wienerFilterSize = 16;
         p.sauvolaNeighbourhoodSize = 13;
         p.sauvolaThreshold = 0.04;
-        p.morphOpeningLowThreshold = 100;
-        p.morphOpeningHighThreshold = 9000;
-        p.morphClosingDiscSize = 4;
+        p.morphOpeningLowThreshold = 19;
+        p.morphOpeningHighThreshold = -1;
+        p.morphClosingDiscSize = -1;
         
         p.preprocess;
-        
-        finalImage = p.originalImage;
         
         eccentricities = p.eccentricities;
         eulerNumbers = p.eulerNumbers;
@@ -38,8 +36,11 @@ function [eccentricities, eulerNumbers, extents, solidities]=preprocess(filename
 %         subplot(2,2,2), imshow(p.openedImage);
 %         subplot(2,2,3), imshow(p.closedImage);
 %         subplot(2,2,4), imshow(finalImage);
-        imshow(finalImage);
+        imshow(p.finalImage);
         hold on;
+        
+        %different loops because the holes are counted as boundaries
+        %whereas bounding boxes include the child holes
         boundaries = p.boundaries;
         boundingBoxes = p.boundingBoxes;
         for i =1:length(boundaries)
@@ -51,11 +52,7 @@ function [eccentricities, eulerNumbers, extents, solidities]=preprocess(filename
             box = boundingBoxes(i).BoundingBox;
             handles.boundingBoxes(i) = rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
         end
-        %jotain yrityksiae
-%         regions = detectMSERFeatures(p.grayImage);
-%         figure; imshow(p.grayImage); hold on;
-%         plot(regions, 'showPixelList', false, 'showEllipses', false);
+
 %         figure();
-%         subImages = regionprops(p.grayImage, 'Image');
-%         imshow(subImages(1));
+%         imshow(p.subImages(2).Image);
 end
