@@ -10,6 +10,7 @@ classdef preprocessor<handle
         openedImage;
         closedImage;
         finalImage;
+        skeletonImage;
         
         %Arguments
         wienerFilterSize;
@@ -28,6 +29,7 @@ classdef preprocessor<handle
         eulerNumbers;
         extents;
         solidities;
+        areas;
         minorAxisLengths;
         majorAxisLengths;
         centroids;
@@ -99,6 +101,10 @@ classdef preprocessor<handle
          %Change to whichever image is last
          function finalImage = get.finalImage(obj)
             finalImage = obj.closedImage;
+         end
+         
+         function skeletonImage = get.skeletonImage(obj)
+            skeletonImage = obj.skeletonImage;
          end
          
          %Properties
@@ -179,8 +185,13 @@ classdef preprocessor<handle
             obj.solidities = regionprops(obj.finalImage,'Solidity');
             obj.minorAxisLengths = regionprops(obj.finalImage,'MinorAxisLength');
             obj.majorAxisLengths = regionprops(obj.finalImage,'MajorAxisLength');
+            obj.areas = regionprops(obj.finalImage,'Area');
+            
             obj.subImages = regionprops(obj.finalImage, 'Image');
             obj.centroids = regionprops(obj.finalImage, 'Centroid');
+            
+            %2spooky4me
+            obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
             
         end
 
