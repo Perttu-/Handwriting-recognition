@@ -36,6 +36,17 @@ classdef preprocessor<handle
         
         %Found object extraction
         subImages;
+        
+        %Filters
+        minAspectRatioFilter;
+        maxAspectRatioFilter;
+        minEulerNumberFilter;
+        maxMajorAxisLengthFilter;
+        minAreaFilter;
+        maxAreaFilter;
+        
+        
+        
     end
     
     
@@ -142,6 +153,8 @@ classdef preprocessor<handle
             %binarize image with adaptive sauvola algorithm and inverse
             %colors for further processing
             bin=sauvola(obj.noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
+            %bin = nick(obj.noiselessImage,[50 50],-0.2);
+            
             obj.binarizedImage = imcomplement(bin);
             
             %Try to remove too small and too big blobs with 

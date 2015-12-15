@@ -1,16 +1,16 @@
-function preprocess(filename)
+function subImages = preprocess(filename)
         close all;
         p = preprocessor;
         
         p.originalImage = filename;
         p.map = filename;
         
-        p.wienerFilterSize = 16;
-        p.sauvolaNeighbourhoodSize = 13;
-        p.sauvolaThreshold = 0.07;
-        p.morphOpeningLowThreshold = 19;
+        p.wienerFilterSize = -1;
+        p.sauvolaNeighbourhoodSize = 130;
+        p.sauvolaThreshold = 0.2;
+        p.morphOpeningLowThreshold = -1;
         p.morphOpeningHighThreshold = -1;
-        p.morphClosingDiscSize = 3;
+        p.morphClosingDiscSize = -1;
         
         p.preprocess;
         
@@ -37,32 +37,33 @@ function preprocess(filename)
         h = bboxes(:,4);
         aspectRatios = w./h;
         
-        filter = aspectRatios < 0.06;
-        filter = filter | aspectRatios > 7.7;
-        filter = filter | eulerNumbers < -8;
-        filter = filter | majorAxisLengths > 400;
-        filter = filter | areas < 370;
+         filter = aspectRatios < 0.06;
+%         filter = filter | aspectRatios > 7.7;
+%         filter = filter | eulerNumbers < -8;
+%         filter = filter | majorAxisLengths > 400;
+        filter = filter | areas < 16;
+%         filter = filter | areas > 5000;
 
-%         properties = struct2cell(p.areas);
-%         %properties = aspectRatios;
-%         for i = 1:length(properties)
-%             finalImage = insertText(finalImage,...
-%                                     p.boundingBoxes(i).BoundingBox(1:2),...
-%                                     num2str(properties{i}),...
-%                                     'BoxOpacity',0,...
-%                                     'FontSize',25,...
-%                                     'TextColor','yellow');
-%         end
-        
+        if ~1
+            properties = struct2cell(p.areas);
+            for i = 1:length(properties)
+                finalImage = insertText(finalImage,...
+                                        p.boundingBoxes(i).BoundingBox(1:2),...
+                                        num2str(properties{i}),...
+                                        'BoxOpacity',0,...
+                                        'FontSize',25,...
+                                        'TextColor','yellow');
+            end
+        end
         
         %removing the elements defined by the filters
-        %boundaries(filter)=[];
-        boundingBoxes(filter)=[];
+         %boundaries(filter)=[];
+         boundingBoxes(filter)=[];
         
         
-        imshow(p.skeletonImage);
+        imshow(finalImage);
         hold on;
-        %different loops because the holes are counted as boundaries
+        %different loops because the holes are counted as separate boundaries
         %whereas bounding boxes include the child holes
 %         for i =1:length(boundaries)
 %             boundary = boundaries{i};
@@ -74,7 +75,6 @@ function preprocess(filename)
             box = boundingBoxes(i).BoundingBox;
             handles.boundingBoxes(i) = rectangle('Position', [box(1),box(2),box(3),box(4)], 'EdgeColor','r','LineWidth',1);
         end
+        subImages = p.subImages;
 
-%         figure();
-%         imshow(p.subImages(2).Image);
 end
