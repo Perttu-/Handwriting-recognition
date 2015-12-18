@@ -150,11 +150,16 @@ classdef preprocessor<handle
                 obj.noiselessImage = obj.grayImage;
             end
             
-            %binarize image with adaptive sauvola algorithm and inverse
-            %colors for further processing
-            bin=sauvola(obj.noiselessImage, [obj.sauvolaNeighbourhoodSize, obj.sauvolaNeighbourhoodSize], obj.sauvolaThreshold);
-            %bin = nick(obj.noiselessImage,[50 50],-0.2);
+            %binarize image with adaptive Sauvola algorithm 
+            neighbourhood = obj.sauvolaNeighbourhoodSize;
+            bin=sauvola(obj.noiselessImage,...
+                       [neighbourhood,...
+                       neighbourhood],...
+                       obj.sauvolaThreshold);
+
+%             bin = nick(obj.noiselessImage,[100 100],-0.1);
             
+            %Inversecolors for further processing
             obj.binarizedImage = imcomplement(bin);
             
             %Try to remove too small and too big blobs with 
@@ -204,7 +209,7 @@ classdef preprocessor<handle
             obj.centroids = regionprops(obj.finalImage, 'Centroid');
             
             %2spooky4me
-            obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
+            %obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
             
         end
 
