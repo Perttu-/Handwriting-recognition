@@ -33,6 +33,7 @@ classdef preprocessor<handle
         minorAxisLengths;
         majorAxisLengths;
         centroids;
+        perimeters;
         
         %Found object extraction
         subImages;
@@ -204,6 +205,7 @@ classdef preprocessor<handle
             obj.minorAxisLengths = regionprops(obj.finalImage,'MinorAxisLength');
             obj.majorAxisLengths = regionprops(obj.finalImage,'MajorAxisLength');
             obj.areas = regionprops(obj.finalImage,'Area');
+            obj.perimeters = regionprops(obj.finalImage,'Perimeter');
             
             obj.subImages = regionprops(obj.finalImage, 'Image');
             obj.centroids = regionprops(obj.finalImage, 'Centroid');

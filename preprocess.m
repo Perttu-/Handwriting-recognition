@@ -6,7 +6,7 @@ function subImages = preprocess(filename)
     p.map = filename;
 
     p.wienerFilterSize = -1;
-    p.sauvolaNeighbourhoodSize = 350;
+    p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
     p.morphOpeningLowThreshold = -1;
     p.morphOpeningHighThreshold = -1;
@@ -31,13 +31,17 @@ function subImages = preprocess(filename)
     w = bboxes(:,3);
     h = bboxes(:,4);
     aspectRatios = w./h;
+    perimeters = vertcat(p.perimeters.Perimeter);
+    compactnesses = (perimeters.^2)/4*pi.*areas;
+%      filter = aspectRatios < 0.06;
+%      filter = filter | aspectRatios > 7.7;
 
-     filter = aspectRatios < 0.06;
-%         filter = filter | aspectRatios > 7.7;
-%         filter = filter | eulerNumbers < -8;
-     filter = filter | majorAxisLengths > 400;
-     filter = filter | areas < 16;
-%         filter = filter | areas > 5000;
+%      filter = filter | majorAxisLengths > 400;
+
+%       filter = filter | areas < 16;
+        filter = areas < 210;
+         filter = filter | eulerNumbers < -4;
+%          filter = filter | areas > 5000;
 
 
 
@@ -45,23 +49,23 @@ function subImages = preprocess(filename)
     %boundaries(filter)=[];
     boundingBoxes(filter)=[];
 
-    %imshow(finalImage);
+    newImage = p.finalImage;
     lb = logical( p.finalImage );
     st = regionprops( lb, 'Area', 'PixelIdxList' );
-    newImage = p.finalImage;
     newImage( vertcat( st(filter).PixelIdxList ) ) = 0;
 
     if ~1
-        %properties = struct2cell(p.aspectRatios);
-        properties = aspectRatios;
+        %properties = struct2cell(regionprops(newImage,'Extent'));
+        properties = compactnesses;
+        bboxes = regionprops(newImage,'boundingbox');
         newImage = 255 * uint8(newImage);
         for i = 1:length(properties)
             newImage = insertText(newImage,...
-                                    p.boundingBoxes(i).BoundingBox(1:2),...
+                                    bboxes(i).BoundingBox(1:2),...
                                     num2str(properties(i)),...
                                     'BoxOpacity',0,...
                                     'FontSize',25,...
-                                    'TextColor','yellow');
+                                    'TextColor','green');
         end
     end
 
@@ -79,13 +83,13 @@ function subImages = preprocess(filename)
 %         end
 
 
-%         for i = 1:length(boundingBoxes)
-%             box = boundingBoxes(i).BoundingBox;
-%             handles.boundingBoxes(i) = rectangle('Position',...
-%                                        [box(1),box(2),box(3),box(4)],...
-%                                        'EdgeColor','r',...
-%                                        'LineWidth',1);
-%         end
+        for i = 1:length(boundingBoxes)
+            box = boundingBoxes(i).BoundingBox;
+            handles.boundingBoxes(i) = rectangle('Position',...
+                                       [box(1),box(2),box(3),box(4)],...
+                                       'EdgeColor','r',...
+                                       'LineWidth',1);
+        end
 %         subImages = p.subImages;
 
 end
