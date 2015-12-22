@@ -5,7 +5,7 @@ function subImages = preprocess(filename)
     p.originalImage = filename;
     p.map = filename;
 
-    p.wienerFilterSize = -1;
+    p.wienerFilterSize = 6;
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
     p.morphOpeningLowThreshold = -1;
@@ -39,24 +39,25 @@ function subImages = preprocess(filename)
 %      filter = filter | majorAxisLengths > 400;
 
 %       filter = filter | areas < 16;
-        filter = areas < 210;
-         filter = filter | eulerNumbers < -4;
+           filter = areas < 209;
+            filter = filter | eulerNumbers < -4;
 %          filter = filter | areas > 5000;
 
 
 
     %removing the elements defined by the filters
     %boundaries(filter)=[];
-    boundingBoxes(filter)=[];
 
     newImage = p.finalImage;
-    lb = logical( p.finalImage );
-    st = regionprops( lb, 'Area', 'PixelIdxList' );
-    newImage( vertcat( st(filter).PixelIdxList ) ) = 0;
+    
+	boundingBoxes(filter)=[];
+    lb = logical(p.finalImage);
+    st = regionprops(lb, 'Area', 'PixelIdxList');
+    newImage(vertcat(st(filter).PixelIdxList)) = 0;
 
     if ~1
-        %properties = struct2cell(regionprops(newImage,'Extent'));
-        properties = compactnesses;
+        %properties = struct2cell(regionprops(newImage,'EulerNumber'));
+
         bboxes = regionprops(newImage,'boundingbox');
         newImage = 255 * uint8(newImage);
         for i = 1:length(properties)
@@ -82,7 +83,7 @@ function subImages = preprocess(filename)
 %                                          'LineWidth',1);
 %         end
 
-
+        length(boundingBoxes)
         for i = 1:length(boundingBoxes)
             box = boundingBoxes(i).BoundingBox;
             handles.boundingBoxes(i) = rectangle('Position',...
