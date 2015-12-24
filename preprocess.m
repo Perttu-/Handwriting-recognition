@@ -5,7 +5,7 @@ function subImages = preprocess(filename)
     p.originalImage = filename;
     p.map = filename;
 
-    p.wienerFilterSize = 6;
+    p.wienerFilterSize = -1;
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
     p.morphOpeningLowThreshold = -1;
