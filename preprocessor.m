@@ -23,6 +23,7 @@ classdef preprocessor<handle
         %Found object visualization
         boundaries;
         boundingBoxes;
+        objectCount;
         
         %Found object properties
         eccentricities;
@@ -38,14 +39,13 @@ classdef preprocessor<handle
         %Found object extraction
         subImages;
         
-        %Filters
+        %"Filters"
         minAspectRatioFilter;
         maxAspectRatioFilter;
         minEulerNumberFilter;
         maxMajorAxisLengthFilter;
         minAreaFilter;
         maxAreaFilter;
-        
         
         
     end
@@ -106,27 +106,27 @@ classdef preprocessor<handle
             openedImage = obj.openedImage;
         end
         
-         function closedImage = get.closedImage(obj)
+        function closedImage = get.closedImage(obj)
             closedImage = obj.closedImage;
-         end
-        
-         %Change to whichever image is last
-         function finalImage = get.finalImage(obj)
+        end
+
+        %Change to whichever image is last
+        function finalImage = get.finalImage(obj)
             finalImage = obj.closedImage;
-         end
-         
-         function skeletonImage = get.skeletonImage(obj)
+        end
+
+        function skeletonImage = get.skeletonImage(obj)
             skeletonImage = obj.skeletonImage;
-         end
-         
-         %Properties
-         function subImages = get.subImages(obj)
-             subImages = obj.subImages;
-         end
+        end
+
+        %Properties
+        function subImages = get.subImages(obj)
+            subImages = obj.subImages;
+        end
     
     
         %The preprocessing itself
-        %Optional phases can be skipped with input -1
+        %Optional phases can be disabled with input -1
         function [boundaries, boundingBoxes] = preprocess(obj)
             
             %Convert to rgb color mode if it already isn't
@@ -157,10 +157,11 @@ classdef preprocessor<handle
                        [neighbourhood,...
                        neighbourhood],...
                        obj.sauvolaThreshold);
-
-%             bin = nick(obj.noiselessImage,[100 100],-0.1);
+                   
+            %optionally nick binarization can be used
+            %bin = nick(obj.noiselessImage,[100 100],-0.1);
             
-            %Inversecolors for further processing
+            %Inverse colors for further processing
             obj.binarizedImage = imcomplement(bin);
             
             %Try to remove too small and too big blobs with 
@@ -196,6 +197,7 @@ classdef preprocessor<handle
             obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
             boundingBoxes = obj.boundingBoxes;
             boundaries = obj.boundaries;
+            obj.objectCount = length(boundingBoxes);
             
             %Extract properties which may be of use
             obj.eccentricities = regionprops(obj.finalImage,'Eccentricity');
@@ -211,7 +213,7 @@ classdef preprocessor<handle
             obj.centroids = regionprops(obj.finalImage, 'Centroid');
             
             %2spooky4me
-            %obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
+            obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
             
         end
 
