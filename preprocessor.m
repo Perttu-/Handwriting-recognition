@@ -16,8 +16,6 @@ classdef preprocessor<handle
         wienerFilterSize;
         sauvolaNeighbourhoodSize;
         sauvolaThreshold;
-        morphOpeningLowThreshold;
-        morphOpeningHighThreshold;
         morphClosingDiscSize;
         
         %Found object visualization
@@ -76,13 +74,6 @@ classdef preprocessor<handle
             obj.sauvolaThreshold = newSauvolaThreshold;
         end
         
-        function obj = set.morphOpeningLowThreshold(obj, newLowThreshold)
-            obj.morphOpeningLowThreshold = newLowThreshold;
-        end
-        
-        function obj = set.morphOpeningHighThreshold(obj, newHighThreshold)
-            obj.morphOpeningHighThreshold = newHighThreshold;
-        end
         
         function obj = set.morphClosingDiscSize(obj, newMorphClosingDiscSize)
             obj.morphClosingDiscSize = newMorphClosingDiscSize;
@@ -110,12 +101,13 @@ classdef preprocessor<handle
             closedImage = obj.closedImage;
         end
 
-        %Change to whichever image is last
+        
         function finalImage = get.finalImage(obj)
             finalImage = obj.closedImage;
         end
 
         function skeletonImage = get.skeletonImage(obj)
+            %Change this to whichever image is last
             skeletonImage = obj.skeletonImage;
         end
 
@@ -145,8 +137,10 @@ classdef preprocessor<handle
             end
             
             %Remove noise with adaptive wiener filter
-            if obj.wienerFilterSize ~= -1
-                obj.noiselessImage = wiener2(obj.grayImage, [obj.wienerFilterSize, obj.wienerFilterSize]);
+            w = obj.wienerFilterSize;
+            if w ~= -1
+                obj.noiselessImage = wiener2(obj.grayImage,...
+                                            [w,w]);
             else
                 obj.noiselessImage = obj.grayImage;
             end
@@ -158,36 +152,17 @@ classdef preprocessor<handle
                        neighbourhood],...
                        obj.sauvolaThreshold);
                    
-            %optionally nick binarization can be used
-            %bin = nick(obj.noiselessImage,[100 100],-0.1);
             
             %Inverse colors for further processing
-            obj.binarizedImage = imcomplement(bin);
+            obj.binarizedImage = ~bin;
             
-            %Try to remove too small and too big blobs with 
-            %morphological opening operations
-            
-            
-            if obj.morphOpeningLowThreshold ~=-1 && obj.morphOpeningHighThreshold ~= -1
-            obj.openedImage = xor(bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold),...
-                                               bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold)); 
-            
-            elseif obj.morphOpeningLowThreshold ~= -1 && obj.morphOpeningHighThreshold ==-1
-                 obj.openedImage = bwareaopen(obj.binarizedImage, obj.morphOpeningLowThreshold);
-           
-                 %might need to be redefined...
-            elseif obj.morphOpeningLowThreshold == -1 && obj.morphOpeningHighThreshold ~=-1
-                 obj.openedImage = xor(obj.binarizedImage,...
-                                                   bwareaopen(obj.binarizedImage, obj.morphOpeningHighThreshold));
-            else
-                obj.openedImage = obj.binarizedImage;
-            end
             
             %Morphological closing to remove unnecessary holes
             if obj.morphClosingDiscSize ~=-1
-                obj.closedImage = imdilate(obj.openedImage,strel('disk',obj.morphClosingDiscSize));
+                obj.closedImage = imdilate(obj.binarizedImage,...
+                                  strel('disk',obj.morphClosingDiscSize));
             else
-                obj.closedImage = obj.openedImage;
+                obj.closedImage = obj.binarizedImage;
             end
             
             
@@ -200,17 +175,18 @@ classdef preprocessor<handle
             obj.objectCount = length(boundingBoxes);
             
             %Extract properties which may be of use
-            obj.eccentricities = regionprops(obj.finalImage,'Eccentricity');
-            obj.eulerNumbers = regionprops(obj.finalImage,'EulerNumber');
-            obj.extents = regionprops(obj.finalImage,'Extent');
-            obj.solidities = regionprops(obj.finalImage,'Solidity');
-            obj.minorAxisLengths = regionprops(obj.finalImage,'MinorAxisLength');
-            obj.majorAxisLengths = regionprops(obj.finalImage,'MajorAxisLength');
-            obj.areas = regionprops(obj.finalImage,'Area');
-            obj.perimeters = regionprops(obj.finalImage,'Perimeter');
+            fImage = obj.finalImage;
+            obj.eccentricities = regionprops(fImage,'Eccentricity');
+            obj.eulerNumbers = regionprops(fImage,'EulerNumber');
+            obj.extents = regionprops(fImage,'Extent');
+            obj.solidities = regionprops(fImage,'Solidity');
+            obj.minorAxisLengths = regionprops(fImage,'MinorAxisLength');
+            obj.majorAxisLengths = regionprops(fImage,'MajorAxisLength');
+            obj.areas = regionprops(fImage,'Area');
+            obj.perimeters = regionprops(fImage,'Perimeter');
             
-            obj.subImages = regionprops(obj.finalImage, 'Image');
-            obj.centroids = regionprops(obj.finalImage, 'Centroid');
+            obj.subImages = regionprops(fImage, 'Image');
+            obj.centroids = regionprops(fImage, 'Centroid');
             
             %2spooky4me
             obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
