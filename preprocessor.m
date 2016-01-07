@@ -17,6 +17,7 @@ classdef preprocessor<handle
         sauvolaNeighbourhoodSize;
         sauvolaThreshold;
         morphClosingDiscSize;
+        strokeWidthThreshold;
         
         %Found object visualization
         boundaries;
@@ -44,6 +45,10 @@ classdef preprocessor<handle
         maxMajorAxisLengthFilter;
         minAreaFilter;
         maxAreaFilter;
+        
+        %stroke properties
+        strokeMetrics;
+        strokeWidthFilter;
         
         
     end
@@ -79,6 +84,11 @@ classdef preprocessor<handle
             obj.morphClosingDiscSize = newMorphClosingDiscSize;
         end
         
+        function obj = set.strokeWidthThreshold(obj, t)
+            obj.strokeWidthThreshold = t;
+        end
+        
+        
         %GETTERS 
         %Images
         function originalImage = get.originalImage(obj)
@@ -101,13 +111,12 @@ classdef preprocessor<handle
             closedImage = obj.closedImage;
         end
 
-        
+        %Change this to whichever image is last
         function finalImage = get.finalImage(obj)
             finalImage = obj.closedImage;
         end
 
         function skeletonImage = get.skeletonImage(obj)
-            %Change this to whichever image is last
             skeletonImage = obj.skeletonImage;
         end
 
@@ -156,7 +165,6 @@ classdef preprocessor<handle
             %Inverse colors for further processing
             obj.binarizedImage = ~bin;
             
-            
             %Morphological closing to remove unnecessary holes
             if obj.morphClosingDiscSize ~=-1
                 obj.closedImage = imdilate(obj.binarizedImage,...
@@ -164,6 +172,38 @@ classdef preprocessor<handle
             else
                 obj.closedImage = obj.binarizedImage;
             end
+            
+            %stroke width analysis
+            subImageList = regionprops(obj.finalImage, 'Image');
+            subImageAmount = length(subImageList);
+            strokeWidthFilterIdx = false(1, subImageAmount);
+            metrics = zeros(1, subImageAmount);
+            
+            for i = 1:subImageAmount
+                binaryImage = subImageList(i).Image;
+                %bwdist gets the Euclidean distance to nearest nonzero pixel
+                %the image colors need to be inversed
+                distanceImage = bwdist(~binaryImage);
+                subimageSkeleton = bwmorph(binaryImage, 'thin', inf);
+                %strokeWidthImage = distanceImage;
+                %removing all but the pixels that are in skeleton to get better
+                %wiev of stroke width
+                %strokeWidthImage(~subimageSkeleton) = 0;
+                %one dimensional array containing all strokes
+                strokeWidthValues = distanceImage(subimageSkeleton);
+                %calculating the metric to analyze stroke width variation
+                strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
+                %above metric can result in NaN values when mean is 0 (?)
+                %happens with one pixel width areas so they can be filtered
+                if isnan(strokeWidthMetric)     
+                    strokeWidthFilterIdx(i) = 1;
+                else
+                    strokeWidthFilterIdx(i) = strokeWidthMetric > obj.strokeWidthThreshold;
+                end
+                metrics(i) = strokeWidthMetric;
+            end
+            obj.strokeWidthFilter = strokeWidthFilterIdx;
+            obj.strokeMetrics = metrics;
             
             
             %Calculate boundaries and bounding boxes for visualization and
@@ -185,14 +225,12 @@ classdef preprocessor<handle
             obj.areas = regionprops(fImage,'Area');
             obj.perimeters = regionprops(fImage,'Perimeter');
             
-            obj.subImages = regionprops(fImage, 'Image');
             obj.centroids = regionprops(fImage, 'Centroid');
             
             %2spooky4me
             obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
             
         end
-
     end
 end
 
