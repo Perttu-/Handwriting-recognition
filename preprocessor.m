@@ -9,6 +9,7 @@ classdef preprocessor<handle
         binarizedImage;
         openedImage;
         closedImage;
+        strokeImage;
         finalImage;
         skeletonImage;
         
@@ -25,15 +26,7 @@ classdef preprocessor<handle
         objectCount;
         
         %Found object properties
-        eccentricities;
-        eulerNumbers;
-        extents;
-        solidities;
-        areas;
-        minorAxisLengths;
-        majorAxisLengths;
-        centroids;
-        perimeters;
+        imageProperties;
         
         %Found object extraction
         subImages;
@@ -48,7 +41,6 @@ classdef preprocessor<handle
         
         %stroke properties
         strokeMetrics;
-        strokeWidthFilter;
         
         
     end
@@ -111,9 +103,10 @@ classdef preprocessor<handle
             closedImage = obj.closedImage;
         end
 
+        
         %Change this to whichever image is last
         function finalImage = get.finalImage(obj)
-            finalImage = obj.closedImage;
+            finalImage = obj.strokeImage;
         end
 
         function skeletonImage = get.skeletonImage(obj)
@@ -178,54 +171,57 @@ classdef preprocessor<handle
             subImageAmount = length(subImageList);
             strokeWidthFilterIdx = false(1, subImageAmount);
             metrics = zeros(1, subImageAmount);
-            
+
             for i = 1:subImageAmount
                 binaryImage = subImageList(i).Image;
                 %bwdist gets the Euclidean distance to nearest nonzero pixel
-                %the image colors need to be inversed
                 distanceImage = bwdist(~binaryImage);
                 subimageSkeleton = bwmorph(binaryImage, 'thin', inf);
-                %strokeWidthImage = distanceImage;
-                %removing all but the pixels that are in skeleton to get better
-                %wiev of stroke width
-                %strokeWidthImage(~subimageSkeleton) = 0;
                 %one dimensional array containing all strokes
                 strokeWidthValues = distanceImage(subimageSkeleton);
                 %calculating the metric to analyze stroke width variation
                 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
-                %above metric can result in NaN values when mean is 0 (?)
+                %strokeWidthImage = distanceImage;
+                %strokeWidthImage(~subimageSkeleton) = 0;
+                %above metric can result in NaN  or zero values when mean is 0 
                 %happens with one pixel width areas so they can be filtered
-                if isnan(strokeWidthMetric)     
+                %NaN happens if mean value is zero
+                if isnan(strokeWidthMetric) || strokeWidthMetric == 0     
                     strokeWidthFilterIdx(i) = 1;
                 else
                     strokeWidthFilterIdx(i) = strokeWidthMetric > obj.strokeWidthThreshold;
                 end
                 metrics(i) = strokeWidthMetric;
             end
-            obj.strokeWidthFilter = strokeWidthFilterIdx;
+            
+            pixels = regionprops(obj.closedImage,'PixelIdxList');
+            removedPixels = pixels(strokeWidthFilterIdx).PixelIdxList; %??? rikki
+            obj.strokeImage = obj.closedImage;
+            obj.strokeImage(removedPixels) = 0;
             obj.strokeMetrics = metrics;
             
+
             
+            fImage = obj.finalImage;
             %Calculate boundaries and bounding boxes for visualization and
             %to extract the needed blobs
-            obj.boundingBoxes = regionprops(obj.closedImage,'boundingbox');
-            obj.boundaries = bwboundaries(obj.closedImage,8,'holes'); 
+            obj.boundingBoxes = regionprops(fImage,'boundingbox');
+            obj.boundaries = bwboundaries(fImage,8,'holes'); 
             boundingBoxes = obj.boundingBoxes;
             boundaries = obj.boundaries;
             obj.objectCount = length(boundingBoxes);
             
             %Extract properties which may be of use
-            fImage = obj.finalImage;
-            obj.eccentricities = regionprops(fImage,'Eccentricity');
-            obj.eulerNumbers = regionprops(fImage,'EulerNumber');
-            obj.extents = regionprops(fImage,'Extent');
-            obj.solidities = regionprops(fImage,'Solidity');
-            obj.minorAxisLengths = regionprops(fImage,'MinorAxisLength');
-            obj.majorAxisLengths = regionprops(fImage,'MajorAxisLength');
-            obj.areas = regionprops(fImage,'Area');
-            obj.perimeters = regionprops(fImage,'Perimeter');
             
-            obj.centroids = regionprops(fImage, 'Centroid');
+            obj.imageProperties = regionprops(fImage,'Eccentricity',...
+                                                     'EulerNumber',...
+                                                     'Extent',...
+                                                     'Solidity',...
+                                                     'MinorAxisLength',...
+                                                     'MajorAxisLength',...
+                                                     'Area',...
+                                                     'Perimeter',...
+                                                     'Centroid');
             
             %2spooky4me
             obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
