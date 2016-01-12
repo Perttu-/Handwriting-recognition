@@ -9,24 +9,24 @@ function preprocess2(filename)
     p.wienerFilterSize = 6;
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
-    p.morphClosingDiscSize = 1;
+    p.morphClosingDiscSize = -1;
     %another argument to tweak
     %0.45 good for IAM database?
-    p.strokeWidthThreshold = 0.2;
+    p.strokeWidthThreshold = 0.372;
     
     tic
     p.preprocess;
     toc
     
     boundingBoxes = p.boundingBoxes;
-    %boundingBoxes(p.strokeWidthFilter) = [];
+    %boundingBoxes(p.strokeFilter) = [];
 
     figure();
     newImage = p.strokeImage;
     newImage = 255 * uint8(newImage);
     
+    
     properties = p.strokeMetrics;
-    %properties(p.strokeWidthFilter) = [];
     for i = 1:length(properties)
         if isnan(properties(i))
             property = 'NaN';
@@ -34,11 +34,11 @@ function preprocess2(filename)
             property = num2str(properties(i));
         end
         newImage = insertText(newImage,...
-                                boundingBoxes(i).BoundingBox(1:2),...
-                                property,...
-                                'BoxOpacity',0,...
-                                'FontSize',25,...
-                                'TextColor','green');
+                              boundingBoxes(i).BoundingBox(1:2),...
+                              property,...
+                              'BoxOpacity',0,...
+                              'FontSize',25,...
+                              'TextColor','green');
     end
 
     imshow(newImage);

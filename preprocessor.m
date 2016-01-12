@@ -41,6 +41,7 @@ classdef preprocessor<handle
         
         %stroke properties
         strokeMetrics;
+        strokeFilter;
         
         
     end
@@ -159,15 +160,16 @@ classdef preprocessor<handle
             obj.binarizedImage = ~bin;
             
             %Morphological closing to remove unnecessary holes
-            if obj.morphClosingDiscSize ~=-1
+            disc = obj.morphClosingDiscSize;
+            if disc > 0
                 obj.closedImage = imdilate(obj.binarizedImage,...
-                                  strel('disk',obj.morphClosingDiscSize));
+                                  strel('disk',disc));
             else
                 obj.closedImage = obj.binarizedImage;
             end
             
             %stroke width analysis
-            subImageList = regionprops(obj.finalImage, 'Image');
+            subImageList = regionprops(obj.closedImage, 'Image');
             subImageAmount = length(subImageList);
             strokeWidthFilterIdx = false(1, subImageAmount);
             metrics = zeros(1, subImageAmount);
@@ -189,20 +191,23 @@ classdef preprocessor<handle
                 if isnan(strokeWidthMetric) || strokeWidthMetric == 0     
                     strokeWidthFilterIdx(i) = 1;
                 else
+                    %objects with higher metric than threshold marked for
+                    %removal
                     strokeWidthFilterIdx(i) = strokeWidthMetric > obj.strokeWidthThreshold;
                 end
                 metrics(i) = strokeWidthMetric;
             end
-            
+            obj.strokeFilter = strokeWidthFilterIdx;
             pixels = regionprops(obj.closedImage,'PixelIdxList');
-            removedPixels = pixels(strokeWidthFilterIdx).PixelIdxList; %??? rikki
-            obj.strokeImage = obj.closedImage;
-            obj.strokeImage(removedPixels) = 0;
+            removedPixels = vertcat(pixels(strokeWidthFilterIdx).PixelIdxList); 
+            strkImg = obj.closedImage;
+            strkImg(removedPixels) = 0;
+            obj.strokeImage = strkImg;
+            metrics(strokeWidthFilterIdx) = [];
             obj.strokeMetrics = metrics;
             
-
             
-            fImage = obj.finalImage;
+            fImage = obj.strokeImage;
             %Calculate boundaries and bounding boxes for visualization and
             %to extract the needed blobs
             obj.boundingBoxes = regionprops(fImage,'boundingbox');
