@@ -17,14 +17,19 @@ function preprocess2(filename)
     tic
     p.preprocess;
     toc
-    
     boundingBoxes = p.boundingBoxes;
-    %boundingBoxes(p.strokeFilter) = [];
-
+    pairs = nchoosek(1:length(boundingBoxes),2);
+    overlapRatios = zeros(length(pairs),1);
+    length(pairs)
+    for i=1:length(pairs)
+        bboxA = boundingBoxes(pairs(i,1));
+        bboxB = boundingBoxes(pairs(i,2));
+        overlapRatios(i) = bboxOverlapRatio(bboxA.BoundingBox,bboxB.BoundingBox);
+    end
+    sum(overlapRatios)
     figure();
     newImage = p.strokeImage;
     newImage = 255 * uint8(newImage);
-    
     
     properties = p.strokeMetrics;
     for i = 1:length(properties)
