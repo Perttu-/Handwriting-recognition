@@ -12,21 +12,28 @@ function preprocess2(filename)
     p.morphClosingDiscSize = -1;
     %another argument to tweak
     %0.45 good for IAM database?
-    p.strokeWidthThreshold = 0.372;
+    p.strokeWidthThreshold = 100;
     
     tic
     p.preprocess;
     toc
+    
     boundingBoxes = p.boundingBoxes;
+    %Exessive amount of combinations with large number of objects
     pairs = nchoosek(1:length(boundingBoxes),2);
-    overlapRatios = zeros(length(pairs),1);
-    length(pairs)
+    overlapRatios = struct('Pair', {},'OverlapRatio', {});
+
     for i=1:length(pairs)
         bboxA = boundingBoxes(pairs(i,1));
         bboxB = boundingBoxes(pairs(i,2));
-        overlapRatios(i) = bboxOverlapRatio(bboxA.BoundingBox,bboxB.BoundingBox);
+        overlapRatio = bboxOverlapRatio(bboxA.BoundingBox,bboxB.BoundingBox, 'Min');
+        if overlapRatio ~= 0
+            overlapRatios(end+1) = struct('Pair',[pairs(i,1), pairs(i,2)],...
+                                           'OverlapRatio', overlapRatio);
+        end
     end
-    sum(overlapRatios)
+    
+    
     figure();
     newImage = p.strokeImage;
     newImage = 255 * uint8(newImage);
@@ -38,11 +45,12 @@ function preprocess2(filename)
         else
             property = num2str(properties(i));
         end
+        %property = i;
         newImage = insertText(newImage,...
                               boundingBoxes(i).BoundingBox(1:2),...
                               property,...
                               'BoxOpacity',0,...
-                              'FontSize',25,...
+                              'FontSize',10,...
                               'TextColor','green');
     end
 
