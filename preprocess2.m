@@ -6,13 +6,13 @@ function preprocess2(filename)
     p.map = filename;
     
     %optimal values for testimage2.jpg
-    p.wienerFilterSize = 6;
+    p.wienerFilterSize = -1;%6
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
     p.morphClosingDiscSize = -1;
     %another argument to tweak
     %0.45 good for IAM database?
-    p.strokeWidthThreshold = 100;
+    p.strokeWidthThreshold = 0.9;
     
     tic
     p.preprocess;
@@ -24,7 +24,12 @@ function preprocess2(filename)
     
     bbList = zeros(length(boundingBoxes),4);
     wideBBoxes = bbList;
-    expansionAmount = 0.09;
+    expansionAmount = 0.25;
+    xmins = zeros(length(boundingBoxes),1);
+    xmaxs = xmins;
+    ymins = xmins;
+    ymaxs = xmins;
+    
     
     for i=1:length(boundingBoxes)
         bBox = boundingBoxes(i).BoundingBox;
@@ -34,20 +39,29 @@ function preprocess2(filename)
         ymax = ymin + bBox(:,4) - 1;
         
         %making the boxes wider in both directions
-        xmin = (1-expansionAmount) * xmin;
-        xmax = (1+expansionAmount) * xmax;
+%         xmin = (1-expansionAmount) * xmin;
+%         xmax = (1+expansionAmount) * xmax;
+        
+        
+        xmin = max(xmin, 1);
+        ymin = max(ymin, 1);
+        xmax = min(xmax, size(p.originalImage,2));
+        ymax = min(ymax, size(p.originalImage,1));
         
         bbList(i,:)= [xmin,ymin,xmax,ymax];
         wideBBoxes(i,:) = [xmin ymin xmax-xmin+1 ymax-ymin+1];
         
+        xmins(i) = xmin;
+        ymins(i) = ymin;
+        xmaxs(i) = xmax;
+        ymaxs(i) = ymax;
+        
     end
     
+
     
-    
-    overlapRatio = bboxOverlapRatio(bbList,bbList);
+    overlapRatio = bboxOverlapRatio(wideBBoxes,wideBBoxes);
     width = size(overlapRatio,1);
-    %looping through the array diagonally and setting the overlap ratios of
-    %bounding boxes with itself to zero (from corner to corner)
     overlapRatio(1:width+1:width^2) = 0;
     toc
     
@@ -55,6 +69,17 @@ function preprocess2(filename)
     g = graph(overlapRatio); 
     plot(g);
     componentIndices = conncomp(g);
+    
+    xmins = accumarray(componentIndices', xmins, [], @min);
+    ymins = accumarray(componentIndices', ymins, [], @min);
+    xmaxs = accumarray(componentIndices', xmaxs, [], @max);
+    ymaxs = accumarray(componentIndices', ymaxs, [], @max);
+
+    textBBoxes = [xmins ymins xmaxs-xmins+1 ymaxs-ymins+1];
+    
+
+    %remove areas which have only one object inside them.
+
      
     newImage = p.strokeImage;
 %     
@@ -65,9 +90,10 @@ function preprocess2(filename)
 %     imshow(lineImg);
     
     newImage = 255 * uint8(newImage);
-    imgWideBoxes = insertShape(newImage,'Rectangle',wideBBoxes,'LineWidth',4,'Color','Green');
+    imgWideBoxes = insertShape(newImage,'Rectangle',textBBoxes,'LineWidth',4,'Color','Green');
     figure();
-    imshow(imgWideBoxes);
+    
+    
 %     properties = p.strokeMetrics;
 %     for i = 1:length(properties)
 %         if isnan(properties(i))
@@ -76,13 +102,14 @@ function preprocess2(filename)
 %             property = num2str(properties(i));
 %         end
 %         property = i;
-%         newImage = insertText(newImage,...
+%         imgWideBoxes = insertText(imgWideBoxes,...
 %                               boundingBoxes(i).BoundingBox(1:2),...
 %                               property,...
-%                               'BoxOpacity',0,...
+%                               'BoxOpacity',1,...
 %                               'FontSize',10,...
-%                               'TextColor','green');
+%                               'TextColor','red');
 %     end
+    imshow(imgWideBoxes);
 %     figure(2);
 %     imshow(newImage);
 %     hold on;
@@ -102,6 +129,7 @@ function preprocess2(filename)
 %     colorbar;
 
     disp(['Number of objects: ', int2str(p.objectCount)]);
+    disp(['Number of rows: ', int2str(length(textBBoxes))]);
 
     
     
