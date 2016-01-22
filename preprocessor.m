@@ -1,5 +1,7 @@
 classdef preprocessor<handle
-    
+    %Includes image aquisition, noise removal with adaptive Wiener filter, 
+    %binarization with Sauvola algorithm, and stroke analysis to help 
+    %determining text regions.
     properties
         %Images
         originalImage;

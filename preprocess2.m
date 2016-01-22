@@ -32,17 +32,13 @@ function preprocess2(filename)
     %Largening
     for i=1:length(boundingBoxes)
         %getting corner points
-        bBox = boundingBoxes(i).BoundingBox;
-        xmin = bBox(1);
-        ymin = bBox(2);
-        xmax = xmin + bBox(3) - 1;
-        ymax = ymin + bBox(4) - 1;
+        [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(i).BoundingBox);
 
-        %widening the boxes 
+        %widening and...
         xmin = xmin-xExpansionAmount;
         xmax = xmax+xExpansionAmount; 
         
-        %heightening
+        %...heightening the boxes
         ymin = ymin-yExpansionAmount;
         ymax = ymax+yExpansionAmount;
         
@@ -69,12 +65,19 @@ function preprocess2(filename)
     componentIndices = conncomp(g);
     histg = histcounts(componentIndices, max(componentIndices));
     rowBBoxes(histg == 1,:)=[];
-     
+    
     newImage = p.strokeImage;
     
-    %binary image to grayscale
-    %newImage = 255 * uint8(newImage);
+    for i=1:size(rowBBoxes,1)
+        %sub image extraction
+        [xmins,ymins,xmaxs,ymaxs] = extractBoxCorners(rowBBoxes);
+        
+    end
     
+    
+    
+    %binary image to grayscale
+%     newImage = 255 * uint8(newImage);    
 %     properties = p.strokeMetrics;
 %     for i = 1:length(properties)
 %         if isnan(properties(i))
