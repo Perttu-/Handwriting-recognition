@@ -15,7 +15,7 @@ function preprocess2(filename)
     p.strokeWidthThreshold = 0.65;
     
     %two more
-    xExpansionAmount = 75;
+    xExpansionAmount = 76;
     yExpansionAmount = 4;
     
     tic
@@ -60,21 +60,27 @@ function preprocess2(filename)
     %combine
     [rowBBoxes, overlapRatios] = combineOverlappingBoxes(wideBBoxes);
     
-    %remove areas which have only one object inside them.
+    %exclude areas which have only one object inside them.
     g = graph(overlapRatios); 
     componentIndices = conncomp(g);
     histg = histcounts(componentIndices, max(componentIndices));
     rowBBoxes(histg == 1,:)=[];
     
-    newImage = p.strokeImage;
+    %remove areas which are more tall than wide
+    rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
-    for i=1:size(rowBBoxes,1)
-        %sub image extraction
-        [xmins,ymins,xmaxs,ymaxs] = extractBoxCorners(rowBBoxes);
-        
+    %sub image extraction
+    newImage = p.strokeImage;
+    rows = size(rowBBoxes,1);
+    imageCell = cell(rows);
+    for i=1:rows
+        bbox = rowBBoxes(i,:);
+        subImage = imcrop(newImage, bbox);
+        imageCell{i} = subImage;
     end
     
     
+    %visualization
     
     %binary image to grayscale
 %     newImage = 255 * uint8(newImage);    
