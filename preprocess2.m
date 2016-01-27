@@ -5,11 +5,13 @@ function preprocess2(filename)
     p.originalImage = filename;
     p.map = filename;
     
-    %optimal values for testimage2.jpg
+    %optimal values chosen for testimage2.jpg
+    %or IAM database images
     p.wienerFilterSize = -1;
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.4;
     p.morphClosingDiscSize = -1;
+    
     %another argument to tweak
     %0.65 good for IAM database?
     p.strokeWidthThreshold = 0.65;
@@ -30,9 +32,9 @@ function preprocess2(filename)
     ymaxs = xmins;
     
     %Largening
-    for i=1:length(boundingBoxes)
+    for ii=1:length(boundingBoxes)
         %getting corner points
-        [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(i).BoundingBox);
+        [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(ii).BoundingBox);
 
         %widening and...
         xmin = xmin-xExpansionAmount;
@@ -48,35 +50,52 @@ function preprocess2(filename)
         xmax = min(xmax, size(p.originalImage,2)-0.5);
         ymax = min(ymax, size(p.originalImage,1)-0.5);
        
-        xmins(i) = xmin;
-        ymins(i) = ymin;
-        xmaxs(i) = xmax;
-        ymaxs(i) = ymax;
+        xmins(ii) = xmin;
+        ymins(ii) = ymin;
+        xmaxs(ii) = xmax;
+        ymaxs(ii) = ymax;
         
     end
 
     wideBBoxes = [xmins ymins xmaxs-xmins+1 ymaxs-ymins+1];
     
-    %combine
-    [rowBBoxes, overlapRatios] = combineOverlappingBoxes(wideBBoxes);
+    %combine boxes which overlap more than given threshold
+    [rowBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
+    %combine elements which might not have been combined on last time
+    [rowBBoxes, ~] = combineOverlappingBoxes(rowBBoxes, 0.9);
     
-    %exclude areas which have only one object inside them.
-    g = graph(overlapRatios); 
-    componentIndices = conncomp(g);
-    histg = histcounts(componentIndices, max(componentIndices));
-    rowBBoxes(histg == 1,:)=[];
     
     %remove areas which are more tall than wide
     rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
-    %sub image extraction
+    %sub image extraction and generating projection histograms
     newImage = p.strokeImage;
     rows = size(rowBBoxes,1);
-    imageCell = cell(rows);
-    for i=1:rows
-        bbox = rowBBoxes(i,:);
+    imageStruct = struct('Image',[],...
+                         'VerticalHistogram',[],...
+                         'HorizontalHistogram',[],...
+                         'Space',[]);
+    for ii=1:rows
+        bbox = rowBBoxes(ii,:);
         subImage = imcrop(newImage, bbox);
-        imageCell{i} = subImage;
+        imageStruct(ii).Image = subImage;
+        imageStruct(ii).VerticalHistogram = sum(subImage,1);
+        imageStruct(ii).HorizontalHistogram = sum(subImage,2);
+    end
+
+    %getting information of the consecutive zero pixels
+    %saving them as their start and end point pairs into the image struct
+    for ii=1:rows
+        vHist = imageStruct(ii).VerticalHistogram;
+        bHist = vHist~=0;
+        ebHist = [1,bHist,1];
+        stloc = strfind(ebHist,[1 0]);
+        endloc = strfind(ebHist,[0 1]);
+        spaces = [];
+        for jj =1:length(stloc)
+            spaces(jj,:) = [stloc(jj),endloc(jj)];
+        end
+        imageStruct(ii).Space = spaces;
     end
     
     
@@ -84,30 +103,24 @@ function preprocess2(filename)
     
     %binary image to grayscale
 %     newImage = 255 * uint8(newImage);    
-%     properties = p.strokeMetrics;
-%     for i = 1:length(properties)
-%         if isnan(properties(i))
-%             property = 'NaN';
-%         else
-%             property = num2str(properties(i));
-%         end
-%         property = i;
+%     for ii = 1:length(rowBBoxes)
+%         property = ii;
+%         box = rowBBoxes(ii,:);
 %         newImage = insertText(newImage,...
-%                               boundingBoxes(i).BoundingBox(1:2),...
+%                               [box(1),box(2)],...
 %                               property,...
 %                               'BoxOpacity',1,...
 %                               'FontSize',10,...
 %                               'TextColor','red');
 %     end
-%     imshow(imgWideBoxes);
 
     figure();
     imshow(newImage);
     hold on;
     boundingBoxes = rowBBoxes;
-    for i = 1:length(boundingBoxes)
-        box = boundingBoxes(i,:);
-        handles.boundingBoxes(i) = rectangle('Position',...
+    for ii = 1:size(boundingBoxes,1)
+        box = boundingBoxes(ii,:);
+        handles.boundingBoxes(ii) = rectangle('Position',...
                                    box,...
                                    'EdgeColor','r',...
                                    'LineWidth',1);
