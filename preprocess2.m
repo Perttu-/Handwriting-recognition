@@ -5,25 +5,25 @@ function preprocess2(filename)
     p.originalImage = filename;
     p.map = filename;
     
-    %optimal values chosen for testimage2.jpg
-    %or IAM database images
-    p.wienerFilterSize = -1;
-    p.sauvolaNeighbourhoodSize = 100;
-    p.sauvolaThreshold = 0.4;
+    %optimal values chosen for IAM database images
+    p.wienerFilterSize = 10;
+    p.sauvolaNeighbourhoodSize = 80;
+    p.sauvolaThreshold = 0.1;
     p.morphClosingDiscSize = -1;
     
     %another argument to tweak
     %0.65 good for IAM database?
-    p.strokeWidthThreshold = 0.65;
+    p.strokeWidthThreshold = 0.35;
     
     %two more
-    xExpansionAmount = 76;
-    yExpansionAmount = 4;
+    xExpansionAmount = 130;
+    yExpansionAmount = 1;
     
     tic
     p.preprocess;
     toc
     
+    tic
     boundingBoxes = p.boundingBoxes;
 
     xmins = zeros(length(boundingBoxes),1);
@@ -31,7 +31,7 @@ function preprocess2(filename)
     ymins = xmins;
     ymaxs = xmins;
     
-    %Largening
+%     %Largening
     for ii=1:length(boundingBoxes)
         %getting corner points
         [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(ii).BoundingBox);
@@ -62,30 +62,37 @@ function preprocess2(filename)
     %combine boxes which overlap more than given threshold
     [rowBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
     %combine elements which might not have been combined on last time
-    [rowBBoxes, ~] = combineOverlappingBoxes(rowBBoxes, 0.9);
+    [rowBBoxes, ~] = combineOverlappingBoxes(rowBBoxes, 0);
     
-    
-    %remove areas which are more tall than wide
+    %remove boxes which are more tall than wide
     rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
+%     for i=1:length(boundingBoxes)
+%         rowBBoxes(i,:) = boundingBoxes(i).BoundingBox;
+%     end
     %sub image extraction and generating projection histograms
     newImage = p.strokeImage;
     rows = size(rowBBoxes,1);
     imageStruct = struct('Image',[],...
+                         'ObjectCount', [],...
                          'VerticalHistogram',[],...
                          'HorizontalHistogram',[],...
                          'Space',[]);
     for ii=1:rows
         bbox = rowBBoxes(ii,:);
         subImage = imcrop(newImage, bbox);
+        [~, numberOfObjects] = bwlabel(subImage);
+        %ignore one pixel areas
         imageStruct(ii).Image = subImage;
+        imageStruct(ii).ObjectCount = numberOfObjects;
         imageStruct(ii).VerticalHistogram = sum(subImage,1);
         imageStruct(ii).HorizontalHistogram = sum(subImage,2);
+
     end
 
     %getting information of the consecutive zero pixels
     %saving them as their start and end point pairs into the image struct
-    for ii=1:rows
+    for ii=1:length(imageStruct)
         vHist = imageStruct(ii).VerticalHistogram;
         bHist = vHist~=0;
         ebHist = [1,bHist,1];
@@ -98,7 +105,7 @@ function preprocess2(filename)
         imageStruct(ii).Space = spaces;
     end
     
-    
+    toc
     %visualization
     
     %binary image to grayscale
