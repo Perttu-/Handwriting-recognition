@@ -1,5 +1,5 @@
 function preprocess2(filename)
-    close all;
+    %close all;
     p = preprocessor;
 
     p.originalImage = filename;
@@ -7,7 +7,7 @@ function preprocess2(filename)
     
     %optimal values chosen for IAM database images
     p.wienerFilterSize = 10;
-    p.sauvolaNeighbourhoodSize = 80;
+    p.sauvolaNeighbourhoodSize = 300;
     p.sauvolaThreshold = 0.1;
     p.morphClosingDiscSize = -1;
     
@@ -16,7 +16,7 @@ function preprocess2(filename)
     p.strokeWidthThreshold = 0.35;
     
     %two more
-    xExpansionAmount = 130;
+    xExpansionAmount = 135;
     yExpansionAmount = 1;
     
     tic
@@ -31,7 +31,7 @@ function preprocess2(filename)
     ymins = xmins;
     ymaxs = xmins;
     
-%     %Largening
+     %Largening
     for ii=1:length(boundingBoxes)
         %getting corner points
         [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(ii).BoundingBox);
@@ -67,6 +67,14 @@ function preprocess2(filename)
     %remove boxes which are more tall than wide
     rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
+    %remove boxes which take only a fraction of the total area.
+    areaRatioThreshold = 0.1;
+    areas = rowBBoxes(:,3).*rowBBoxes(:,4);
+    totalArea = sum(areas);
+    areaRatio = areas/totalArea;
+    rowBBoxes((areaRatio<areaRatioThreshold),:)=[];
+    
+    
 %     for i=1:length(boundingBoxes)
 %         rowBBoxes(i,:) = boundingBoxes(i).BoundingBox;
 %     end
@@ -81,15 +89,21 @@ function preprocess2(filename)
     for ii=1:rows
         bbox = rowBBoxes(ii,:);
         subImage = imcrop(newImage, bbox);
-        [~, numberOfObjects] = bwlabel(subImage);
-        %ignore one pixel areas
-        imageStruct(ii).Image = subImage;
+        vHist = sum(subImage,1);
+        %the images are trimmed so no space is in beginning nor end of the
+        %image
+        startPoint = find(vHist~=0, 1, 'first')-0.5;
+        endPoint = find(vHist~=0, 1, 'last')-0.5;
+        cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
+        rowImage = imcrop(subImage, cropBox);
+        [~, numberOfObjects] = bwlabel(rowImage);
+        imageStruct(ii).Image = rowImage;
         imageStruct(ii).ObjectCount = numberOfObjects;
-        imageStruct(ii).VerticalHistogram = sum(subImage,1);
+        imageStruct(ii).VerticalHistogram = vHist;
         imageStruct(ii).HorizontalHistogram = sum(subImage,2);
-
     end
 
+    
     %getting information of the consecutive zero pixels
     %saving them as their start and end point pairs into the image struct
     for ii=1:length(imageStruct)
@@ -130,9 +144,9 @@ function preprocess2(filename)
         handles.boundingBoxes(ii) = rectangle('Position',...
                                    box,...
                                    'EdgeColor','r',...
-                                   'LineWidth',1);
+                                   'LineWidth',3);
     end
     hold off;
     
     disp(['Number of objects: ', int2str(p.objectCount)]);
-    disp(['Number of rows: ', int2str(length(rowBBoxes))]);
+    disp(['Number of rows: ', int2str(size(rowBBoxes,1))]);
