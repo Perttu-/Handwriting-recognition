@@ -1,7 +1,7 @@
 function [newBoxes, overlapRatios] = combineOverlappingBoxes(oldBoxes, overlapThreshold)
     %combining all overlapping "bounding"boxes
     %box input in bounding box format 
-    %[ul_corner, ll_corner, width, height]
+    %[ul_corner_x, ul_corner_y, width, height]
     
     [xmins,ymins,xmaxs,ymaxs] = extractBoxCorners(oldBoxes);
 

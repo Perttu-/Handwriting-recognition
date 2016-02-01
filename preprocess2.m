@@ -1,35 +1,46 @@
 function preprocess2(filename)
-    %close all;
+
+    close all;
     p = preprocessor;
 
     p.originalImage = filename;
     p.map = filename;
     
-    %optimal values chosen for IAM database images
-    p.wienerFilterSize = 10;
-    p.sauvolaNeighbourhoodSize = 300;
-    p.sauvolaThreshold = 0.1;
+    %IAM database
+    p.wienerFilterSize = 6;
+    p.sauvolaNeighbourhoodSize = 100;
+    p.sauvolaThreshold = 0.6;
     p.morphClosingDiscSize = -1;
-    
-    %another argument to tweak
-    %0.65 good for IAM database?
-    p.strokeWidthThreshold = 0.35;
-    
-    %two more
-    xExpansionAmount = 135;
+    p.strokeWidthThreshold = 0.65;
+    xExpansionAmount = 70;
     yExpansionAmount = 1;
+    areaRatioThreshold = 0.004;
+    spaceRatioThreshold = 0.022;
+    
+    %handwriting_new_2.jpg
+%     p.wienerFilterSize = 10;
+%     p.sauvolaNeighbourhoodSize = 100;
+%     p.sauvolaThreshold = 0.1;
+%     p.morphClosingDiscSize = -1;
+%     p.strokeWidthThreshold = 0.45;
+%     xExpansionAmount = 135;
+%     yExpansionAmount = 1;
+%     areaRatioThreshold = 0.1;
+%     spaceRatioThreshold = 0.2;
     
     tic
     p.preprocess;
     toc
     
     tic
+    %% Experimental preprocessing
     boundingBoxes = p.boundingBoxes;
 
     xmins = zeros(length(boundingBoxes),1);
     xmaxs = xmins;
     ymins = xmins;
     ymaxs = xmins;
+    
     
      %Largening
     for ii=1:length(boundingBoxes)
@@ -61,6 +72,7 @@ function preprocess2(filename)
     
     %combine boxes which overlap more than given threshold
     [rowBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
+    
     %combine elements which might not have been combined on last time
     [rowBBoxes, ~] = combineOverlappingBoxes(rowBBoxes, 0);
     
@@ -68,16 +80,11 @@ function preprocess2(filename)
     rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
     %remove boxes which take only a fraction of the total area.
-    areaRatioThreshold = 0.1;
     areas = rowBBoxes(:,3).*rowBBoxes(:,4);
     totalArea = sum(areas);
     areaRatio = areas/totalArea;
     rowBBoxes((areaRatio<areaRatioThreshold),:)=[];
-    
-    
-%     for i=1:length(boundingBoxes)
-%         rowBBoxes(i,:) = boundingBoxes(i).BoundingBox;
-%     end
+   
     %sub image extraction and generating projection histograms
     newImage = p.strokeImage;
     rows = size(rowBBoxes,1);
@@ -86,20 +93,23 @@ function preprocess2(filename)
                          'VerticalHistogram',[],...
                          'HorizontalHistogram',[],...
                          'Space',[]);
+                    
+    %the images are trimmed so no space is in beginning nor in the end of 
+    %the image
     for ii=1:rows
         bbox = rowBBoxes(ii,:);
         subImage = imcrop(newImage, bbox);
         vHist = sum(subImage,1);
-        %the images are trimmed so no space is in beginning nor end of the
-        %image
+       
         startPoint = find(vHist~=0, 1, 'first')-0.5;
         endPoint = find(vHist~=0, 1, 'last')-0.5;
         cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
         rowImage = imcrop(subImage, cropBox);
+
         [~, numberOfObjects] = bwlabel(rowImage);
         imageStruct(ii).Image = rowImage;
         imageStruct(ii).ObjectCount = numberOfObjects;
-        imageStruct(ii).VerticalHistogram = vHist;
+        imageStruct(ii).VerticalHistogram = sum(rowImage,1);
         imageStruct(ii).HorizontalHistogram = sum(subImage,2);
     end
 
@@ -118,9 +128,22 @@ function preprocess2(filename)
         end
         imageStruct(ii).Space = spaces;
     end
+    %searching for spaces
+    %doesn't work for one word rows with separated characters
+    for ii=1:length(imageStruct)
+        spaces = imageStruct(ii).Space;
+        if ~isempty(spaces)
+            spaceLengths = spaces(:,2) - spaces(:,1);
+            totalSpaceLength = sum(spaceLengths);
+            spaceRatio = spaceLengths/totalSpaceLength;
+            spaces((spaceRatio<spaceRatioThreshold),:)=[];
+            imageStruct(ii).Space = spaces;
+        end
+        
+    end
     
     toc
-    %visualization
+    %% visualization
     
     %binary image to grayscale
 %     newImage = 255 * uint8(newImage);    
@@ -141,10 +164,9 @@ function preprocess2(filename)
     boundingBoxes = rowBBoxes;
     for ii = 1:size(boundingBoxes,1)
         box = boundingBoxes(ii,:);
-        handles.boundingBoxes(ii) = rectangle('Position',...
-                                   box,...
-                                   'EdgeColor','r',...
-                                   'LineWidth',3);
+        handles.boundingBoxes(ii) = rectangle('Position',box,...
+                                              'EdgeColor','r',...
+                                              'LineWidth',3);
     end
     hold off;
     
