@@ -75,7 +75,7 @@ classdef preprocessor<handle
         end
         
         
-        function obj = set.morphClosingDiscSize(obj, newMorphClosingDiscSize)
+        function obj = set.morphClosingDiscSize(obj,newMorphClosingDiscSize)
             obj.morphClosingDiscSize = newMorphClosingDiscSize;
         end
         
