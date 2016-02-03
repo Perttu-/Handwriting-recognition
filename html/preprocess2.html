@@ -1,0 +1,390 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>preprocess2</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-02-03"><meta name="DC.source" content="preprocess2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Experimental layout analysis</a></li><li><a href="#4">visualization</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> preprocess2(filename)
+</pre><pre class="codeinput">    close <span class="string">all</span>;
+    p = preprocessor;
+
+    p.originalImage = filename;
+    p.map = filename;
+
+    <span class="comment">%IAM database</span>
+    p.wienerFilterSize = 6;
+    p.sauvolaNeighbourhoodSize = 100;
+    p.sauvolaThreshold = 0.6;
+    p.morphClosingDiscSize = -1;
+    p.strokeWidthThreshold = 0.65;
+    rowXExpansionAmount = 70;
+    rowYExpansionAmount = 20;
+    areaRatioThreshold = 0.004;
+    spaceRatioThreshold = 0.022;
+    wordXExpansionAmount = 11;
+    wordYExpansionAmount = 19;
+    spaceThreshold = 16;
+
+
+    <span class="comment">%handwriting_new_2.jpg</span>
+<span class="comment">%     p.wienerFilterSize = 10;</span>
+<span class="comment">%     p.sauvolaNeighbourhoodSize = 100;</span>
+<span class="comment">%     p.sauvolaThreshold = 0.1;</span>
+<span class="comment">%     p.morphClosingDiscSize = -1;</span>
+<span class="comment">%     p.strokeWidthThreshold = 0.45;</span>
+<span class="comment">%     xExpansionAmount = 135;</span>
+<span class="comment">%     yExpansionAmount = 1;</span>
+<span class="comment">%     areaRatioThreshold = 0.1;</span>
+<span class="comment">%     spaceRatioThreshold = 0.2;</span>
+
+    tic
+    p.preprocess;
+    toc
+
+    tic
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in preprocess2 (line 6)
+    p.originalImage = filename;
+</pre><h2>Experimental layout analysis<a name="3"></a></h2><pre class="codeinput">    boundingBoxes = p.boundingBoxes;
+
+    <span class="comment">%Largening</span>
+    wideBBoxes=expandBBoxes(p.originalImage,<span class="keyword">...</span>
+                            boundingBoxes,<span class="keyword">...</span>
+                            rowXExpansionAmount,<span class="keyword">...</span>
+                            rowYExpansionAmount);
+
+    <span class="comment">%combine boxes which overlap more than given threshold</span>
+    [combinedBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
+
+    <span class="comment">%combine elements which might not have been combined on last time</span>
+    [combinedBBoxes, ~] = combineOverlappingBoxes(combinedBBoxes, 0);
+
+    <span class="comment">%remove boxes which are more tall than wide</span>
+    <span class="comment">%rowBBoxes((rowBBoxes(:,3)&lt;rowBBoxes(:,4)),:)=[];</span>
+
+    <span class="comment">%visualizeBBoxes(p.strokeImage,rowBBoxes);</span>
+
+    <span class="comment">%remove boxes which take only a fraction of the total area.</span>
+    areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
+    totalArea = sum(areas);
+    areaRatio = areas/totalArea;
+    combinedBBoxes((areaRatio&lt;areaRatioThreshold),:)=[];
+
+    <span class="comment">%row image extraction and generating projection histograms</span>
+    newImage = p.strokeImage;
+    aoi = size(combinedBBoxes,1);
+    imageStruct = struct(<span class="string">'Image'</span>,[],<span class="keyword">...</span>
+                         <span class="string">'ObjectCount'</span>, [],<span class="keyword">...</span>
+                         <span class="string">'VerticalHistogram'</span>,[],<span class="keyword">...</span>
+                         <span class="string">'HorizontalHistogram'</span>,[],<span class="keyword">...</span>
+                         <span class="string">'Space'</span>,[],<span class="keyword">...</span>
+                         <span class="string">'BoundingBox'</span>,[]);
+
+
+    <span class="comment">%the images are trimmed so no space is in beginning nor in the end of</span>
+    <span class="comment">%the image</span>
+    <span class="keyword">for</span> ii=1:aoi
+        bbox = combinedBBoxes(ii,:);
+        subImage = imcrop(newImage, bbox);
+        vHist = sum(subImage,1);
+
+        startPoint = find(vHist~=0, 1, <span class="string">'first'</span>)-0.5;
+        endPoint = find(vHist~=0, 1, <span class="string">'last'</span>)-0.5;
+        cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
+        aoiImage = imcrop(subImage, cropBox);
+
+        [~, numberOfObjects] = bwlabel(aoiImage);
+        imageStruct(ii).Image = aoiImage;
+        imageStruct(ii).ObjectCount = numberOfObjects;
+        imageStruct(ii).VerticalHistogram = sum(aoiImage,1);
+        imageStruct(ii).HorizontalHistogram = sum(subImage,2);
+    <span class="keyword">end</span>
+
+    <span class="comment">%maybe the bounding box expansion method could work</span>
+<span class="comment">%     for ii=1:aoi</span>
+<span class="comment">%         img = imageStruct(ii).Image;</span>
+<span class="comment">%         bboxes = regionprops(img,'BoundingBox');</span>
+<span class="comment">%         expandedBBoxes = expandBBoxes(img,...</span>
+<span class="comment">%                                       bboxes,...</span>
+<span class="comment">%                                       wordXExpansionAmount,...</span>
+<span class="comment">%                                       wordYExpansionAmount);</span>
+<span class="comment">%         [wordBBoxes, ~] = combineOverlappingBoxes(expandedBBoxes, 0);</span>
+<span class="comment">%         imageStruct(ii).BoundingBox = wordBBoxes;</span>
+<span class="comment">%</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%     %getting information of the consecutive zero pixels</span>
+<span class="comment">%     %saving them as their start and end point pairs into the image struct</span>
+<span class="comment">%     for ii=1:length(imageStruct)</span>
+<span class="comment">%         vHist = imageStruct(ii).VerticalHistogram;</span>
+<span class="comment">%         bHist = vHist~=0;</span>
+<span class="comment">%         ebHist = [1,bHist,1];</span>
+<span class="comment">%         stloc = strfind(ebHist,[1 0]);</span>
+<span class="comment">%         endloc = strfind(ebHist,[0 1]);</span>
+<span class="comment">%         spaces = [];</span>
+<span class="comment">%         for jj =1:length(stloc)</span>
+<span class="comment">%             spaces(jj,:) = [stloc(jj),endloc(jj)];</span>
+<span class="comment">%         end</span>
+<span class="comment">%         imageStruct(ii).Space = spaces;</span>
+<span class="comment">%     end</span>
+<span class="comment">%</span>
+<span class="comment">%     %searching for spaces</span>
+<span class="comment">%     %doesn't work for one word rows with separated characters</span>
+<span class="comment">%     for ii=1:length(imageStruct)</span>
+<span class="comment">%         spaces = imageStruct(ii).Space;</span>
+<span class="comment">%         if ~isempty(spaces)</span>
+<span class="comment">%              spaceLengths = spaces(:,2) - spaces(:,1);</span>
+<span class="comment">% %             totalSpaceLength = sum(spaceLengths);</span>
+<span class="comment">% %             spaceRatio = spaceLengths/totalSpaceLength;</span>
+<span class="comment">% %             spaces((spaceRatio&lt;spaceRatioThreshold),:)=[];</span>
+<span class="comment">%             spaces(spaceLengths&lt;spaceThreshold,:)=[];</span>
+<span class="comment">%             imageStruct(ii).Space = spaces;</span>
+<span class="comment">%         end</span>
+<span class="comment">%     end</span>
+
+    toc
+</pre><h2>visualization<a name="4"></a></h2><pre class="codeinput">    visualizeImgStruct(imageStruct,[],0);
+    <span class="comment">%binary image to grayscale</span>
+<span class="comment">%     newImage = 255 * uint8(newImage);</span>
+<span class="comment">%     for ii = 1:length(rowBBoxes)</span>
+<span class="comment">%         property = ii;</span>
+<span class="comment">%         box = rowBBoxes(ii,:);</span>
+<span class="comment">%         newImage = insertText(newImage,...</span>
+<span class="comment">%                               [box(1),box(2)],...</span>
+<span class="comment">%                               property,...</span>
+<span class="comment">%                               'BoxOpacity',1,...</span>
+<span class="comment">%                               'FontSize',10,...</span>
+<span class="comment">%                               'TextColor','red');</span>
+<span class="comment">%     end</span>
+
+
+    disp([<span class="string">'Number of objects: '</span>, int2str(p.objectCount)]);
+    disp([<span class="string">'Number of the areas of interest: '</span>, int2str(aoi)]);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function preprocess2(filename)
+
+    close all;
+    p = preprocessor;
+
+    p.originalImage = filename;
+    p.map = filename;
+    
+    %IAM database
+    p.wienerFilterSize = 6;
+    p.sauvolaNeighbourhoodSize = 100;
+    p.sauvolaThreshold = 0.6;
+    p.morphClosingDiscSize = -1;
+    p.strokeWidthThreshold = 0.65;
+    rowXExpansionAmount = 70;
+    rowYExpansionAmount = 20;
+    areaRatioThreshold = 0.004;
+    spaceRatioThreshold = 0.022;
+    wordXExpansionAmount = 11;
+    wordYExpansionAmount = 19;
+    spaceThreshold = 16;
+    
+    
+    %handwriting_new_2.jpg
+%     p.wienerFilterSize = 10;
+%     p.sauvolaNeighbourhoodSize = 100;
+%     p.sauvolaThreshold = 0.1;
+%     p.morphClosingDiscSize = -1;
+%     p.strokeWidthThreshold = 0.45;
+%     xExpansionAmount = 135;
+%     yExpansionAmount = 1;
+%     areaRatioThreshold = 0.1;
+%     spaceRatioThreshold = 0.2;
+    
+    tic
+    p.preprocess;
+    toc
+    
+    tic
+    %% Experimental layout analysis
+    boundingBoxes = p.boundingBoxes;
+
+    %Largening
+    wideBBoxes=expandBBoxes(p.originalImage,...
+                            boundingBoxes,...
+                            rowXExpansionAmount,...
+                            rowYExpansionAmount);
+
+    %combine boxes which overlap more than given threshold
+    [combinedBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
+    
+    %combine elements which might not have been combined on last time
+    [combinedBBoxes, ~] = combineOverlappingBoxes(combinedBBoxes, 0);
+    
+    %remove boxes which are more tall than wide
+    %rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
+    
+    %visualizeBBoxes(p.strokeImage,rowBBoxes);
+    
+    %remove boxes which take only a fraction of the total area.
+    areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
+    totalArea = sum(areas);
+    areaRatio = areas/totalArea;
+    combinedBBoxes((areaRatio<areaRatioThreshold),:)=[];
+   
+    %row image extraction and generating projection histograms
+    newImage = p.strokeImage;
+    aoi = size(combinedBBoxes,1);
+    imageStruct = struct('Image',[],...
+                         'ObjectCount', [],...
+                         'VerticalHistogram',[],...
+                         'HorizontalHistogram',[],...
+                         'Space',[],...
+                         'BoundingBox',[]);
+    
+                 
+    %the images are trimmed so no space is in beginning nor in the end of 
+    %the image
+    for ii=1:aoi
+        bbox = combinedBBoxes(ii,:);
+        subImage = imcrop(newImage, bbox);
+        vHist = sum(subImage,1);
+       
+        startPoint = find(vHist~=0, 1, 'first')-0.5;
+        endPoint = find(vHist~=0, 1, 'last')-0.5;
+        cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
+        aoiImage = imcrop(subImage, cropBox);
+
+        [~, numberOfObjects] = bwlabel(aoiImage);
+        imageStruct(ii).Image = aoiImage;
+        imageStruct(ii).ObjectCount = numberOfObjects;
+        imageStruct(ii).VerticalHistogram = sum(aoiImage,1);
+        imageStruct(ii).HorizontalHistogram = sum(subImage,2);
+    end
+    
+    %maybe the bounding box expansion method could work
+%     for ii=1:aoi
+%         img = imageStruct(ii).Image;
+%         bboxes = regionprops(img,'BoundingBox');
+%         expandedBBoxes = expandBBoxes(img,...
+%                                       bboxes,...
+%                                       wordXExpansionAmount,...
+%                                       wordYExpansionAmount);
+%         [wordBBoxes, ~] = combineOverlappingBoxes(expandedBBoxes, 0);
+%         imageStruct(ii).BoundingBox = wordBBoxes;
+%         
+%     end
+%     
+%     
+%     %getting information of the consecutive zero pixels
+%     %saving them as their start and end point pairs into the image struct
+%     for ii=1:length(imageStruct)
+%         vHist = imageStruct(ii).VerticalHistogram;
+%         bHist = vHist~=0;
+%         ebHist = [1,bHist,1];
+%         stloc = strfind(ebHist,[1 0]);
+%         endloc = strfind(ebHist,[0 1]);
+%         spaces = [];
+%         for jj =1:length(stloc)
+%             spaces(jj,:) = [stloc(jj),endloc(jj)];
+%         end
+%         imageStruct(ii).Space = spaces;
+%     end
+%     
+%     %searching for spaces
+%     %doesn't work for one word rows with separated characters
+%     for ii=1:length(imageStruct)
+%         spaces = imageStruct(ii).Space;
+%         if ~isempty(spaces)
+%              spaceLengths = spaces(:,2) - spaces(:,1);
+% %             totalSpaceLength = sum(spaceLengths);
+% %             spaceRatio = spaceLengths/totalSpaceLength;
+% %             spaces((spaceRatio<spaceRatioThreshold),:)=[];
+%             spaces(spaceLengths<spaceThreshold,:)=[];
+%             imageStruct(ii).Space = spaces;
+%         end
+%     end
+    
+    toc
+    
+    %% visualization
+    
+    visualizeImgStruct(imageStruct,[],0);
+    %binary image to grayscale
+%     newImage = 255 * uint8(newImage);    
+%     for ii = 1:length(rowBBoxes)
+%         property = ii;
+%         box = rowBBoxes(ii,:);
+%         newImage = insertText(newImage,...
+%                               [box(1),box(2)],...
+%                               property,...
+%                               'BoxOpacity',1,...
+%                               'FontSize',10,...
+%                               'TextColor','red');
+%     end
+
+    
+    disp(['Number of objects: ', int2str(p.objectCount)]);
+    disp(['Number of the areas of interest: ', int2str(aoi)]);
+
+##### SOURCE END #####
+--></body></html>
