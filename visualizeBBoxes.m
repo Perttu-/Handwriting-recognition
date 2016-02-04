@@ -1,9 +1,15 @@
 function visualizeBBoxes(image,boundingBoxes)
+    if isstruct(boundingBoxes)
+        bboxes = transpose(reshape([boundingBoxes.BoundingBox],4,[]));
+    else
+        bboxes = boundingBoxes;
+    end
+    
     figure();
     imshow(image);
     hold on;
-    for jj = 1:size(boundingBoxes,1)
-        box = boundingBoxes(jj,:);
+    for ii = 1:size(boundingBoxes,1)
+        box = bboxes(ii,:);
         rectangle('Position',box,...
                   'EdgeColor','r',...
                   'LineWidth',1);

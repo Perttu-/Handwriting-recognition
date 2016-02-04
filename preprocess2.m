@@ -12,8 +12,8 @@ function preprocess2(filename)
     p.sauvolaThreshold = 0.6;
     p.morphClosingDiscSize = -1;
     p.strokeWidthThreshold = 0.65;
-    rowXExpansionAmount = 70;
-    rowYExpansionAmount = 20;
+    aoiXExpansionAmount = 70;
+    aoiYExpansionAmount = 57;
     areaRatioThreshold = 0.004;
     spaceRatioThreshold = 0.022;
     wordXExpansionAmount = 11;
@@ -37,15 +37,18 @@ function preprocess2(filename)
     toc
     
     tic
+
+    
     %% Experimental layout analysis
     boundingBoxes = p.boundingBoxes;
 
     %Largening
-    wideBBoxes=expandBBoxes(p.originalImage,...
+    wideBBoxes=expandBBoxes(p.finalImage,...
                             boundingBoxes,...
-                            rowXExpansionAmount,...
-                            rowYExpansionAmount);
-
+                            aoiXExpansionAmount,...
+                            aoiYExpansionAmount);
+                        
+    %visualizeBBoxes(p.finalImage,p.boundingBoxes);
     %combine boxes which overlap more than given threshold
     [combinedBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
     
@@ -55,7 +58,7 @@ function preprocess2(filename)
     %remove boxes which are more tall than wide
     %rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
-    %visualizeBBoxes(p.strokeImage,rowBBoxes);
+    visualizeBBoxes(p.strokeImage,combinedBBoxes);
     
     %remove boxes which take only a fraction of the total area.
     areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
@@ -74,7 +77,7 @@ function preprocess2(filename)
                          'BoundingBox',[]);
     
                  
-    %the images are trimmed so no space is in beginning nor in the end of 
+    %the area of interest images are trimmed so no space is in beginning nor in the end of 
     %the image
     for ii=1:aoi
         bbox = combinedBBoxes(ii,:);
@@ -93,6 +96,10 @@ function preprocess2(filename)
         imageStruct(ii).HorizontalHistogram = sum(subImage,2);
     end
 
+    %% line detection experiments
+   
+    %run length smoothing algorithm
+    
     %maybe the bounding box expansion method could work
 %     for ii=1:aoi
 %         img = imageStruct(ii).Image;
@@ -137,10 +144,11 @@ function preprocess2(filename)
 %     end
   
     toc
-    visualizePHistograms(imageStruct(2).Image,imageStruct(2).VerticalHistogram,imageStruct(2).HorizontalHistogram);
-    %% visualization
     
-    visualizeImgStruct(imageStruct,[],0);
+    %% visualization
+    %visualizeBBoxes(p.finalImage, boundingBoxes);
+    %visualizeImgStruct(imageStruct,[],0);
+    
     %binary image to grayscale
 %     newImage = 255 * uint8(newImage);    
 %     for ii = 1:length(rowBBoxes)

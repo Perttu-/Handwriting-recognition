@@ -9,7 +9,6 @@ classdef preprocessor<handle
         grayImage;
         noiselessImage;
         binarizedImage;
-        horizontalImage;
         openedImage;
         closedImage;
         strokeImage;
@@ -165,16 +164,25 @@ classdef preprocessor<handle
             
             
             %% Skew correction
-            obj.horizontalImage = imrotate(obj.binarizedImage,-horizon(obj.binarizedImage));
-            
+            dilatedImage = imdilate(obj.binarizedImage,strel('disk',10));
+            imshow(dilatedImage);
+            orientationStruct = regionprops(dilatedImage,'Orientation');
+            orientations = [orientationStruct.Orientation];
+            imrotate(obj.binarizedImage,mean(orientation));
+%             imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
+%                   'InitialMagnification','fit');
+%             xlabel('\theta'), ylabel('\rho');
+%             axis on, axis normal, hold on;
+%             colormap(hot)
+
             %% Hole removal
             %Morphological closing to remove unnecessary holes
             disc = obj.morphClosingDiscSize;
             if disc > 0
-                obj.closedImage = imdilate(obj.horizontalImage,...
+                obj.closedImage = imdilate(obj.binarizedImage,...
                                   strel('disk',disc));
             else
-                obj.closedImage = obj.horizontalImage;
+                obj.closedImage = obj.binarizedImage;
             end
             
             %% Stroke width analysis
