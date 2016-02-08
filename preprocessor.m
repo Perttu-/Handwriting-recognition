@@ -20,6 +20,7 @@ classdef preprocessor<handle
         wienerFilterSize;
         sauvolaNeighbourhoodSize;
         sauvolaThreshold;
+        skewCorrection;
         morphClosingDiscSize;
         strokeWidthThreshold;
         
@@ -75,6 +76,9 @@ classdef preprocessor<handle
             obj.sauvolaThreshold = newSauvolaThreshold;
         end
         
+        function obj = set.skewCorrection(obj, sc)
+            obj.skewCorrection = sc;
+        end
         
         function obj = set.morphClosingDiscSize(obj,newMorphClosingDiscSize)
             obj.morphClosingDiscSize = newMorphClosingDiscSize;
@@ -165,7 +169,11 @@ classdef preprocessor<handle
             
             
             %% Skew correction
-            obj.horizontalImage = imrotate(obj.binarizedImage,-horizon(obj.binarizedImage));
+            if obj.skewCorrection == 1
+                obj.horizontalImage = imrotate(obj.binarizedImage,-horizon(obj.binarizedImage));
+            else
+                obj.horizontalImage = obj.binarizedImage;
+            end
             
             %% Hole removal
             %Morphological closing to remove unnecessary holes

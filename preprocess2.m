@@ -12,6 +12,7 @@ function preprocess2(filename)
     p.sauvolaThreshold = 0.6;
     p.morphClosingDiscSize = -1;
     p.strokeWidthThreshold = 0.65;
+    p.skewCorrection = 0;
     aoiXExpansionAmount = 70;
     aoiYExpansionAmount = 57;
     areaRatioThreshold = 0.004;
@@ -19,6 +20,7 @@ function preprocess2(filename)
     wordXExpansionAmount = 11;
     wordYExpansionAmount = 19;
     spaceThreshold = 16;
+    rlsaThreshold = 20;
     
     
     %handwriting_new_2.jpg
@@ -74,7 +76,8 @@ function preprocess2(filename)
                          'VerticalHistogram',[],...
                          'HorizontalHistogram',[],...
                          'Space',[],...
-                         'BoundingBox',[]);
+                         'BoundingBox',[],...
+                         'RlsaImage',[]);
     
                  
     %the area of interest images are trimmed so no space is in beginning nor in the end of 
@@ -97,8 +100,25 @@ function preprocess2(filename)
     end
 
     %% line detection experiments
-   
+
     %run length smoothing algorithm
+    for ii=1:length(imageStruct)
+        x=imageStruct(ii).Image;
+        [m, ~] = size(x);
+        xx = [ones(m,1) x ones(m,1)];
+        xx = reshape(xx',1,[]);
+        d = diff(xx);
+        start = find(d==-1);
+        stop = find(d==1);
+        lgt = stop-start;
+        b = lgt <= rlsaThreshold;
+        d(start(b)) = 0;
+        d(stop(b)) = 0;
+        yy = cumsum([1 d]);
+        yy = reshape(yy, [], m)';
+        imageStruct(ii).RlsaImage = yy(:,2:end-1);
+    end
+    
     
     %maybe the bounding box expansion method could work
 %     for ii=1:aoi
@@ -143,7 +163,7 @@ function preprocess2(filename)
 %         end
 %     end
   
-    toc
+    %toc
     
     %% visualization
     %visualizeBBoxes(p.finalImage, boundingBoxes);
