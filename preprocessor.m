@@ -15,6 +15,7 @@ classdef preprocessor<handle
         strokeImage;
         finalImage;
         skeletonImage;
+        strokeWidthImage;
         
         %Arguments
         wienerFilterSize;
@@ -110,6 +111,10 @@ classdef preprocessor<handle
         function closedImage = get.closedImage(obj)
             closedImage = obj.closedImage;
         end
+        
+        function strokeWidthImage = get.strokeWidthImage(obj)
+            strokeWidthImage = obj.strokeWidthImage;
+        end
 
         
         %Change this to whichever image is last
@@ -190,7 +195,8 @@ classdef preprocessor<handle
             subImageAmount = length(subImageList);
             strokeWidthFilterIdx = false(1, subImageAmount);
             metrics = zeros(1, subImageAmount);
-
+            obj.strokeWidthImage = bwdist(~obj.closedImage);
+                
             for i = 1:subImageAmount
                 binaryImage = subImageList(i).Image;
                 %bwdist gets the Euclidean distance to nearest nonzero pixel
@@ -200,7 +206,6 @@ classdef preprocessor<handle
                 strokeWidthValues = distanceImage(subimageSkeleton);
                 %calculating the metric to analyze stroke width variation
                 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
-                %strokeWidthImage = distanceImage;
                 %strokeWidthImage(~subimageSkeleton) = 0;
                 %above metric can result in NaN  or zero values when mean is 0 
                 %happens with one pixel areas and round areas

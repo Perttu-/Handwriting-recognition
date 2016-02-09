@@ -77,7 +77,9 @@ function preprocess2(filename)
                          'HorizontalHistogram',[],...
                          'Space',[],...
                          'BoundingBox',[],...
-                         'RlsaImage',[]);
+                         'RlsaImage',[],...
+                         'RlsaHorizontalHistogram',[],...
+                         'RlsaBBoxes',[]);
     
                  
     %the area of interest images are trimmed so no space is in beginning nor in the end of 
@@ -116,7 +118,12 @@ function preprocess2(filename)
         d(stop(b)) = 0;
         yy = cumsum([1 d]);
         yy = reshape(yy, [], m)';
-        imageStruct(ii).RlsaImage = yy(:,2:end-1);
+        rlsaImage = yy(:,2:end-1);
+        imageStruct(ii).RlsaImage = rlsaImage;
+        rlsaHorizontalHistogram = sum(rlsaImage,2);
+        imageStruct(ii).RlsaHorizontalHistogram = rlsaHorizontalHistogram;
+        wordBoxes = regionprops(rlsaImage,'BoundingBox');
+        imageStruct(ii).RlsaBBoxes = [wordBoxes.BoundingBox];
     end
     
     
