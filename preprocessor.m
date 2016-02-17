@@ -48,7 +48,6 @@ classdef preprocessor<handle
         strokeMetrics;
         strokeFilter;
         
-        
     end
     
     
@@ -150,6 +149,7 @@ classdef preprocessor<handle
             else
                 obj.grayImage = img; 
             end
+
             %% Noise Removal
             %Remove noise with adaptive wiener filter
             w = obj.wienerFilterSize;
@@ -159,7 +159,7 @@ classdef preprocessor<handle
             else
                 obj.noiselessImage = obj.grayImage;
             end
-            
+
             %% Binarization
             %binarize image with adaptive Sauvola algorithm 
             neighbourhood = obj.sauvolaNeighbourhoodSize;
@@ -171,7 +171,6 @@ classdef preprocessor<handle
             
             %Inverse colors for further processing
             obj.binarizedImage = ~bin;
-            
             
             %% Skew correction
             if obj.skewCorrection == 1

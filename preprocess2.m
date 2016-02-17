@@ -20,7 +20,7 @@ function preprocess2(filename)
     wordXExpansionAmount = 11;
     wordYExpansionAmount = 19;
     spaceThreshold = 16;
-    rlsaThreshold = 20;
+    rlsaThreshold = 30;
     
     
     %handwriting_new_2.jpg
@@ -60,7 +60,7 @@ function preprocess2(filename)
     %remove boxes which are more tall than wide
     %rowBBoxes((rowBBoxes(:,3)<rowBBoxes(:,4)),:)=[];
     
-    visualizeBBoxes(p.strokeImage,combinedBBoxes);
+    %visualizeBBoxes(p.strokeImage,combinedBBoxes);
     
     %remove boxes which take only a fraction of the total area.
     areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
@@ -82,19 +82,20 @@ function preprocess2(filename)
                          'RlsaBBoxes',[]);
     
                  
-    %the area of interest images are trimmed so no space is in beginning nor in the end of 
-    %the image
+    
     for ii=1:aoi
         bbox = combinedBBoxes(ii,:);
         subImage = imcrop(newImage, bbox);
         vHist = sum(subImage,1);
-       
+        %the area of interest images are trimmed so no space is in
+        %beginning nor in the end of the image
         startPoint = find(vHist~=0, 1, 'first')-0.5;
         endPoint = find(vHist~=0, 1, 'last')-0.5;
         cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
         aoiImage = imcrop(subImage, cropBox);
-
-        [~, numberOfObjects] = bwlabel(aoiImage);
+        
+        %extracting properties from the area of interest
+        [L, numberOfObjects] = bwlabel(aoiImage);
         imageStruct(ii).Image = aoiImage;
         imageStruct(ii).ObjectCount = numberOfObjects;
         imageStruct(ii).VerticalHistogram = sum(aoiImage,1);
@@ -122,8 +123,8 @@ function preprocess2(filename)
         imageStruct(ii).RlsaImage = rlsaImage;
         rlsaHorizontalHistogram = sum(rlsaImage,2);
         imageStruct(ii).RlsaHorizontalHistogram = rlsaHorizontalHistogram;
-        wordBoxes = regionprops(rlsaImage,'BoundingBox');
-        imageStruct(ii).RlsaBBoxes = [wordBoxes.BoundingBox];
+%         wordBoxes = regionprops(rlsaImage,'BoundingBox');
+%         imageStruct(ii).RlsaBBoxes = [wordBoxes.BoundingBox];
     end
     
     
@@ -139,22 +140,7 @@ function preprocess2(filename)
 %         imageStruct(ii).BoundingBox = wordBBoxes;
 %         
 %     end
-%     
-%     
-%     %getting information of the consecutive zero pixels
-%     %saving them as their start and end point pairs into the image struct
-%     for ii=1:length(imageStruct)
-%         vHist = imageStruct(ii).VerticalHistogram;
-%         bHist = vHist~=0;
-%         ebHist = [1,bHist,1];
-%         stloc = strfind(ebHist,[1 0]);
-%         endloc = strfind(ebHist,[0 1]);
-%         spaces = [];
-%         for jj =1:length(stloc)
-%             spaces(jj,:) = [stloc(jj),endloc(jj)];
-%         end
-%         imageStruct(ii).Space = spaces;
-%     end
+
 %     
 %     %searching for spaces
 %     %doesn't work for one word rows with separated characters
@@ -173,21 +159,11 @@ function preprocess2(filename)
     %toc
     
     %% visualization
-    %visualizeBBoxes(p.finalImage, boundingBoxes);
+    %visualizeBBoxes(p.finalImage, [imageStruct.RlsaBBoxes]);
+%   figure(),imshow(imageStruct(1).Image),hold on, visboundaries(bwboundaries(imageStruct(1).RlsaImage,8,'noholes'));
     %visualizeImgStruct(imageStruct,[],0);
     
-    %binary image to grayscale
-%     newImage = 255 * uint8(newImage);    
-%     for ii = 1:length(rowBBoxes)
-%         property = ii;
-%         box = rowBBoxes(ii,:);
-%         newImage = insertText(newImage,...
-%                               [box(1),box(2)],...
-%                               property,...
-%                               'BoxOpacity',1,...
-%                               'FontSize',10,...
-%                               'TextColor','red');
-%     end
+
 
     
     disp(['Number of objects: ', int2str(p.objectCount)]);
