@@ -5,7 +5,6 @@ function visualizeBBoxes(image,boundingBoxes)
         bboxes = boundingBoxes;
     end
     
-    figure();
     imshow(image);
     hold on;
     for ii = 1:size(boundingBoxes,1)
