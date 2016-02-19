@@ -1,4 +1,4 @@
-function visualizeBBoxes(image,boundingBoxes)
+function visualizeBBoxes(image,boundingBoxes, color)
     if isstruct(boundingBoxes)
         bboxes = transpose(reshape([boundingBoxes.BoundingBox],4,[]));
     else
@@ -10,7 +10,7 @@ function visualizeBBoxes(image,boundingBoxes)
     for ii = 1:size(boundingBoxes,1)
         box = bboxes(ii,:);
         rectangle('Position',box,...
-                  'EdgeColor','r',...
+                  'EdgeColor',color,...
                   'LineWidth',1);
     end
     hold off;

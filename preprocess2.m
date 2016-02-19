@@ -21,7 +21,8 @@ function preprocess2(filename)
     wordYExpansionAmount = 19;
     spaceThreshold = 16;
     rlsaRowThreshold = 300;
-    rlsaWordThreshold = 10;
+    rlsaWordHorizontalThreshold = 15;
+    rlsaWordVerticalThreshold = 30;
     
     
     %handwriting_new_2.jpg
@@ -67,26 +68,31 @@ function preprocess2(filename)
     totalArea = sum(areas);
     areaRatio = areas/totalArea;
     combinedBBoxes((areaRatio<areaRatioThreshold),:)=[];
-   
-    %area of interest image extraction and generating projection histograms
-    newImage = p.strokeImage;
+    
+    mainImage = p.strokeImage;
+    layoutStruct = struct('Image',mainImage,...
+                          'AoiBoxes',combinedBBoxes,...
+                          'AoiStruct',[]);
+    
+    %area of interest image extraction
     aois = size(combinedBBoxes,1);
     aoiStruct = struct('Image',[],...
-                       'ObjectCount', [],....
+                       'ObjectCount', [],...
                        'RlsaImage',[],...
-                       'RlsaBBoxes',[],...
+                       'RowBoxes',[],...
                        'RowStruct',[]);
 
     for ii=1:aois
         bbox = combinedBBoxes(ii,:);
-        subImage = imcrop(newImage, bbox);
+        subImage = imcrop(mainImage, bbox);
         vHist = sum(subImage,1);
         %the area of interest images are trimmed so no space is in
         %beginning nor in the end of the image
-        startPoint = find(vHist~=0, 1, 'first')-0.5;
-        endPoint = find(vHist~=0, 1, 'last')-0.5;
-        cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
-        aoiImage = imcrop(subImage, cropBox);
+%         startPoint = find(vHist~=0, 1, 'first')-0.5;
+%         endPoint = find(vHist~=0, 1, 'last')-0.5;
+%         cropBox = [startPoint,0.5,endPoint-startPoint,bbox(4)];
+%         aoiImage = imcrop(subImage, cropBox);
+        aoiImage = subImage;
         
         %extracting properties from the area of interest
         [~, numberOfObjects] = bwlabel(aoiImage);
@@ -94,28 +100,29 @@ function preprocess2(filename)
         aoiStruct(ii).ObjectCount = numberOfObjects;
         
         %line detection with rlsa method 
-        rowRlsaImage = rlsa(subImage,rlsaRowThreshold);
+        rowRlsaImage = rlsa(subImage,rlsaRowThreshold,1);
         aoiStruct(ii).RlsaImage = rowRlsaImage;
         rowBoxStruct = regionprops(rowRlsaImage,'BoundingBox');
         rowBoxes = transpose(reshape([rowBoxStruct.BoundingBox],4,[]));
         %remove boxes which are more tall than wide
         rowBoxes((rowBoxes(:,3)<rowBoxes(:,4)),:)=[];
-        aoiStruct(ii).RlsaBBoxes = rowBoxes;
-        rowBoxesLength = length(rowBoxes);
-        rowImages = zeros(rowBoxesLength,1);
-        wordBoxes = rowImages;
+        aoiStruct(ii).RowBoxes = rowBoxes;
+        rowBoxesLength = size(rowBoxes,1);
         rowStruct = struct('RowImage',[],...
+                           'RlsaImage',[],...
                            'WordBoxes',[]);
         for jj=1:rowBoxesLength
-            %t?s on joku bugi
             rowImage = imcrop(aoiImage,rowBoxes(jj,:));
             rowStruct(jj).RowImage = rowImage;
-            wordRlsaImage = rlsa(rowImage,rlsaWordThreshold);
+            wordRlsaImage = rlsa(rowImage,rlsaWordHorizontalThreshold,1);
+            wordRlsaImage = rlsa(wordRlsaImage,rlsaWordVerticalThreshold,0);
+            rowStruct(jj).RlsaImage = wordRlsaImage;
             wordBoxStruct = regionprops(wordRlsaImage,'BoundingBox');
             rowStruct(jj).WordBoxes = transpose(reshape([wordBoxStruct.BoundingBox],4,[]));
         end
+        aoiStruct(ii).RowStruct = rowStruct;
     end
-
+    layoutStruct.AoiStruct = aoiStruct;
 
     
     %bounding box method
@@ -151,16 +158,15 @@ function preprocess2(filename)
     %% visualization
         
     
-    figure();
-    visualizeBBoxes(aoiStruct(1).Image, aoiStruct(1).RlsaBBoxes);
-    
-    figure();
-    visualizeBBoxes(rowStruct(1).RowImage,rowStruct(1).WordBoxes);
-    
-    figure();
-    visualizeBBoxes(p.finalImage, combinedBBoxes);
+%     figure();
+%     visualizeBBoxes(aoiStruct(1).Image, aoiStruct(1).RlsaBBoxes);
+      visualizeLayout(p.originalImage,layoutStruct);
+%       figure();
+%       visualizeBBoxes(aoiStruct(2).RowStruct(1).RowImage, aoiStruct(2).RowStruct(1).WordBoxes, 'g');
+%     figure();
+%     visualizeBBoxes(p.finalImage, combinedBBoxes);
     %figure(),imshow(imageStruct(1).Image),hold on, visboundaries(bwboundaries(imageStruct(1).RlsaImage,8,'noholes'));
     %visualizeImgStruct(imageStruct,[],0);
     
     disp(['Number of objects: ', int2str(p.objectCount)]);
-    disp(['Number of the areas of interest: ', int2str(aoi)]);
+    disp(['Number of the areas of interest: ', int2str(aois)]);
