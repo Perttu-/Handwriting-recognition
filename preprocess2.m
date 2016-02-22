@@ -1,10 +1,10 @@
-function preprocess2(filename)
+function layoutStruct = preprocess2(image,map)
 %% Initialization
     close all;
     p = preprocessor;
-
-    p.originalImage = filename;
-    p.map = filename;
+    
+    p.originalImage = image;
+    p.map = map;
     
     %IAM database
     p.wienerFilterSize = 6;
@@ -59,10 +59,6 @@ function preprocess2(filename)
     %combine elements which might not have been combined on last time
     [combinedBBoxes, ~] = combineOverlappingBoxes(combinedBBoxes, 0);
     
-    
-    
-    %visualizeBBoxes(p.strokeImage,combinedBBoxes);
-    
     %remove boxes which take only a fraction of the total area.
     areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
     totalArea = sum(areas);
@@ -71,6 +67,8 @@ function preprocess2(filename)
     
     mainImage = p.strokeImage;
     layoutStruct = struct('Image',mainImage,...
+                          'NumberOfRows',[],...
+                          'NumberOfWords',[],...
                           'AoiBoxes',combinedBBoxes,...
                           'AoiStruct',[]);
     
@@ -81,11 +79,12 @@ function preprocess2(filename)
                        'RlsaImage',[],...
                        'RowBoxes',[],...
                        'RowStruct',[]);
-
+    
+    wordAmount = 0;
     for ii=1:aois
         bbox = combinedBBoxes(ii,:);
         subImage = imcrop(mainImage, bbox);
-        vHist = sum(subImage,1);
+%         vHist = sum(subImage,1);
         %the area of interest images are trimmed so no space is in
         %beginning nor in the end of the image
 %         startPoint = find(vHist~=0, 1, 'first')-0.5;
@@ -95,6 +94,7 @@ function preprocess2(filename)
         aoiImage = subImage;
         
         %extracting properties from the area of interest
+        %average area might be useful in line/word detection?
         [~, numberOfObjects] = bwlabel(aoiImage);
         aoiStruct(ii).Image = aoiImage;
         aoiStruct(ii).ObjectCount = numberOfObjects;
@@ -118,11 +118,14 @@ function preprocess2(filename)
             wordRlsaImage = rlsa(wordRlsaImage,rlsaWordVerticalThreshold,0);
             rowStruct(jj).RlsaImage = wordRlsaImage;
             wordBoxStruct = regionprops(wordRlsaImage,'BoundingBox');
+            wordAmount = wordAmount + size(wordBoxStruct,1);
             rowStruct(jj).WordBoxes = transpose(reshape([wordBoxStruct.BoundingBox],4,[]));
         end
         aoiStruct(ii).RowStruct = rowStruct;
     end
     layoutStruct.AoiStruct = aoiStruct;
+    layoutStruct.NumberOfRows = rowBoxesLength;
+    layoutStruct.NumberOfWords = wordAmount;
 
     
     %bounding box method
@@ -160,7 +163,7 @@ function preprocess2(filename)
     
 %     figure();
 %     visualizeBBoxes(aoiStruct(1).Image, aoiStruct(1).RlsaBBoxes);
-      visualizeLayout(p.originalImage,layoutStruct);
+%       visualizeLayout(p.originalImage,layoutStruct);
 %       figure();
 %       visualizeBBoxes(aoiStruct(2).RowStruct(1).RowImage, aoiStruct(2).RowStruct(1).WordBoxes, 'g');
 %     figure();

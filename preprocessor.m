@@ -53,15 +53,13 @@ classdef preprocessor<handle
     
     methods
         %SETTERS
-        function obj = set.originalImage(obj,path)
-            [i,~] = imread(path);
-            obj.originalImage = i;
+        function obj = set.originalImage(obj,image)
+            obj.originalImage = image;
 
         end
         
-        function obj = set.map(obj,path)
-            [~,m] = imread(path);
-            obj.map = m;
+        function obj = set.map(obj,map)
+            obj.map = map;
         end
         
         function obj = set.wienerFilterSize(obj, newWienerFilterSize)
