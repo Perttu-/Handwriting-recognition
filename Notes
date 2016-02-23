@@ -22,3 +22,50 @@ Preprocessing functionality:
 -Binarization (Done with sauvola method)
 -Region analysis
 -Cropping
+
+
+pasting this here dont mind me
+
+    
+    %bounding box method
+%     for ii=1:aoi
+%         img = imageStruct(ii).Image;
+%         bboxes = regionprops(img,'BoundingBox');
+%         expandedBBoxes = expandBBoxes(img,...
+%                                       bboxes,...
+%                                       wordXExpansionAmount,...
+%                                       wordYExpansionAmount);
+%         [wordBBoxes, ~] = combineOverlappingBoxes(expandedBBoxes, 0);
+%         imageStruct(ii).BoundingBox = wordBBoxes;
+%         
+%     end
+    
+    %% word detection
+%     %searching for spaces
+%     %doesn't work for one word rows with separated characters
+%     for ii=1:length(imageStruct)
+%         spaces = imageStruct(ii).Space;
+%         if ~isempty(spaces)
+%              spaceLengths = spaces(:,2) - spaces(:,1);
+% %             totalSpaceLength = sum(spaceLengths);
+% %             spaceRatio = spaceLengths/totalSpaceLength;
+% %             spaces((spaceRatio<spaceRatioThreshold),:)=[];
+%             spaces(spaceLengths<spaceThreshold,:)=[];
+%             imageStruct(ii).Space = spaces;
+%         end
+%     end
+  
+    %toc
+
+    %% visualization
+        
+    
+%     figure();
+%     visualizeBBoxes(aoiStruct(1).Image, aoiStruct(1).RlsaBBoxes);
+%       visualizeLayout(p.originalImage,layoutStruct);
+%       figure();
+%       visualizeBBoxes(aoiStruct(2).RowStruct(1).RowImage, aoiStruct(2).RowStruct(1).WordBoxes, 'g');
+%     figure();
+%     visualizeBBoxes(p.finalImage, combinedBBoxes);
+    %figure(),imshow(imageStruct(1).Image),hold on, visboundaries(bwboundaries(imageStruct(1).RlsaImage,8,'noholes'));
+    %visualizeImgStruct(imageStruct,[],0);

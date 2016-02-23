@@ -1,96 +1,140 @@
-function subImages = preprocess(filename)
+function layoutStruct = preprocess(path,testedValue)
+%% Initialization
     close all;
     p = preprocessor;
-
-    p.originalImage = filename;
-    p.map = filename;
-
-    p.wienerFilterSize = -1;
-    p.sauvolaNeighbourhoodSize = 100;
-    p.sauvolaThreshold = 0.4;
-    p.morphOpeningLowThreshold = -1;
-    p.morphOpeningHighThreshold = -1;
-    p.morphClosingDiscSize = -1;
-
-    p.preprocess;
-
-    eccentricities = p.eccentricities;
-    eulerNumbers = p.eulerNumbers;
-    extents = p.extents;
-    solidities = p.solidities;
-
-    originalImage = p.originalImage;
-
-    boundingBoxes = p.boundingBoxes;
-    boundaries = p.boundaries;
-    eulerNumbers = vertcat(p.eulerNumbers.EulerNumber);
-    majorAxisLengths = vertcat(p.majorAxisLengths.MajorAxisLength);
-    areas = vertcat(p.areas.Area);
-
-    bboxes=vertcat(boundingBoxes.BoundingBox);
-    w = bboxes(:,3);
-    h = bboxes(:,4);
-    aspectRatios = w./h;
-    perimeters = vertcat(p.perimeters.Perimeter);
-    compactnesses = (perimeters.^2)/4*pi.*areas;
-%      filter = aspectRatios < 0.06;
-%      filter = filter | aspectRatios > 7.7;
-
-%      filter = filter | majorAxisLengths > 400;
-
-%       filter = filter | areas < 16;
-           filter = areas < 209;
-            filter = filter | eulerNumbers < -4;
-%          filter = filter | areas > 5000;
-
-
-
-    %removing the elements defined by the filters
-    %boundaries(filter)=[];
-
-    newImage = p.finalImage;
+    [image, map]=imread(path);
+    p.originalImage = image;
+    p.map = map;
     
-	boundingBoxes(filter)=[];
-    lb = logical(p.finalImage);
-    st = regionprops(lb, 'Area', 'PixelIdxList');
-    newImage(vertcat(st(filter).PixelIdxList)) = 0;
+    %IAM database
+%     p.wienerFilterSize = 6;
+%     p.sauvolaNeighbourhoodSize = 100;
+%     p.sauvolaThreshold = 0.6;
+%     p.morphClosingDiscSize = -1;
+%     p.strokeWidthThreshold = 0.65;
+%     p.skewCorrection = 0;
+%     aoiXExpansionAmount = 70;
+%     aoiYExpansionAmount = 57;
+%     areaRatioThreshold = 0.004;
+%     rlsaRowThreshold = 300;
+%     rlsaWordHorizontalThreshold = 15;
+%     rlsaWordVerticalThreshold = 30;
+    
+    p.wienerFilterSize = testedValue;
+    p.sauvolaNeighbourhoodSize = 100;
+    p.sauvolaThreshold = 0.6;
+    p.morphClosingDiscSize = -1;
+    p.strokeWidthThreshold = 0.65;
+    p.skewCorrection = 0;
+    aoiXExpansionAmount = 70;
+    aoiYExpansionAmount = 57;
+    areaRatioThreshold = 0.004;
+    rlsaRowThreshold = 300;
+    rlsaWordHorizontalThreshold = 15;
+    rlsaWordVerticalThreshold = 30;
+    
+    
+    %handwriting_new_2.jpg
+%     p.wienerFilterSize = 10;
+%     p.sauvolaNeighbourhoodSize = 100;
+%     p.sauvolaThreshold = 0.1;
+%     p.morphClosingDiscSize = -1;
+%     p.strokeWidthThreshold = 0.45;
+%     xExpansionAmount = 135;
+%     yExpansionAmount = 1;
+%     areaRatioThreshold = 0.1;
+%     spaceRatioThreshold = 0.2;
+    
+    tic;
+    disp('Preprocessing...');
+    p.preprocess;
+    preprocessingTime = toc;
+    
+    tic
 
-    if ~1
-        %properties = struct2cell(regionprops(newImage,'EulerNumber'));
+    disp('Layout analysis...');
+    %% Experimental layout analysis
+    preprocecessedImage = p.finalImage;
+    boundingBoxes = regionprops(preprocecessedImage);
 
-        bboxes = regionprops(newImage,'boundingbox');
-        newImage = 255 * uint8(newImage);
-        for i = 1:length(properties)
-            newImage = insertText(newImage,...
-                                    bboxes(i).BoundingBox(1:2),...
-                                    num2str(properties(i)),...
-                                    'BoxOpacity',0,...
-                                    'FontSize',25,...
-                                    'TextColor','green');
+    %Largening
+    wideBBoxes=expandBBoxes(preprocecessedImage,...
+                            boundingBoxes,...
+                            aoiXExpansionAmount,...
+                            aoiYExpansionAmount);
+                        
+    %visualizeBBoxes(p.finalImage,p.boundingBoxes);
+    %combine boxes which overlap more than given threshold
+    [combinedBBoxes, ~] = combineOverlappingBoxes(wideBBoxes, 0);
+    
+    %combine elements which might not have been combined on last time
+    [combinedBBoxes, ~] = combineOverlappingBoxes(combinedBBoxes, 0);
+    
+    %remove boxes which take only a fraction of the total area.
+    areas = combinedBBoxes(:,3).*combinedBBoxes(:,4);
+    totalArea = sum(areas);
+    areaRatio = areas/totalArea;
+    combinedBBoxes((areaRatio<areaRatioThreshold),:)=[];
+    
+    mainImage = p.strokeImage;
+    layoutStruct = struct('Image',mainImage,...
+                          'NumberOfRows',[],...
+                          'NumberOfWords',[],...
+                          'AoiBoxes',combinedBBoxes,...
+                          'AoiStruct',[],...
+                          'PreprocessingTime',preprocessingTime,...
+                          'LayoutAnalysisTime',[]);
+    
+    %area of interest image extraction
+    aois = size(combinedBBoxes,1);
+    aoiStruct = struct('Image',[],...
+                       'ObjectCount', [],...
+                       'RlsaImage',[],...
+                       'RowBoxes',[],...
+                       'RowStruct',[]);
+    
+    wordAmount = 0;
+    for ii=1:aois
+        bbox = combinedBBoxes(ii,:);
+        subImage = imcrop(mainImage, bbox);
+        aoiImage = subImage;
+        
+        %extracting properties from the area of interest
+        %average area might be useful in line/word detection?
+        [~, numberOfObjects] = bwlabel(aoiImage);
+        aoiStruct(ii).Image = aoiImage;
+        aoiStruct(ii).ObjectCount = numberOfObjects;
+        
+        %line detection with rlsa method 
+        rowRlsaImage = rlsa(subImage,rlsaRowThreshold,1);
+        aoiStruct(ii).RlsaImage = rowRlsaImage;
+        rowBoxStruct = regionprops(rowRlsaImage,'BoundingBox');
+        rowBoxes = transpose(reshape([rowBoxStruct.BoundingBox],4,[]));
+        %remove boxes which are more tall than wide
+        rowBoxes((rowBoxes(:,3)<rowBoxes(:,4)),:)=[];
+        aoiStruct(ii).RowBoxes = rowBoxes;
+        rowBoxesLength = size(rowBoxes,1);
+        rowStruct = struct('RowImage',[],...
+                           'RlsaImage',[],...
+                           'WordBoxes',[]);
+        for jj=1:rowBoxesLength
+            rowImage = imcrop(aoiImage,rowBoxes(jj,:));
+            rowStruct(jj).RowImage = rowImage;
+            wordRlsaImage = rlsa(rowImage,rlsaWordHorizontalThreshold,1);
+            wordRlsaImage = rlsa(wordRlsaImage,rlsaWordVerticalThreshold,0);
+            rowStruct(jj).RlsaImage = wordRlsaImage;
+            wordBoxStruct = regionprops(wordRlsaImage,'BoundingBox');
+            wordAmount = wordAmount + size(wordBoxStruct,1);
+            rowStruct(jj).WordBoxes = transpose(reshape([wordBoxStruct.BoundingBox],4,[]));
         end
+        aoiStruct(ii).RowStruct = rowStruct;
     end
+    layoutAnalysisTime = toc;
+    layoutStruct.AoiStruct = aoiStruct;
+    layoutStruct.NumberOfRows = rowBoxesLength;
+    layoutStruct.NumberOfWords = wordAmount;
+    layoutStruct.LayoutAnalysisTime = layoutAnalysisTime;
 
-
-    imshow(newImage);
-%         hold on;
-    %different loops because the holes are counted as separate boundaries
-    %whereas bounding boxes include the child holes
-%         for i =1:length(boundaries)
-%             boundary = boundaries{i};
-%             handles.boundaries(i) = plot(boundary(:,2),...
-%                                          boundary(:,1),...
-%                                          'g',...
-%                                          'LineWidth',1);
-%         end
-
-        length(boundingBoxes)
-        for i = 1:length(boundingBoxes)
-            box = boundingBoxes(i).BoundingBox;
-            handles.boundingBoxes(i) = rectangle('Position',...
-                                       [box(1),box(2),box(3),box(4)],...
-                                       'EdgeColor','r',...
-                                       'LineWidth',1);
-        end
-%         subImages = p.subImages;
-
-end
+%     disp(['Number of the areas of interest: ', int2str(aois)]);
+%     disp(['Number of rows: ', int2str(rowBoxesLength)]);
+%     disp(['Number of wordss: ', int2str(wordAmount)]);

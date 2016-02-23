@@ -55,7 +55,6 @@ classdef preprocessor<handle
         %SETTERS
         function obj = set.originalImage(obj,image)
             obj.originalImage = image;
-
         end
         
         function obj = set.map(obj,map)
@@ -131,7 +130,7 @@ classdef preprocessor<handle
     
         %% Preprocessing
         %Optional phases can be disabled with input -1
-        function [boundaries, boundingBoxes] = preprocess(obj)
+        function preprocess(obj)
             %% Image aquisition
             %Convert to rgb color mode if it already isn't
             if ~isempty(obj.map)
@@ -227,30 +226,15 @@ classdef preprocessor<handle
             obj.strokeMetrics = metrics;
             
             
-            fImage = obj.strokeImage;
+%             fImage = obj.strokeImage;
             %Calculate boundaries and bounding boxes for visualization and
             %to extract the needed blobs
-            obj.boundingBoxes = regionprops(fImage,'boundingbox');
-            obj.boundaries = bwboundaries(fImage,8,'holes'); 
-            boundingBoxes = obj.boundingBoxes;
-            boundaries = obj.boundaries;
-            obj.objectCount = length(boundingBoxes);
+%             obj.boundingBoxes = regionprops(fImage,'boundingbox');
+%             boundingBoxes = obj.boundingBoxes;
+%             obj.boundaries = bwboundaries(fImage,8,'holes'); 
+%             boundaries = obj.boundaries;
+%             obj.objectCount = length(boundingBoxes);
             
-            %Extract properties which may be of use
-            
-%             obj.imageProperties = regionprops(fImage,'Eccentricity',...
-%                                                      'EulerNumber',...
-%                                                      'Extent',...
-%                                                      'Solidity',...
-%                                                      'MinorAxisLength',...
-%                                                      'MajorAxisLength',...
-%                                                      'Area',...
-%                                                      'Perimeter',...
-%                                                      'Centroid');
-%             
-%             %2spooky4me
-%             obj.skeletonImage =  bwmorph(obj.finalImage,'skel',Inf);
-%             
         end
     end
 end
