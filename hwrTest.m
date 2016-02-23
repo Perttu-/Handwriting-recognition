@@ -5,7 +5,7 @@ function testStruct = hwrTest(folderPath)
     %this function scans the selected folder and looks for all .png files
     %and correspondingly named .xml files
     %e.g. a01-000u.png & a01-000u.xml
-    testValues = [0,2,4,6,8,10,12,14,16,18,20];
+    testValues = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1];
     close all;
     files = dir([folderPath,'/','*.png']);
     numberOfFiles = length(files);

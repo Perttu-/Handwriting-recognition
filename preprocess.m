@@ -6,6 +6,8 @@ function layoutStruct = preprocess(path,testedValue)
     p.originalImage = image;
     p.map = map;
     
+    %next test stroke width threshold
+    
     %IAM database
 %     p.wienerFilterSize = 6;
 %     p.sauvolaNeighbourhoodSize = 100;
@@ -20,7 +22,7 @@ function layoutStruct = preprocess(path,testedValue)
 %     rlsaWordHorizontalThreshold = 15;
 %     rlsaWordVerticalThreshold = 30;
     
-    p.wienerFilterSize = testedValue;
+    p.wienerFilterSize = 2;
     p.sauvolaNeighbourhoodSize = 100;
     p.sauvolaThreshold = 0.6;
     p.morphClosingDiscSize = -1;

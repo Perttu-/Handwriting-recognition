@@ -202,7 +202,13 @@ classdef preprocessor<handle
                 strokeWidthValues = distanceImage(subimageSkeleton);
                 %calculating the metric to analyze stroke width variation
                 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
-                %strokeWidthImage(~subimageSkeleton) = 0;
+                %visualization
+%                 figure();
+%                 imagesc(distanceImage);
+%                 strkWidthImage = distanceImage;
+%                 strkWidthImage(~subimageSkeleton) = 0;
+%                 figure();
+%                 imagesc(strkWidthImage);
                 %above metric can result in NaN  or zero values when mean is 0 
                 %happens with one pixel areas and round areas
                 %can't be filtered out or else writing data is lost
