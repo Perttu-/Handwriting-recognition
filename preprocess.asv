@@ -18,7 +18,7 @@ function layoutStruct = preprocess(path,testedValue)
     aoiYExpansionAmount = 57;
     areaRatioThreshold = 0.004;
     rlsaRowThreshold = 300;
-    rlsaWordHorizontalThreshold = 25;
+    rlsaWordHorizontalThreshold = 15;
     rlsaWordVerticalThreshold = 30;
     
 %     p.wienerFilterSize = 2;
@@ -112,17 +112,12 @@ function layoutStruct = preprocess(path,testedValue)
         imshow(subImage);
         figure();
         imshow(rowRlsaImage);
-        
         aoiStruct(ii).RlsaImage = rowRlsaImage;
         rowBoxStruct = regionprops(rowRlsaImage,'BoundingBox');
         rowBoxes = transpose(reshape([rowBoxStruct.BoundingBox],4,[]));
-%         figure();
-%         visualizeBBoxes(rowRlsaImage,rowBoxes,'c',3);
-%         figure();
-%         visualizeBBoxes(subImage,rowBoxes,'c',3);
         %remove boxes which are more tall than wide
         rowBoxes((rowBoxes(:,3)<rowBoxes(:,4)),:)=[];
-
+        
         aoiStruct(ii).RowBoxes = rowBoxes;
         rowBoxesLength = size(rowBoxes,1);
         rowStruct = struct('RowImage',[],...
@@ -133,16 +128,10 @@ function layoutStruct = preprocess(path,testedValue)
             rowStruct(jj).RowImage = rowImage;
             wordRlsaImage = rlsa(rowImage,rlsaWordHorizontalThreshold,1);
             wordRlsaImage = rlsa(wordRlsaImage,rlsaWordVerticalThreshold,0);
-%             figure();
-%             imshow(wordRlsaImage);
-           
             rowStruct(jj).RlsaImage = wordRlsaImage;
             wordBoxes = regionprops(wordRlsaImage,'BoundingBox');
             wordBoxList = transpose(reshape([wordBoxes.BoundingBox],4,[]));
-%             figure();
-%             visualizeBBoxes(rowImage,wordBoxes,'g',3);
             [combinedWordBoxes,~] = combineOverlappingBoxes(wordBoxList,0);
-            [combinedWordBoxes,~] = combineOverlappingBoxes(combinedWordBoxes,0);
             wordAmount = wordAmount + size(combinedWordBoxes,1);
             rowStruct(jj).WordBoxes = combinedWordBoxes;
         end
@@ -156,7 +145,7 @@ function layoutStruct = preprocess(path,testedValue)
     layoutStruct.NumberOfWords = wordAmount;
     layoutStruct.LayoutAnalysisTime = layoutAnalysisTime;
 
-    %visualizeLayout(p.finalImage, layoutStruct, 3);
+    %visualizeLayout(p.finalImage, layoutStruct);
     disp(['Number of the areas of interest: ', int2str(aois)]);
     disp(['Number of rows: ', int2str(rowBoxesLength)]);
     disp(['Number of wordss: ', int2str(wordAmount)]);
