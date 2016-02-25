@@ -8,17 +8,17 @@ function layoutStruct = preprocess(path,testedValue)
     
     
     %IAM database
-    p.wienerFilterSize = 2;
-    p.sauvolaNeighbourhoodSize = 100;
-    p.sauvolaThreshold = 0.6;
-    p.morphClosingDiscSize = -1;
-    p.strokeWidthThreshold = 0.65;
+    p.wienerFilterSize = 15;
+    p.sauvolaNeighbourhoodSize = 180;
+    p.sauvolaThreshold = 0.3;
+    p.morphClosingDiscSize = 3;
+    p.strokeWidthThreshold = 0.6;
     p.skewCorrection = 0;
-    aoiXExpansionAmount = 70;
-    aoiYExpansionAmount = 57;
+    aoiXExpansionAmount = 40;
+    aoiYExpansionAmount = 60;
     areaRatioThreshold = 0.004;
     rlsaRowThreshold = 300;
-    rlsaWordHorizontalThreshold = 25;
+    rlsaWordHorizontalThreshold = 30;
     rlsaWordVerticalThreshold = 30;
     
 %     p.wienerFilterSize = 2;
@@ -55,11 +55,24 @@ function layoutStruct = preprocess(path,testedValue)
 
     disp('Layout analysis...');
     %% Experimental layout analysis
-    preprocecessedImage = p.finalImage;
-    boundingBoxes = regionprops(preprocecessedImage);
-
+    preprocessedImage = p.finalImage;
+    layoutStruct = struct('Image',preprocessedImage,...
+                          'NumberOfRows',[],...
+                          'NumberOfWords',[],...
+                          'AoiBoxes',[],...
+                          'AoiStruct',[],...
+                          'PreprocessingTime',preprocessingTime,...
+                          'LayoutAnalysisTime',[]);
+    
+    boundingBoxes = regionprops(preprocessedImage,'BoundingBox');
+    if isempty(boundingBoxes)
+        layoutStruct.LayoutAnalysisTime = -1;
+        layoutStruct.NumberOfRows = 0;
+        layoutStruct.NumberOfWords = 0;
+        return 
+    end
     %Largening
-    largeBBoxes=expandBBoxes(preprocecessedImage,...
+    largeBBoxes=expandBBoxes(preprocessedImage,...
                             boundingBoxes,...
                             aoiXExpansionAmount,...
                             aoiYExpansionAmount);
@@ -77,14 +90,7 @@ function layoutStruct = preprocess(path,testedValue)
     areaRatio = areas/totalArea;
     combinedBBoxes((areaRatio<areaRatioThreshold),:)=[];
     
-    mainImage = p.strokeImage;
-    layoutStruct = struct('Image',mainImage,...
-                          'NumberOfRows',[],...
-                          'NumberOfWords',[],...
-                          'AoiBoxes',combinedBBoxes,...
-                          'AoiStruct',[],...
-                          'PreprocessingTime',preprocessingTime,...
-                          'LayoutAnalysisTime',[]);
+    layoutStruct.AoiBoxes = combinedBBoxes;
     
     %area of interest image extraction
     aois = size(combinedBBoxes,1);
@@ -97,7 +103,7 @@ function layoutStruct = preprocess(path,testedValue)
     wordAmount = 0;
     for ii=1:aois
         bbox = combinedBBoxes(ii,:);
-        subImage = imcrop(mainImage, bbox);
+        subImage = imcrop(preprocessedImage, bbox);
         aoiImage = subImage;
         
         %extracting properties from the area of interest
@@ -108,10 +114,10 @@ function layoutStruct = preprocess(path,testedValue)
         
         %line detection with rlsa method 
         rowRlsaImage = rlsa(subImage,rlsaRowThreshold,1);
-        figure();
-        imshow(subImage);
-        figure();
-        imshow(rowRlsaImage);
+%         figure();
+%         imshow(subImage);
+%         figure();
+%         imshow(rowRlsaImage);
         
         aoiStruct(ii).RlsaImage = rowRlsaImage;
         rowBoxStruct = regionprops(rowRlsaImage,'BoundingBox');
@@ -156,7 +162,7 @@ function layoutStruct = preprocess(path,testedValue)
     layoutStruct.NumberOfWords = wordAmount;
     layoutStruct.LayoutAnalysisTime = layoutAnalysisTime;
 
-    %visualizeLayout(p.finalImage, layoutStruct, 3);
-    disp(['Number of the areas of interest: ', int2str(aois)]);
-    disp(['Number of rows: ', int2str(rowBoxesLength)]);
-    disp(['Number of wordss: ', int2str(wordAmount)]);
+%      visualizeLayout(p.originalImage, layoutStruct, 3);
+%     disp(['Number of the areas of interest: ', int2str(aois)]);
+%     disp(['Number of rows: ', int2str(rowBoxesLength)]);
+%     disp(['Number of wordss: ', int2str(wordAmount)]);

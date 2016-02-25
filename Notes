@@ -24,6 +24,20 @@ Preprocessing functionality:
 -Cropping
 
 
+optimal values for 5 first images in iam database (handwriting part only)
+    p.wienerFilterSize = 15;
+    p.sauvolaNeighbourhoodSize = 180;
+    p.sauvolaThreshold = 0.3;
+    p.morphClosingDiscSize = 3;
+    p.strokeWidthThreshold = 0.6;
+    p.skewCorrection = 0;
+    aoiXExpansionAmount = 40;
+    aoiYExpansionAmount = 60;
+    areaRatioThreshold = 0.004;
+    rlsaRowThreshold = 300;
+    rlsaWordHorizontalThreshold = 30;
+    rlsaWordVerticalThreshold = 30;
+
 pasting this here dont mind me
 
     
