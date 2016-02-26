@@ -3,19 +3,12 @@ Matlab implementation with image processing toolbox.
 Preprocessing and some attempts at gui.
 Includes test and result images.
 
+Preprocessing:
+Adaptive Wiener filtering
+Binarization with Sauvola algorithm
+(Skew correction?)
+Stroke width analysis
 
-###Text in testimages 1-4
-86 characters
-95 separate objects e.g. symbol : has 2 "objects"
-____________________
-
-ABCDEFGHIJKLMNOPQ
-RSTUVWXYZ
-
-abcdefghijklmnopqrstuvwxyz
-
-01234567890
-
-,.:;'!?"()[]{}_@?$+\/&%
-
-____________________
+Layout Analysis:
+Bounding box expansion to find areas of interest
+Rlsa(run length smearing algorithm) for row and word detection
