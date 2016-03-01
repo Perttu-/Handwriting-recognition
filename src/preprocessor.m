@@ -44,46 +44,33 @@ classdef preprocessor<handle
         minAreaFilter;
         maxAreaFilter;
         
-        %stroke properties
-        strokeMetrics;
-        strokeFilter;
+
         
     end
     
     
     methods
-        %SETTERS
-        function obj = set.originalImage(obj,image)
-            obj.originalImage = image;
+        %constructor
+        function p = preprocessor(img,...
+                                  map,...
+                                  wSize,...
+                                  sauvolaN,...
+                                  sauvolaT,...
+                                  skew,...
+                                  morphD,...
+                                  strokeT)
+                              
+        p.originalImage = img;
+        p.map = map;
+        p.wienerFilterSize = wSize;
+        p.sauvolaNeighbourhoodSize = sauvolaN;
+        p.sauvolaThreshold = sauvolaT;
+        p.skewCorrection = skew;
+        p.morphClosingDiscSize = morphD;
+        p.strokeWidthThreshold = strokeT;
+                              
         end
-        
-        function obj = set.map(obj,map)
-            obj.map = map;
-        end
-        
-        function obj = set.wienerFilterSize(obj, newWienerFilterSize)
-            obj.wienerFilterSize = newWienerFilterSize;
-        end
-        
-        function obj = set.sauvolaNeighbourhoodSize(obj, newSauvolaNeighbourhoodSize)
-            obj.sauvolaNeighbourhoodSize = newSauvolaNeighbourhoodSize;
-        end
-        
-        function obj = set.sauvolaThreshold(obj, newSauvolaThreshold)
-            obj.sauvolaThreshold = newSauvolaThreshold;
-        end
-        
-        function obj = set.skewCorrection(obj, sc)
-            obj.skewCorrection = sc;
-        end
-        
-        function obj = set.morphClosingDiscSize(obj,newMorphClosingDiscSize)
-            obj.morphClosingDiscSize = newMorphClosingDiscSize;
-        end
-        
-        function obj = set.strokeWidthThreshold(obj, t)
-            obj.strokeWidthThreshold = t;
-        end
+
         
         
         %GETTERS 
@@ -130,7 +117,7 @@ classdef preprocessor<handle
     
         %% Preprocessing
         %Optional phases can be disabled with input -1
-        function preprocess(obj)
+        function processedImage = preprocess(obj)
             %% Image aquisition
             %Convert to rgb color mode if it already isn't
             if ~isempty(obj.map)
@@ -202,13 +189,7 @@ classdef preprocessor<handle
                 strokeWidthValues = distanceImage(subimageSkeleton);
                 %calculating the metric to analyze stroke width variation
                 strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
-                %visualization
-%                 figure();
-%                 imagesc(distanceImage);
-%                 strkWidthImage = distanceImage;
-%                 strkWidthImage(~subimageSkeleton) = 0;
-%                 figure();
-%                 imagesc(strkWidthImage);
+
                 %above metric can result in NaN  or zero values when mean is 0 
                 %happens with one pixel areas and round areas
                 %can't be filtered out or else writing data is lost
@@ -222,24 +203,13 @@ classdef preprocessor<handle
                 end
                 metrics(i) = strokeWidthMetric;
             end
-            obj.strokeFilter = strokeWidthFilterIdx;
             pixels = regionprops(obj.closedImage,'PixelIdxList');
             removedPixels = vertcat(pixels(strokeWidthFilterIdx).PixelIdxList); 
             strkImg = obj.closedImage;
             strkImg(removedPixels) = 0;
             obj.strokeImage = strkImg;
-            metrics(strokeWidthFilterIdx) = [];
-            obj.strokeMetrics = metrics;
+            processedImage = strkImg;
             
-            
-%             fImage = obj.strokeImage;
-            %Calculate boundaries and bounding boxes for visualization and
-            %to extract the needed blobs
-%             obj.boundingBoxes = regionprops(fImage,'boundingbox');
-%             boundingBoxes = obj.boundingBoxes;
-%             obj.boundaries = bwboundaries(fImage,8,'holes'); 
-%             boundaries = obj.boundaries;
-%             obj.objectCount = length(boundingBoxes);
             
         end
     end
