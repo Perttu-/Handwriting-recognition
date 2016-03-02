@@ -1,4 +1,4 @@
-function layoutStruct = preprocess(path,testedValue)
+function aoiStruct = preprocess(path,testedValue)
 %% Initialization
     close all;
     [image, map]=imread(path);
@@ -68,9 +68,8 @@ function layoutStruct = preprocess(path,testedValue)
                        rlsaRowThreshold ,...
                        rlsaWordThreshold);
     
-    layoutStruct = l.analyze;
+    aoiStruct = l.analyze;
     toc
-
-
-	visualizeLayout(p.originalImage, layoutStruct, 3);
+    
+	visualizeLayout(p.originalImage, aoiStruct, 3);
 

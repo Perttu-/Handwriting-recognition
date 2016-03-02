@@ -7,15 +7,17 @@ function largeBBoxes=expandBBoxes(image,boundingBoxes,xExpansionAmount,yExpansio
     for ii=1:length(boundingBoxes)
         %getting corner points
         [xmin,ymin,xmax,ymax] = extractBoxCorners(boundingBoxes(ii).BoundingBox);
-
+        
+%         xExpansionAmount = boundingBoxes(ii).BoundingBox(4)*0.5;
+%         yExpansionAmount = boundingBoxes(ii).BoundingBox(4)*0.5;
         %widening and...
         xmin = xmin-xExpansionAmount;
         xmax = xmax+xExpansionAmount; 
-        
+
         %...heightening the boxes
         ymin = ymin-yExpansionAmount;
         ymax = ymax+yExpansionAmount;
-        
+
         %cropping the boxes to fit image.
         xmin = max(xmin, 0.5);
         ymin = max(ymin, 0.5);

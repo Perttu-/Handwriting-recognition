@@ -37,13 +37,9 @@ classdef layoutAnalyzer
         
         function layout = analyze(obj)
             preprocessedImage = obj.inputImage;
-            layoutStruct = struct('Image',preprocessedImage,...
-                                  'NumberOfRows',[],...
-                                  'NumberOfWords',[],...
-                                  'AoiBoxes',[],...
-                                  'AoiStruct',[]);
 
             boundingBoxes = regionprops(preprocessedImage,'BoundingBox');
+            areas = regionprops(preprocessedImage,'Area');
             if isempty(boundingBoxes)
                 layoutStruct.LayoutAnalysisTime = -1;
                 layoutStruct.NumberOfRows = 0;
@@ -70,30 +66,25 @@ classdef layoutAnalyzer
             areaRatio = areas/totalArea;
             combinedBBoxes((areaRatio<obj.areaRatioThreshold),:)=[];
 
-            layoutStruct.AoiBoxes = combinedBBoxes;
-
             %area of interest image extraction
             aois = size(combinedBBoxes,1);
-            aoiStruct = struct('Image',[],...
-                               'ObjectCount', [],...
+            aoiStruct = struct('Box',[],...
+                               'Image',[],...
                                'RlsaImage',[],...
-                               'RowBoxes',[],...
                                'RowStruct',[]);
 
             wordAmount = 0;
             for ii=1:aois
                 bbox = combinedBBoxes(ii,:);
-                subImage = imcrop(preprocessedImage, bbox);
-                aoiImage = subImage;
+                aoiStruct(ii).Box = bbox;
+                aoiImage = imcrop(preprocessedImage, bbox);
 
-                %extracting properties from the area of interest
                 %average area might be useful in line/word detection thresholds?
-                [~, numberOfObjects] = bwlabel(aoiImage);
+                
                 aoiStruct(ii).Image = aoiImage;
-                aoiStruct(ii).ObjectCount = numberOfObjects;
 
                 %line detection with rlsa method 
-                rowRlsaImage = rlsa(subImage,obj.rlsaRowThreshold,1);
+                rowRlsaImage = rlsa(aoiImage,obj.rlsaRowThreshold,1);
 
                 aoiStruct(ii).RlsaImage = rowRlsaImage;
                 rowBoxStruct = regionprops(rowRlsaImage,'BoundingBox');
@@ -101,19 +92,27 @@ classdef layoutAnalyzer
                 
                 %remove boxes which are more tall than wide
                 rowBoxes((rowBoxes(:,3)<rowBoxes(:,4)),:)=[];
-
-                aoiStruct(ii).RowBoxes = rowBoxes;
+                
+                if isempty(rowBoxes)
+                    continue
+                end
                 rowBoxesLength = size(rowBoxes,1);
-                rowStruct = struct('RowImage',[],...
+
+                rowStruct = struct('Box',[],...
+                                   'RowImage',[],...
                                    'RlsaImage',[],...
                                    'WordBoxes',[]);
+                               
                 for jj=1:rowBoxesLength
-                    rowImage = imcrop(aoiImage,rowBoxes(jj,:));
+                    rBox = rowBoxes(jj,:);
+                    rowStruct(jj).Box = rBox;
+                    rowImage = imcrop(aoiImage,rBox);
                     rowStruct(jj).RowImage = rowImage;
+                    
                     wordRlsaImage = rlsa(rowImage,obj.rlsaWordThreshold,1);
                     wordRlsaImage = rlsa(wordRlsaImage,obj.rlsaWordThreshold,0);
-
                     rowStruct(jj).RlsaImage = wordRlsaImage;
+                    
                     wordBoxes = regionprops(wordRlsaImage,'BoundingBox');
                     wordBoxList = transpose(reshape([wordBoxes.BoundingBox],4,[]));
                     [combinedWordBoxes,~] = combineOverlappingBoxes(wordBoxList,0);
@@ -122,14 +121,16 @@ classdef layoutAnalyzer
                     rowStruct(jj).WordBoxes = combinedWordBoxes;
                 end
                 aoiStruct(ii).RowStruct = rowStruct;
+                
             end
             
-            %TODO remove aois which doesn't have any rows
-            
-            layoutStruct.AoiStruct = aoiStruct;
-            layoutStruct.NumberOfRows = rowBoxesLength;
-            layoutStruct.NumberOfWords = wordAmount;
-            layout = layoutStruct;
+            %remove aois which doesn't have any rows
+            toDelete = zeros(1,aois);
+            for ii=1:aois
+                toDelete(ii) = isempty([aoiStruct(ii).RowStruct]);   
+            end
+            aoiStruct(logical(toDelete))=[];
+            layout = aoiStruct;
         end 
     end
 end
