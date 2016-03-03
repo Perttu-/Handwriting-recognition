@@ -20,12 +20,7 @@ classdef layoutAnalyzer
     
     methods
                
-        function l = layoutAnalyzer(img,...
-                                    xExp,...
-                                    yExp,...
-                                    areaT,...
-                                    rlsaR ,...
-                                    rlsaW)
+        function l = layoutAnalyzer(img, xExp, yExp, areaT, rlsaR, rlsaW)
            l.inputImage = img;
            l.aoiXExpansionAmount = xExp;
            l.aoiYExpansionAmount = yExp;
@@ -79,8 +74,6 @@ classdef layoutAnalyzer
                 aoiStruct(ii).Box = bbox;
                 aoiImage = imcrop(preprocessedImage, bbox);
 
-                %average area might be useful in line/word detection thresholds?
-                
                 aoiStruct(ii).Image = aoiImage;
 
                 %line detection with rlsa method 
@@ -109,8 +102,15 @@ classdef layoutAnalyzer
                     rowImage = imcrop(aoiImage,rBox);
                     rowStruct(jj).RowImage = rowImage;
                     
-                    wordRlsaImage = rlsa(rowImage,obj.rlsaWordThreshold,1);
-                    wordRlsaImage = rlsa(wordRlsaImage,obj.rlsaWordThreshold,0);
+                    %some enhancements compared to static threshold
+                    %using small percentage of the rows mean area as
+                    %expansion amount
+                    area = regionprops(rowImage, 'Area');
+                    meanArea = mean([area.Area]);
+                    wordRlsa = meanArea*0.04;
+                    
+                    wordRlsaImage = rlsa(rowImage,wordRlsa,1);
+                    wordRlsaImage = rlsa(wordRlsaImage,90,0);
                     rowStruct(jj).RlsaImage = wordRlsaImage;
                     
                     wordBoxes = regionprops(wordRlsaImage,'BoundingBox');
