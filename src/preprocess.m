@@ -1,6 +1,6 @@
 function aoiStruct = preprocess(path,testedValue)
 %% Initialization
-    close all;
+    %close all;
     [image, map]=imread(path);
     
     %IAM database
@@ -58,18 +58,19 @@ function aoiStruct = preprocess(path,testedValue)
     preprocessedImage = p.preprocess;
     toc;
     
+boxes = louloudis(preprocessedImage);
     
-    disp('Layout analysis...');
-    tic
-    l = layoutAnalyzer(preprocessedImage,...
-                       aoiXExpansionAmount,...
-                       aoiYExpansionAmount,...
-                       areaRatioThreshold,...
-                       rlsaRowThreshold ,...
-                       rlsaWordThreshold);
-    
-    aoiStruct = l.analyze;
-    toc
-    
-	visualizeLayout(p.originalImage, aoiStruct, 3);
+%     disp('Layout analysis...');
+%     tic
+%     l = layoutAnalyzer(preprocessedImage,...
+%                        aoiXExpansionAmount,...
+%                        aoiYExpansionAmount,...
+%                        areaRatioThreshold,...
+%                        rlsaRowThreshold ,...
+%                        rlsaWordThreshold);
+%     
+%     aoiStruct = l.analyze;
+%     toc
+%     
+% 	visualizeLayout(p.originalImage, aoiStruct, 3);
 
