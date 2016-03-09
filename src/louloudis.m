@@ -19,26 +19,38 @@ function finalBoxes = louloudis(binarizedImage)
     %visualizeMoreBoxes(subset3,'m',2);
     
     %partition subset1 to equally sized boxes
-    %ei toimi pelk?st??n viimeinen boxi j?? listaan pls fix
-    for ii = 0:length(subset1)-1
-        box = subset1(ii+1,:);
-        boxWidth = box(:,3);
-        
-        for jj=1:ceil(boxWidth/AW)
-            newXCoord = ii*AW+box(1);
-            if newXCoord <= boxWidth+box(1);
-               xCut = newXCoord;
-               xWidth = AW;
+    newBoxes = [];
+    centroids = [];
+    for ii = 1:length(subset1)
+        box = subset1(ii,:);
+        boxWidth = subset1(ii,3);
+        xSplit = box(1);
+        for jj = 1:ceil(boxWidth/AW) 
+            if xSplit+AW <= boxWidth+box(1)
+                newBox = [xSplit,box(2),AW,box(4)];
+                xSplit=xSplit+AW;
             else
-               lastXWidth = mod(boxWidth,AW);
-               xCut = boxWidth-lastXWidth;
-               xWidth = lastXWidth;
+                lastXWidth = mod(boxWidth,AW);
+                xSplit = boxWidth+box(1)-lastXWidth;
+                newBox = [xSplit,box(2),lastXWidth,box(4)];
+                
+
+                
             end
-            (ii+1)*jj
-            newBoxes((ii+1)*jj,:) = [xCut+box(1),box(2),xWidth,box(4)];
+            cropped = imcrop(binarizedImage, newBox);
+            c = regionprops(cropped, 'Centroid');
+            cc=c.Centroid;
+            %what if in area there is more than one object?
+            centroids(end+1,:) = [cc(1)+newBox(1),cc(2)+newBox(2)];
         end
     end
-    figure(),visualizeBBoxes(binarizedImage, subset1,'y',2);
-    visualizeMoreBoxes(newBoxes,'g',1);
+    
+
+%     figure(),visualizeBBoxes(binarizedImage, subset1,'y',5);
+%     visualizeMoreBoxes(newBoxes,'r',1);
+    %imshow(binarizedImage);
+    %hold on;
+    plot(centroids(:,1),centroids(:,2), 'r*')
+    %hold off;
     
 end
