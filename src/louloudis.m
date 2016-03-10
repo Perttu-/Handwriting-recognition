@@ -2,7 +2,7 @@ function finalBoxes = louloudis(binarizedImage)
 %implementation based on paper 
 %"Line And Word Segmentation of Handwritten Documents (2009)" 
 %by Louloudis et.al.
-
+    [imgWidth,imgHeight]=size(binarizedImage);
     bboxes = regionprops(binarizedImage, 'BoundingBox');
     boxList = reshape([bboxes.BoundingBox],4,[])';
     %assuming average height equals average width
@@ -38,19 +38,35 @@ function finalBoxes = louloudis(binarizedImage)
                 
             end
             cropped = imcrop(binarizedImage, newBox);
-            c = regionprops(cropped, 'Centroid');
+            c = regionprops(uint8(cropped), 'Centroid');
             cc=c.Centroid;
-            %what if in area there is more than one object?
-            centroids(end+1,:) = [cc(1)+newBox(1),cc(2)+newBox(2)];
+            newBoxes(end+1,:) = newBox;
+            centroids(end+1,:) = [cc(1)+newBox(1)-0.5,cc(2)+newBox(2)-0.5];
         end
     end
     
-
-%     figure(),visualizeBBoxes(binarizedImage, subset1,'y',5);
-%     visualizeMoreBoxes(newBoxes,'r',1);
-    %imshow(binarizedImage);
-    %hold on;
-    plot(centroids(:,1),centroids(:,2), 'r*')
-    %hold off;
+    centroidImg = zeros(imgWidth,imgHeight);
+    roundedCentroids = round(centroids);
+    for ii = 1:length(roundedCentroids)
+        centroidImg(roundedCentroids(ii,2),roundedCentroids(ii,1))=1;
+    end
     
+%     figure(), imshow(centroidImg);
+%     hold on;
+%     plot(centroids(:,1),centroids(:,2), 'ro');
+%     hold off;
+    figure(),subplot(2,1,1);
+    imshow(binarizedImage);
+    title('Binarized Image');
+    subplot(2,1,2);
+    [H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
+
+    imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
+    'InitialMagnification','fit');
+    title('Hough transform');
+    xlabel('\theta'), ylabel('\rho');
+    axis on, axis normal, hold on;
+    colormap(hot);
+
+    finalBoxes = [];
 end
