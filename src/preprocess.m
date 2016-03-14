@@ -45,7 +45,7 @@ function aoiStruct = preprocess(path,testedValue)
     
     
     disp('Preprocessing...');
-    tic
+    tic;
     p = preprocessor(image,...
                      map,...
                      wienerFilterSize,...
@@ -57,9 +57,9 @@ function aoiStruct = preprocess(path,testedValue)
     
     preprocessedImage = p.preprocess;
     toc;
-    
-boxes = louloudis(preprocessedImage);
-    
+    tic;
+    boxes = louloudis(preprocessedImage);
+    toc;
 %     disp('Layout analysis...');
 %     tic
 %     l = layoutAnalyzer(preprocessedImage,...

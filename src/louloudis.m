@@ -45,16 +45,18 @@ function finalBoxes = louloudis(binarizedImage)
         end
     end
     
-    centroidImg = zeros(imgWidth,imgHeight);
+    centroidImg = false(imgWidth,imgHeight);
     roundedCentroids = round(centroids);
     for ii = 1:length(roundedCentroids)
+        roundedCentroids(ii,2)
+        roundedCentroids(ii,1)
         centroidImg(roundedCentroids(ii,2),roundedCentroids(ii,1))=1;
     end
     
-%     figure(), imshow(centroidImg);
-%     hold on;
-%     plot(centroids(:,1),centroids(:,2), 'ro');
-%     hold off;
+    figure(), imshow(centroidImg);
+    hold on;
+    plot(centroids(:,1),centroids(:,2), 'ro');
+    hold off;
     figure(),subplot(2,1,1);
     imshow(binarizedImage);
     title('Binarized Image');
@@ -67,6 +69,8 @@ function finalBoxes = louloudis(binarizedImage)
     xlabel('\theta'), ylabel('\rho');
     axis on, axis normal, hold on;
     colormap(hot);
-
+    [C,I] = max(H(:));
+    [I1,I2] = ind2sub(size(H),I);
+    H(I1,I2)
     finalBoxes = [];
 end
