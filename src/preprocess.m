@@ -1,6 +1,6 @@
 function aoiStruct = preprocess(path,testedValue)
 %% Initialization
-    %close all;
+    close all;
     [image, map]=imread(path);
     
     %IAM database

@@ -48,20 +48,18 @@ function finalBoxes = louloudis(binarizedImage)
     centroidImg = false(imgWidth,imgHeight);
     roundedCentroids = round(centroids);
     for ii = 1:length(roundedCentroids)
-        roundedCentroids(ii,2)
-        roundedCentroids(ii,1)
         centroidImg(roundedCentroids(ii,2),roundedCentroids(ii,1))=1;
     end
     
-    figure(), imshow(centroidImg);
-    hold on;
-    plot(centroids(:,1),centroids(:,2), 'ro');
-    hold off;
-    figure(),subplot(2,1,1);
-    imshow(binarizedImage);
-    title('Binarized Image');
-    subplot(2,1,2);
-    [H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
+%     figure(), imshow(centroidImg);
+%     hold on;
+%     plot(centroids(:,1),centroids(:,2), 'ro');
+%     hold off;
+%     figure(),subplot(2,1,1);
+%     imshow(binarizedImage);
+%     title('Binarized Image');
+%     subplot(2,1,2);
+	[H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
 
     imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
     'InitialMagnification','fit');
@@ -69,8 +67,32 @@ function finalBoxes = louloudis(binarizedImage)
     xlabel('\theta'), ylabel('\rho');
     axis on, axis normal, hold on;
     colormap(hot);
+
     [C,I] = max(H(:));
     [I1,I2] = ind2sub(size(H),I);
-    H(I1,I2)
+    hMax = H(I1,I2);
+    
+    P = houghpeaks(H,20,'threshold',ceil(0.3*max(H(:))));
+    lines = houghlines(centroidImg,T,R,P,'fillgap',5,'minlength',1)
+    figure, imshow(binarizedImage), hold on
+    max_len = 0;
+    for k = 1:length(lines)
+       xy = [lines(k).point1; lines(k).point2];
+       plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+
+       % Plot beginnings and ends of lines
+       plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+       plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+
+       % Determine the endpoints of the longest line segment
+%        len = norm(lines(k).point1 - lines(k).point2);
+%        if ( len > max_len)
+%           max_len = len;
+%           xy_long = xy;
+%        end
+    end
+    % highlight the longest line segment
+%     plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','red');
+    
     finalBoxes = [];
 end
