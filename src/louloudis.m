@@ -33,9 +33,6 @@ function finalBoxes = louloudis(binarizedImage)
                 lastXWidth = mod(boxWidth,AW);
                 xSplit = boxWidth+box(1)-lastXWidth;
                 newBox = [xSplit,box(2),lastXWidth,box(4)];
-                
-
-                
             end
             cropped = imcrop(binarizedImage, newBox);
             c = regionprops(uint8(cropped), 'Centroid');
@@ -59,8 +56,8 @@ function finalBoxes = louloudis(binarizedImage)
 %     imshow(binarizedImage);
 %     title('Binarized Image');
 %     subplot(2,1,2);
-	[H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
-
+	%[H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
+    [H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'Rho', 0.2*AH);
     imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
     'InitialMagnification','fit');
     title('Hough transform');
@@ -72,27 +69,7 @@ function finalBoxes = louloudis(binarizedImage)
     [I1,I2] = ind2sub(size(H),I);
     hMax = H(I1,I2);
     
-    P = houghpeaks(H,20,'threshold',ceil(0.3*max(H(:))));
-    lines = houghlines(centroidImg,T,R,P,'fillgap',5,'minlength',1)
-    figure, imshow(binarizedImage), hold on
-    max_len = 0;
-    for k = 1:length(lines)
-       xy = [lines(k).point1; lines(k).point2];
-       plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
 
-       % Plot beginnings and ends of lines
-       plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-       plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
-
-       % Determine the endpoints of the longest line segment
-%        len = norm(lines(k).point1 - lines(k).point2);
-%        if ( len > max_len)
-%           max_len = len;
-%           xy_long = xy;
-%        end
-    end
-    % highlight the longest line segment
-%     plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','red');
     
     finalBoxes = [];
 end
