@@ -1,12 +1,12 @@
-function [rho,theta,houghSpace] = houghTransform(theImage,thetaSampleFrequency)
+function [rho,theta,houghSpace] = houghTransform(theImage,theta,rhoRes)
  
     %Define the hough space
     theImage = flipud(theImage);
     [width,height] = size(theImage);
  
     rhoLimit = norm([width height]);
-    rho = (-rhoLimit:1:rhoLimit);          
-    theta = (0:thetaSampleFrequency:pi);
+    rho = (-rhoLimit:rhoRes:rhoLimit);          
+    %theta = (0:thetaSampleFrequency:pi);
  
     numThetas = numel(theta);
     houghSpace = zeros(numel(rho),numThetas);
@@ -39,6 +39,6 @@ function [rho,theta,houghSpace] = houghTransform(theImage,thetaSampleFrequency)
     title('Hough Transform');
     xlabel('Theta (radians)');
     ylabel('Rho (pixels)');
-    colormap('gray');
+    colormap('hot');
  
 end
