@@ -1,33 +1,41 @@
-function  houghTransform(image,thetas,rhoResolution)
+function  accumulatorArray = houghTransform(image,thetas,rhoResolution)
     image = flipud(image);
+
     [imgWidth,imgHeight] = size(image);
     
     [xIndices,yIndices] = find(image);
     rhoLimit = sqrt(imgHeight^2+imgWidth^2);
     rhos = -rhoLimit:rhoResolution:rhoLimit;
-    accumulatorArray = zeros(numel(rhos),numel(thetas));
     
-    imshow(image);
-    hold on;
-    x(1)=0;
-    y(1)=0;
-    x = zeros(numel(thetas)*numel(rhos),2);
-    y = zeros(numel(thetas)*numel(rhos),2);
-    xp = x;
-    yp = y;
-
-    for t = thetas
-        for r = rhos
-            x(2)=x(1)+r*cosd(t);
-            y(2)=y(1)+r*sind(t);
-            %plot(x(2),y(2),'r*');
-            %line(x,y);
-            t2 = t+90;
-            
-
+    numThetas = numel(thetas);
+    numRhos = numel(rhos);
+    accumulatorArray = zeros(numRhos,numThetas);
+    voterCell = cell(numRhos,numThetas);
+    for ii = 1:length(xIndices)
+        for jj = 1:numThetas
+            t = thetas(jj);
+            t = deg2rad(t);
+            r = xIndices(ii)*cos(t)+yIndices(ii)*sin(t);
+            %discretizing
+            tBin = round((thetas(jj)-min(thetas))/((max(thetas)-min(thetas))/(numThetas-1)))+1;
+            rBin = round((r-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;
+            values = voterCell{rBin,tBin};
+            voterCell{rBin,tBin} = [values ;[xIndices(ii), yIndices(ii)]];
+            accumulatorArray(rBin,tBin) = accumulatorArray(rBin,tBin)+1;
         end
     end
 
-    rh = xIndices*cos(thetas)+yIndices*sin(thetas);
+
+    figure
+    imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
+       'InitialMagnification','fit');
+    title('Hough Transform own implementation');
+    xlabel('\theta'), ylabel('\rho');
+    axis on, axis normal;
+    colormap(hot)
+
+    %fplot(@(t) xIndices(ii)*cosd(t)+yIndices(ii)*sind(t), [85,95]);
+    %fplot(@(t) 1*cosd(t)+1*sind(t),thetas)
+
 
 end

@@ -56,21 +56,21 @@ function finalBoxes = louloudis(binarizedImage)
 %     imshow(binarizedImage);
 %     title('Binarized Image');
 %     subplot(2,1,2);
-    %[H,T,R] = hough(centroidImg,'Thetga', [-90:-85,85:90-1], 'RhoResolution', 0.2*AH);
-    houghTransform(centroidImg,85:95,0.2*AH);
+    %[H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'RhoResolution', 0.2*AH);
+    %houghTransform(centroidImg,85:95,0.2*AH);
+%     [H,T,R] = hough(flipud(centroidImg),'Theta', [0:89], 'RhoResolution', 0.2*AH);
 
+    %fix the theta
+    accArr = houghTransform(centroidImg,[0:89],0.2*AH);
+%     figure
 %     imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
 %     'InitialMagnification','fit');
-%     title('Hough transform');
+%     title('Hough transform matlab function');
 %     xlabel('\theta'), ylabel('\rho');
 %     axis on, axis normal, hold on;
 %     colormap(hot);
 
 
-    
-    [C,I] = max(H(:));
-    [I1,I2] = ind2sub(size(H),I);
-    hMax = H(I1,I2);
     
 
     
