@@ -1,4 +1,4 @@
-function  accumulatorArray = houghTransform(image,thetas,rhoResolution)
+function  [accumulatorArray,thetas,rhos,voterCell] = houghTransform(image,thetas,rhoResolution)
     image = flipud(image);
 
     [imgWidth,imgHeight] = size(image);
@@ -25,14 +25,6 @@ function  accumulatorArray = houghTransform(image,thetas,rhoResolution)
         end
     end
 
-
-    figure
-    imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
-       'InitialMagnification','fit');
-    title('Hough Transform own implementation');
-    xlabel('\theta'), ylabel('\rho');
-    axis on, axis normal;
-    colormap(hot)
 
     %fplot(@(t) xIndices(ii)*cosd(t)+yIndices(ii)*sind(t), [85,95]);
     %fplot(@(t) 1*cosd(t)+1*sind(t),thetas)

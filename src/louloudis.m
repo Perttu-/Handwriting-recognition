@@ -18,9 +18,11 @@ function finalBoxes = louloudis(binarizedImage)
                       ((H < 0.5 * AH) & (0.5 * AW < W))),:);
     %visualizeMoreBoxes(subset3,'m',2);
     
-    %partition subset1 to equally sized boxes
-    newBoxes = [];
-    centroids = [];
+    %partition subset1 to equally sized boxes, extracting centroid pixels
+    %and categorizing them
+
+    centroidImg = zeros(imgWidth,imgHeight);
+    
     for ii = 1:length(subset1)
         box = subset1(ii,:);
         boxWidth = subset1(ii,3);
@@ -35,42 +37,41 @@ function finalBoxes = louloudis(binarizedImage)
                 newBox = [xSplit,box(2),lastXWidth,box(4)];
             end
             cropped = imcrop(binarizedImage, newBox);
-            c = regionprops(uint8(cropped), 'Centroid');
-            cc=c.Centroid;
-            newBoxes(end+1,:) = newBox;
-            centroids(end+1,:) = [cc(1)+newBox(1)-0.5,cc(2)+newBox(2)-0.5];
+            centroidStruct = regionprops(uint8(cropped), 'Centroid');
+            centroid = centroidStruct.Centroid;
+            %centroid in relation to whole image
+            realCentroid = [centroid(1)+newBox(1)-0.5,centroid(2)+newBox(2)-0.5];
+            roundedCentroid = round(realCentroid);
+            centroidImg(roundedCentroid(2),roundedCentroid(1))=ii;
         end
     end
     
-    centroidImg = false(imgWidth,imgHeight);
-    roundedCentroids = round(centroids);
-    for ii = 1:length(roundedCentroids)
-        centroidImg(roundedCentroids(ii,2),roundedCentroids(ii,1))=1;
-    end
+    %theta should be right?
+    [accumulatorArray,thetas,rhos,voterCell] = houghTransform(centroidImg,-5:5,0.2*AH);
+    tmpAcc = accumulatorArray;
     
-%     figure(), imshow(centroidImg);
-%     hold on;
-%     plot(centroids(:,1),centroids(:,2), 'ro');
-%     hold off;
-%     figure(),subplot(2,1,1);
-%     imshow(binarizedImage);
-%     title('Binarized Image');
-%     subplot(2,1,2);
-    %[H,T,R] = hough(centroidImg,'Theta', [-90:-85,85:90-1], 'RhoResolution', 0.2*AH);
-    %houghTransform(centroidImg,85:95,0.2*AH);
-%     [H,T,R] = hough(flipud(centroidImg),'Theta', [0:89], 'RhoResolution', 0.2*AH);
+    n1 = 5;
+    n2 = 9;
+%     while 1
+%         [maxValue, maxIndex]=max(accumulatorArray(:));
+%         [maxIRow, maxICol] = ind2sub(size(accumulatorArray),maxIndex);
+%         if contribution < n1
+%             break
+%         end
+%     end
 
-    %fix the theta
-    accArr = houghTransform(centroidImg,[0:89],0.2*AH);
-%     figure
-%     imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
-%     'InitialMagnification','fit');
-%     title('Hough transform matlab function');
-%     xlabel('\theta'), ylabel('\rho');
-%     axis on, axis normal, hold on;
-%     colormap(hot);
-
-
+    
+    
+    
+    
+    figure();
+    imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
+       'InitialMagnification','fit');
+    title('Hough Transform');
+    xlabel('\theta'), ylabel('\rho');
+    axis on, axis normal;
+    colormap(hot);
+    
     
 
     
