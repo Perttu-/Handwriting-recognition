@@ -1,5 +1,5 @@
 function finalBoxes = louloudis(binarizedImage)
-%implementation based on paper 
+%implementation based on paper  
 %"Line And Word Segmentation of Handwritten Documents (2009)" 
 %by Louloudis et.al.
     [imgWidth,imgHeight]=size(binarizedImage);
@@ -39,7 +39,7 @@ function finalBoxes = louloudis(binarizedImage)
             cropped = imcrop(binarizedImage, newBox);
             centroidStruct = regionprops(uint8(cropped), 'Centroid');
             centroid = centroidStruct.Centroid;
-            %centroid in relation to whole image
+            %adjust centroid to be inrelation to the whole image
             realCentroid = [centroid(1)+newBox(1)-0.5,centroid(2)+newBox(2)-0.5];
             roundedCentroid = round(realCentroid);
             centroidImg(roundedCentroid(2),roundedCentroid(1))=ii;
@@ -52,18 +52,19 @@ function finalBoxes = louloudis(binarizedImage)
     
     n1 = 5;
     n2 = 9;
-%     while 1
-%         [maxValue, maxIndex]=max(accumulatorArray(:));
-%         [maxIRow, maxICol] = ind2sub(size(accumulatorArray),maxIndex);
-%         if contribution < n1
-%             break
-%         end
-%     end
+    contribution = 0;
+    textLines =[];
+    
+    while 1
+        [maxValue, maxIndex]=max(tmpAcc(:));
+        [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
+        [h,w]=size(tmpAcc);
+        voterPoints = voterCell(maxIRow-5:maxIRow+5, maxICol);
+        if contribution < n1
+            break
+        end
+    end
 
-    
-    
-    
-    
     figure();
     imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
        'InitialMagnification','fit');
@@ -71,9 +72,6 @@ function finalBoxes = louloudis(binarizedImage)
     xlabel('\theta'), ylabel('\rho');
     axis on, axis normal;
     colormap(hot);
-    
-    
-
     
     finalBoxes = [];
 end
