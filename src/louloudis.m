@@ -4,8 +4,10 @@ function finalBoxes = louloudis(binarizedImage)
 %by Louloudis et.al.
     [imgWidth,imgHeight]=size(binarizedImage);
     bboxes = regionprops(binarizedImage, 'BoundingBox');
+    labels = bwlabel(binarizedImage,8);
     boxList = reshape([bboxes.BoundingBox],4,[])';
     %assuming average height equals average width
+    %here the notation is similar to the paper
     AH = mean(boxList(:,4));
     AW = AH;
     H = boxList(:,4);
@@ -42,6 +44,8 @@ function finalBoxes = louloudis(binarizedImage)
             %adjust centroid to be inrelation to the whole image
             realCentroid = [centroid(1)+newBox(1)-0.5,centroid(2)+newBox(2)-0.5];
             roundedCentroid = round(realCentroid);
+            %centroidImg(roundedCentroid(2),roundedCentroid(1))=labels(roundedCentroid(2),roundedCentroid(1));
+            %this index may not be equivalent to that of bwlabel()
             centroidImg(roundedCentroid(2),roundedCentroid(1))=ii;
         end
     end
@@ -53,13 +57,20 @@ function finalBoxes = louloudis(binarizedImage)
     n1 = 5;
     n2 = 9;
     contribution = 0;
-    textLines =[];
+    textLineStruct = struct('Theta',[],...
+                            'Rho',[],...
+                            'Indices',[]);
     
     while 1
         [maxValue, maxIndex]=max(tmpAcc(:));
         [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
-        [h,w]=size(tmpAcc);
-        voterPoints = voterCell(maxIRow-5:maxIRow+5, maxICol);
+        [height,width]=size(tmpAcc);
+        voterPoints = cell2mat(voterCell(maxIRow-5:maxIRow+5, maxICol));
+        voterAmount = length(voterPoints);
+        voterIndices = zeros(voterAmount,1);
+        for ii = 1:voterAmount
+            voterIndices(ii) = centroidImg(voterPoints(ii,1),voterPoints(ii,2));
+        end
         if contribution < n1
             break
         end

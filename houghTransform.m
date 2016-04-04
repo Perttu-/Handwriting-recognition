@@ -1,9 +1,10 @@
 function  [accumulatorArray,thetas,rhos,voterCell] = houghTransform(image,thetas,rhoResolution)
-    image = flipud(image);
+    %flippedImage = flipud(image);
 
     [imgWidth,imgHeight] = size(image);
-    
     [xIndices,yIndices] = find(image);
+    %[fxIndices,fyIndices] = find(flippedImage);
+    
     rhoLimit = sqrt(imgHeight^2+imgWidth^2);
     rhos = -rhoLimit:rhoResolution:rhoLimit;
     
