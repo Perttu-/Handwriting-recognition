@@ -4,7 +4,10 @@ function aoiStruct = preprocess(path,testedValue)
     [image, map]=imread(path);
     
     %IAM database
-    wienerFilterSize = 15;
+    
+    %wienerFilterSize = 15;
+    %wiener filter can cause some disortion
+    wienerFilterSize = -1;
     sauvolaNeighbourhoodSize = 180;
     sauvolaThreshold = 0.3;
     morphClosingDiscSize = -1;

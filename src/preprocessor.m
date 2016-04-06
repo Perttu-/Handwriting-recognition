@@ -146,6 +146,7 @@ classdef preprocessor<handle
 
             %% Binarization
             %binarize image with adaptive Sauvola algorithm 
+            
             neighbourhood = obj.sauvolaNeighbourhoodSize;
             bin=sauvola(obj.noiselessImage,...
                        [neighbourhood,...
