@@ -5,13 +5,15 @@ function aoiStruct = preprocess(path,testedValue)
     
     %IAM database
     
-    %wienerFilterSize = 15;
+    wienerFilterSize = 10;
     %wiener filter can cause some disortion
-    wienerFilterSize = -1;
+    %wienerFilterSize = -1;
     sauvolaNeighbourhoodSize = 180;
-    sauvolaThreshold = 0.3;
+    %sauvolaThreshold = 0.3;
+    sauvolaThreshold = 0.6;
     morphClosingDiscSize = -1;
-    strokeWidthThreshold = 0.6;
+    strokeWidthThreshold = 0.8;
+    %strokeWidthThreshold = 0.6;
     skewCorrection = 0;
     aoiXExpansionAmount = 40;
     aoiYExpansionAmount = 60;

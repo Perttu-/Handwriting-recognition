@@ -3,9 +3,8 @@ function finalBoxes = louloudis(binarizedImage)
 %"Line And Word Segmentation of Handwritten Documents (2009)" 
 %by Louloudis et.al.
     [imgWidth,imgHeight]=size(binarizedImage);
-    
-    boxes = regionprops(binarizedImage, 'BoundingBox','Image');
     labels = bwlabel(binarizedImage,8);
+    boxes = regionprops(logical(labels), 'BoundingBox','Image');
 %     imagesc(labels),visualizeMoreBoxes(bboxes,'r',2);
 
     boxList = reshape([boxes.BoundingBox],4,[])';
@@ -13,7 +12,8 @@ function finalBoxes = louloudis(binarizedImage)
     %here the notation is similar to the paper
     AH = mean(boxList(:,4));
     AW = AH;
-    subset1=struct('BoundingBox',[],'Image',[]);
+    subset1=struct('BoundingBox',[],'Image',[],...
+                   'Index',[],'PiecesAmount',[]);
     subset2=struct('BoundingBox',[],'Image',[]);   
     subset3=struct('BoundingBox',[],'Image',[]);
     indx1=1;
@@ -46,18 +46,16 @@ function finalBoxes = louloudis(binarizedImage)
 
     %partition subset1 to equally sized boxes, extracting centroid pixels
     %and categorizing them
-
+%     imshow(binarizedImage);
     centroidImg = zeros(imgWidth,imgHeight);
-    splitStruct = struct('Index',[],...
-                         'PiecesAmount',[]);
+
     for ii = 1:length(subset1)
         box = subset1(ii).BoundingBox;
         image = subset1(ii).Image;
         boxWidth = box(3);
-        %xSplit = box(1);
         xSplit = 0;
         piecesAmount = ceil(boxWidth/AW);
-        splitStruct(ii).PiecesAmount = piecesAmount;
+        subset1(ii).PiecesAmount = piecesAmount;
         for jj = 1:piecesAmount 
             if xSplit+AW <= boxWidth
                 newBox = [xSplit,0,AW,box(4)];
@@ -72,53 +70,74 @@ function finalBoxes = louloudis(binarizedImage)
             binCropped = logical(cropped);
             centroidStruct = regionprops(uint8(binCropped), 'Centroid');
             centroid = centroidStruct.Centroid;
-            %adjust centroid to be in relation to the whole image
-            realCentroid = [centroid(1)+newBox(1)+box(1)-0.5,centroid(2)+newBox(2)+box(2)-0.5];
+            %adjust centroid and boxes to be in relation to the whole image
+            %for the sake of visualisation and hough transform for
+            %centroids
+%             relationalBox = [newBox(1)+box(1),newBox(2)+box(2),newBox(3),newBox(4)];
+            relationalCentroid = [centroid(1)+newBox(1)+box(1)-0.5,centroid(2)+newBox(2)+box(2)-0.5];
 %             hold on;
-%             plot(realCentroid(:,1),realCentroid(:,2), 'g*');
+%             rectangle('Position',relationalBox,...
+%                       'EdgeColor','y',...
+%                       'LineWidth',2);
+%             plot(relationalCentroid(:,1),relationalCentroid(:,2), 'g*');
 %             hold off;
-            
-            roundedCentroid = round(realCentroid);
+            roundedCentroid = round(relationalCentroid);
             [~,~,id] = find(cropped,1);
             centroidImg(roundedCentroid(2),roundedCentroid(1))=id;
         end
-        splitStruct(ii).Index = id;
+        subset1(ii).Index = id;
     end
     
-    %theta should be right?
-    [accumulatorArray,thetas,rhos,voterCell] = houghTransform(centroidImg,-5:5,0.2*AH);
-    tmpAcc = accumulatorArray;
+    [accArray,thetas,rhos,voterCoordCell,voterNumberCell] = houghTransform(centroidImg,-5:5,0.2*AH);
+    tmpAcc = accArray;
     
-    n1 = 5;
-    n2 = 9;
-    contribution = 0;
-    textLineStruct = struct('Theta',[],...
-                            'Rho',[],...
-                            'Indices',[]);
-    
-    while 1
-        [maxValue, maxIndex]=max(tmpAcc(:));
-        [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
-        [height,width]=size(tmpAcc);
-        voterPoints = cell2mat(voterCell(maxIRow-5:maxIRow+5, maxICol));
-        voterAmount = length(voterPoints);
-        voterIndices = zeros(voterAmount,1);
-        for ii = 1:voterAmount
-            voterIndices(ii) = centroidImg(voterPoints(ii,1),voterPoints(ii,2));
-        end
-        
-        if contribution < n1
-            break
-        end
-    end
-
     figure();
-    imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
+    imshow(imadjust(mat2gray(accArray)),'XData',thetas,'YData',rhos,...
        'InitialMagnification','fit');
     title('Hough Transform');
     xlabel('\theta'), ylabel('\rho');
     axis on, axis normal;
     colormap(hot);
     
+    n1 = 5;
+    n2 = 9;
+
+    textLineStruct = struct('Numbers',[]);
+    lIndex = 1;
+    newLineFlag = 1;
+    while 1
+        %[maxValue, maxIndex]=max(tmpAcc(:));
+        sizes = cellfun('size', voterNumberCell, 1);
+        [maxValue, maxIndex] = max(sizes(:));
+        [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
+        voterNumbers = cell2mat(voterNumberCell(maxIRow-5:maxIRow+5,maxICol));
+        
+        if maxValue < n1
+            break
+        end
+        for ii=1:length(subset1)
+            objPartsInRow=sum(voterNumbers(:) == subset1(ii).Index);
+            piecesAmount=subset1(ii).PiecesAmount;
+            if objPartsInRow >= 0.5*piecesAmount
+                objInRow = subset1(ii).Index;
+                if newLineFlag == 1
+                    oldNumbers = [];
+                else
+                    oldNumbers = textLineStruct(lIndex).Numbers;
+                end
+                
+                textLineStruct(lIndex).Numbers = [oldNumbers objInRow];
+                newLineFlag = 0;
+                for jj=1:numel(voterNumberCell)
+                     voters = voterNumberCell{jj};
+                     voters(voters==objInRow)=[];
+                     voterNumberCell{jj}=voters;
+                end
+            end
+        end
+        lIndex = lIndex+1;
+        newLineFlag = 1;
+    end
+
     finalBoxes = [];
 end

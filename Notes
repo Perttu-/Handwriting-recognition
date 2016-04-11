@@ -111,3 +111,35 @@ houg vis
 %         end
 %     end
 
+--------
+
+
+    while 1
+        [maxValue, maxIndex]=max(tmpAcc(:));
+        [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
+        [height,width]=size(tmpAcc);
+        voterPoints = cell2mat(voterCoordCell(maxIRow-5:maxIRow+5,maxICol));
+        voterNumbers = cell2mat(voterNumberCell(maxIRow-5:maxIRow+5,maxICol));
+        voterAmount = length(voterPoints);
+%         voterNumbers = zeros(1,voterAmount);
+        lineNumber = 1;
+        objectsInLine = [];
+%         for ii = 1:voterAmount
+%             voterNumbers(ii) = centroidImg(voterPoints(ii,1),voterPoints(ii,2));
+%         end
+        
+        for ii = 1:length(subset1)
+            objPartsInRow=sum(voterNumbers(:) == subset1(ii).Index);
+            piecesAmount=subset1(ii).PiecesAmount;
+            if objPartsInRow > 0 && piecesAmount/objPartsInRow >= 0.5
+                objInRow = subset1(ii).Index;
+                objectsInLine(end+1) = objInRow;
+                %remove from voterCell the points assigned to a row 
+                
+            end
+        end
+        
+        if contribution < n1
+            break
+        end
+    end
