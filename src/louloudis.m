@@ -5,20 +5,21 @@ function finalBoxes = louloudis(binarizedImage)
     [imgWidth,imgHeight]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
     boxes = regionprops(logical(labels), 'BoundingBox','Image');
-%     imagesc(labels),visualizeMoreBoxes(bboxes,'r',2);
+    %imagesc(labels),visualizeMoreBoxes(bboxes,'r',2);
 
     boxList = reshape([boxes.BoundingBox],4,[])';
-    %assuming average height equals average width
-    %here the notation is similar to the paper
+    %categorizing the connected components into three subsets 
+    %here the notation is mostly similar to the paper
     AH = mean(boxList(:,4));
     AW = AH;
     subset1=struct('BoundingBox',[],'Image',[],...
                    'Index',[],'PiecesAmount',[]);
-    subset2=struct('BoundingBox',[],'Image',[]);   
+    subset2=struct('BoundingBox',[],'Image',[]);
     subset3=struct('BoundingBox',[],'Image',[]);
     indx1=1;
     indx2=1;
     indx3=1;
+    
     for ii=1:length(boxes)
         box = boxes(ii).BoundingBox;
         H = box(:,4);
@@ -46,7 +47,7 @@ function finalBoxes = louloudis(binarizedImage)
 
     %partition subset1 to equally sized boxes, extracting centroid pixels
     %and categorizing them
-%     imshow(binarizedImage);
+    %imshow(binarizedImage);
     centroidImg = zeros(imgWidth,imgHeight);
 
     for ii = 1:length(subset1)
@@ -71,16 +72,16 @@ function finalBoxes = louloudis(binarizedImage)
             centroidStruct = regionprops(uint8(binCropped), 'Centroid');
             centroid = centroidStruct.Centroid;
             %adjust centroid and boxes to be in relation to the whole image
-            %for the sake of visualisation and hough transform for
-            %centroids
-%             relationalBox = [newBox(1)+box(1),newBox(2)+box(2),newBox(3),newBox(4)];
+            %for the sake of hough transform for centroids and
+            %visualization
+            %relationalBox = [newBox(1)+box(1),newBox(2)+box(2),newBox(3),newBox(4)];
             relationalCentroid = [centroid(1)+newBox(1)+box(1)-0.5,centroid(2)+newBox(2)+box(2)-0.5];
-%             hold on;
-%             rectangle('Position',relationalBox,...
-%                       'EdgeColor','y',...
-%                       'LineWidth',2);
-%             plot(relationalCentroid(:,1),relationalCentroid(:,2), 'g*');
-%             hold off;
+            %hold on;
+            %rectangle('Position',relationalBox,...
+            %'EdgeColor','y',...
+            %'LineWidth',2);
+            %plot(relationalCentroid(:,1),relationalCentroid(:,2), 'g*');
+            %hold off;
             roundedCentroid = round(relationalCentroid);
             [~,~,id] = find(cropped,1);
             centroidImg(roundedCentroid(2),roundedCentroid(1))=id;
@@ -91,13 +92,13 @@ function finalBoxes = louloudis(binarizedImage)
     [accArray,thetas,rhos,voterCoordCell,voterNumberCell] = houghTransform(centroidImg,-5:5,0.2*AH);
     tmpAcc = accArray;
     
-    figure();
-    imshow(imadjust(mat2gray(accArray)),'XData',thetas,'YData',rhos,...
-       'InitialMagnification','fit');
-    title('Hough Transform');
-    xlabel('\theta'), ylabel('\rho');
-    axis on, axis normal;
-    colormap(hot);
+    % figure();
+    % imshow(imadjust(mat2gray(accArray)),'XData',thetas,'YData',rhos,...
+    %    'InitialMagnification','fit');
+    % title('Hough Transform');
+    % xlabel('\theta'), ylabel('\rho');
+    % axis on, axis normal;
+    % colormap(hot);
     
     n1 = 5;
     n2 = 9;
@@ -105,16 +106,26 @@ function finalBoxes = louloudis(binarizedImage)
     textLineStruct = struct('Numbers',[]);
     lIndex = 1;
     newLineFlag = 1;
+    
+    %this loop is taking too long, pls optimize
+    disp('loop starts')
+    
     while 1
-        %[maxValue, maxIndex]=max(tmpAcc(:));
+        
         sizes = cellfun('size', voterNumberCell, 1);
         [maxValue, maxIndex] = max(sizes(:));
-        [maxIRow, maxICol] = ind2sub(size(tmpAcc),maxIndex);
-        voterNumbers = cell2mat(voterNumberCell(maxIRow-5:maxIRow+5,maxICol));
+        [maxIRow, maxICol] = ind2sub(size(voterNumberCell),maxIndex);
+        nearVoters = voterNumberCell(maxIRow-5:maxIRow+5,maxICol);
+        voterNumbers = cell2mat(nearVoters(~cellfun('isempty',nearVoters)));
         
         if maxValue < n1
             break
         end
+        tic
+        %fix this
+%         occurences = histcounts(voterNumbers(:),[subset1(:).Index]);
+%         pieceAmounts = [subset1(:).PiecesAmount];
+%         occurences >= 0.5*pieceAmounts
         for ii=1:length(subset1)
             objPartsInRow=sum(voterNumbers(:) == subset1(ii).Index);
             piecesAmount=subset1(ii).PiecesAmount;
@@ -128,16 +139,30 @@ function finalBoxes = louloudis(binarizedImage)
                 
                 textLineStruct(lIndex).Numbers = [oldNumbers objInRow];
                 newLineFlag = 0;
-                for jj=1:numel(voterNumberCell)
-                     voters = voterNumberCell{jj};
-                     voters(voters==objInRow)=[];
-                     voterNumberCell{jj}=voters;
-                end
+                %for jj=1:numel(voterNumberCell)
+                %     voters = voterNumberCell{jj};
+                %     voters(voters==objInRow)=[];
+                %     voterNumberCell{jj}=voters;
+                %end
+                removeHandle = @(x) x(x~=objInRow);
+                voterNumberCell = cellfun(removeHandle,voterNumberCell, 'UniformOutput',false);
+                
             end
         end
+        disp('row done')
+        toc
         lIndex = lIndex+1;
         newLineFlag = 1;
     end
-
+    rowLabels = labels;
+    
+    % for ii = 1:length(textLineStruct)
+    %     numbers = textLineStruct(ii).Numbers;
+    %     for jj = 1:length(numbers)
+    %         number = numbers(jj);
+    %         rowLabels(rowLabels==number)=ii*100;
+    %     end
+    % end
+    % imagesc(rowLabels), colormap(jet);
     finalBoxes = [];
 end

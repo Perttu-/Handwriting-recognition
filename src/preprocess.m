@@ -62,9 +62,9 @@ function aoiStruct = preprocess(path,testedValue)
     
     preprocessedImage = p.preprocess;
     toc;
-    tic;
+    
     boxes = louloudis(preprocessedImage);
-    toc;
+
 %     disp('Layout analysis...');
 %     tic
 %     l = layoutAnalyzer(preprocessedImage,...

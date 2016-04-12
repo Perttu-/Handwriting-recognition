@@ -19,7 +19,7 @@ function  [accumulatorArray,thetas,rhos,voterCoordCell,voterNumberCell] =...
             t = thetas(jj);
             t = deg2rad(t);
             r = xIndices(ii)*cos(t)+yIndices(ii)*sin(t);
-            %discretizing
+            %discretizing, discretize function(?)
             tBin = round((thetas(jj)-min(thetas))/((max(thetas)-min(thetas))/(numThetas-1)))+1;
             rBin = round((r-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;
             
