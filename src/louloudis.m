@@ -2,6 +2,7 @@ function finalBoxes = louloudis(binarizedImage)
 %implementation based on paper  
 %"Line And Word Segmentation of Handwritten Documents (2009)" 
 %by Louloudis et.al.
+%% pre-procesing
     [imgWidth,imgHeight]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
     boxes = regionprops(logical(labels), 'BoundingBox','Image');
@@ -88,7 +89,7 @@ function finalBoxes = louloudis(binarizedImage)
         end
         subset1(ii).Index = id;
     end
-    
+    %% Hough transform mapping
     [accArray,thetas,rhos,voterNumberCell] = houghTransform(centroidImg,-5:5,0.2*AH);
     
 %     figure();
@@ -99,15 +100,20 @@ function finalBoxes = louloudis(binarizedImage)
 %     axis on, axis normal;
 %     colormap(hot);
     
+%% line detection
     n1 = 5;
     n2 = 9;
 
+    lineStruct = struct('Line',{},...
+                        'Contribution',{},...
+                        'SkewAngle',{});
     
-    lineStruct = struct('Line',[]);
     rowIndex = 1;
+    lineLabels = zeros(imgWidth,imgHeight);
+    tmpImg = lineLabels;
     tic
+    
     while 1
-        
         sizes = cellfun('size', voterNumberCell, 1);
         [maxValue, maxIndex] = max(sizes(:));
         
@@ -126,21 +132,29 @@ function finalBoxes = louloudis(binarizedImage)
         occurences(occurences==0)=[];
         
         objsInLine = uniqueVoters(occurences >= 0.5*pieceAmounts);
+        lineLabels(ismember(labels,objsInLine))=rowIndex;
+        orientation = regionprops((lineLabels==rowIndex),'Orientation');
+
         lineStruct(rowIndex).Line = objsInLine;
+        lineStruct(rowIndex).Contribution = maxValue;
+        lineStruct(rowIndex).SkewAngle = orientation.Orientation;
         rowIndex = rowIndex+1;
         
         voterNumberCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
                                   voterNumberCell,...
                                   'UniformOutput',false);
-        
     end
-    
     toc
     
-    %todo visualization of rows 
-    
-
-    
+    boxProps = regionprops(lineLabels,'BoundingBox');
+    domSkewAngle = mean([lineStruct.SkewAngle]);
+    lineStruct([lineStruct.Contribution]<n2 & abs([lineStruct.SkewAngle]-domSkewAngle)>2)=[];
+    %needs testing if works right
+    lineLabels(~ismember(labels, [lineStruct.Line]))=0;
+    imagesc(lineLabels);
+    figure(),
+    visualizeBBoxes(lineLabels,boxProps,'g',2);
+    %% post-processing
 
     finalBoxes = [];
 end
