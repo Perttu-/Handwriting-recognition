@@ -6,7 +6,7 @@ function visualizeMoreBoxes(boundingBoxes,color,width)
     end
     
     hold on;
-    for ii = 1:size(boundingBoxes,1)
+    for ii = 1:size(bboxes,1)
         box = bboxes(ii,:);
         rectangle('Position',box,...
                   'EdgeColor',color,...

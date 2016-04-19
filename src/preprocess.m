@@ -5,9 +5,9 @@ function aoiStruct = preprocess(path,testedValue)
     
     %IAM database
     
-    %wienerFilterSize = 10;
+    wienerFilterSize = 10;
     %wiener filter can cause some disortion
-    wienerFilterSize = -1;
+    %wienerFilterSize = -1;
     sauvolaNeighbourhoodSize = 180;
     %sauvolaThreshold = 0.3;
     sauvolaThreshold = 0.6;
