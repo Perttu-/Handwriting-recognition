@@ -6,9 +6,8 @@ function finalBoxes = louloudis(binarizedImage)
     [imgWidth,imgHeight]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
     boxes = regionprops(logical(labels), 'BoundingBox','Image');
-    %imagesc(labels),visualizeMoreBoxes(bboxes,'r',2);
-
     boxList = reshape([boxes.BoundingBox],4,[])';
+    
     %Categorizing the connected components into three subsets. 
     %Here the notation is mostly similar to the paper.
     AH = mean(boxList(:,4));
@@ -102,6 +101,7 @@ function finalBoxes = louloudis(binarizedImage)
 %     colormap(hot);
     
 %% line detection
+    %Yay! More hardcoded parameters to tweak.
     n1 = 5;
     n2 = 9;
 
@@ -116,6 +116,9 @@ function finalBoxes = louloudis(binarizedImage)
 
     tic
     
+    %This loop detects peaks from Hough accumulator array, assigns lines
+    %and removes values assigned to line until no peaks high enough remain.
+    %Additionally skew is monitored.
     while 1
         sizes = cellfun('size', voterNumberCell, 1);
         [maxValue, maxIndex] = max(sizes(:));
@@ -139,12 +142,14 @@ function finalBoxes = louloudis(binarizedImage)
 
         lineLabels(ismember(labels,objsInLine))=rowIndex;
         %Here orientation i.e. skew angle is not same as the theta.
-        %The orientation is more sensitive.
-        orientation = regionprops((lineLabels==rowIndex),'Orientation');
+        %The orientation takes whole objects into account whereas Hough
+        %line uses the centroids of splitted components.
+        prop = regionprops(double(lineLabels==rowIndex),'Orientation','Centroid');
 
         lineStruct(rowIndex).Line = objsInLine;
         lineStruct(rowIndex).Contribution = maxValue;
-        lineStruct(rowIndex).SkewAngle = orientation.Orientation;
+        lineStruct(rowIndex).SkewAngle = prop.Orientation;
+        lineStruct(rowIndex).Centroid = prop.Centroid;
         lineStruct(rowIndex).Theta = thetas(maxICol);
         lineStruct(rowIndex).Rho = rhos(maxIRow);
         
@@ -156,40 +161,65 @@ function finalBoxes = louloudis(binarizedImage)
     end
     toc
     
+    %Additional constraint is applied to remove lines with excessive skew.
     domSkewAngle = mean([lineStruct.SkewAngle]);
-    lineStruct([lineStruct.Contribution]<n2 & abs([lineStruct.SkewAngle]-domSkewAngle)>2)=[];
-    %needs testing if works right
+    lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
     lineLabels(~ismember(labels, [lineStruct.Line]))=0;
     
-    %% visualization stuff
-%     boxProps = regionprops(lineLabels,'BoundingBox');
-%     visualizeMoreBoxes(boxProps,'g',2);
-
-    imshow(binarizedImage);
+    %% post-processing
+    
+    %draw vertical line to the middle of image
+    %check if crossing lines have smaller than average distance at this
+    %point
+    %merge lines if so
+    
+    
+    %% visualization stuffs
+    imshow(lineLabels);
     hold on;
     
+    %centroids
     [r,c] = find(centroidImg);
-    plot(c,r,'c*');
+    plot(c,r,'mo');
+    
+    %row
     rhos = [lineStruct.Rho];
     thetas = -[lineStruct.Theta];
     ystrt=rhos.*cosd(thetas);
     
     for ii = 1:length(lineStruct)
-        fp = fplot(@(x) tand(-lineStruct(ii).Theta)*x+ystrt(ii));
-        fp.LineWidth = 2;  
-        fp.LineStyle = '-';
+        fplot(@(x) tand(-lineStruct(ii).Theta)*x+ystrt(ii),...
+              'LineWidth',2,...
+              'LineStyle','-');
+    end
+   
+    %orientation
+    for ii = 1:length(lineStruct)
+        orientation = lineStruct(ii).SkewAngle;
+        centroid = lineStruct(ii).Centroid;
+        ysrt=centroid(2)+centroid(1)*tand(orientation);
+        fplot(@(x) tand(-orientation)*x+ysrt,...
+              'LineWidth',1,...
+              'LineStyle',':');
+        
+
     end
     
-    for ii = 1:length(subset1)
-        pboxes = cell2mat(subset1(ii).PieceBoxCell);
-        visualizeMoreBoxes(pboxes,'y',1);
-    end
+	%row boxes
+%     boxProps = regionprops(lineLabels,'BoundingBox');
+%     visualizeMoreBoxes(boxProps,'g',2);
 
-    visualizeMoreBoxes(subset2,'c',1);
-    visualizeMoreBoxes(subset3,'m',1);
+	%subset boxes
+%     for ii = 1:length(subset1)
+%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
+%         visualizeMoreBoxes(pboxes,'y',1);
+%     end
+% 
+%     visualizeMoreBoxes(subset2,'c',1);
+%     visualizeMoreBoxes(subset3,'m',1);
 
     
-    %% post-processing
+    
 
     finalBoxes = [];
 end
