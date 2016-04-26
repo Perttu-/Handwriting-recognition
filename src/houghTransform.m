@@ -1,34 +1,26 @@
-function  [accumulatorArray,thetas,rhos,voterNumberCell] =...
-    houghTransform(image,thetas,rhoResolution)
-    %flippedImage = flipud(image);
-
+function  [rhos,accArr,voterCell] = houghTransform(image,thetas,rhoRes)
+    % Customized implementation of Hough Transform for the purpose of block
+    % based Hough Transform mapping. Resulting voter cells contain list of
+    % all the contributing connected components.
     [imgWidth,imgHeight] = size(image);
     [xIndices,yIndices] = find(image);
-    %[fxIndices,fyIndices] = find(flippedImage);
-    
     rhoLimit = sqrt(imgHeight^2+imgWidth^2);
-    rhos = -rhoLimit:rhoResolution:rhoLimit;
+    rhos = -rhoLimit:rhoRes:rhoLimit;
     
     numThetas = numel(thetas);
     numRhos = numel(rhos);
-    accumulatorArray = zeros(numRhos,numThetas);
-    voterCoordCell = cell(numRhos,numThetas);
-    voterNumberCell = voterCoordCell;
+    accArr = zeros(numRhos,numThetas);
+    voterCell = cell(numRhos,numThetas);
+    voterArray = accArr;
+    thetas=thetas-90;
     for ii = 1:length(xIndices)
+        r = xIndices(ii).*cosd(thetas)+yIndices(ii).*sind(thetas);
         for jj = 1:numThetas
-            t = thetas(jj);
-            t = deg2rad(t);
-            r = xIndices(ii)*cos(t)+yIndices(ii)*sin(t);
-            %discretizing, discretize function(?)
             tBin = round((thetas(jj)-min(thetas))/((max(thetas)-min(thetas))/(numThetas-1)))+1;
-            rBin = round((r-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;
-            
-            oldCoords = voterCoordCell{rBin,tBin};
-            voterCoordCell{rBin,tBin} = [oldCoords ;[xIndices(ii), yIndices(ii)]];
-            
-            oldNumbers = voterNumberCell{rBin,tBin};
-            voterNumberCell{rBin,tBin} = [oldNumbers ;image(xIndices(ii), yIndices(ii))];
-            accumulatorArray(rBin,tBin) = accumulatorArray(rBin,tBin)+1;
+            rBin = round((r(jj)-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;
+            oldNumbers = voterCell{rBin,tBin};
+            voterCell{rBin,tBin} = [oldNumbers ;image(xIndices(ii), yIndices(ii))];
+            accArr(rBin,tBin) = accArr(rBin,tBin)+1;
         end
     end
 end

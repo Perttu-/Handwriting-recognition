@@ -3,7 +3,7 @@ function finalBoxes = louloudis(binarizedImage)
 %"Line And Word Segmentation of Handwritten Documents (2009)" 
 %by Louloudis et.al.
 %% pre-procesing
-    [imgWidth,imgHeight]=size(binarizedImage);
+    [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
     boxes = regionprops(logical(labels), 'BoundingBox','Image');
     boxList = reshape([boxes.BoundingBox],4,[])';
@@ -53,7 +53,7 @@ function finalBoxes = louloudis(binarizedImage)
     end
 
     %Partition subset1 to equally sized boxes and extracting centroid pixels
-    centroidImg = zeros(imgWidth,imgHeight);
+    centroidImg = zeros(imgHeight,imgWidth);
 
     for ii = 1:length(subset1)
         box = subset1(ii).BoundingBox;
@@ -90,18 +90,22 @@ function finalBoxes = louloudis(binarizedImage)
         subset1(ii).PieceBoxCell = relBoxes;
     end
     %% Hough transform mapping
-    [accArray,thetas,rhos,voterNumberCell] = houghTransform(centroidImg,-5:5,0.2*AH);
-    
-%     figure();
-%     imshow(imadjust(mat2gray(accArray)),'XData',thetas,'YData',rhos,...
+    tic
+    thetas = 85:95;
+    %thetas = 40:130;
+    [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
+    disp(['Hough Transform done in ', num2str(toc), ' seconds'])
+%     figure(),
+%     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
 %        'InitialMagnification','fit');
 %     title('Hough Transform');
 %     xlabel('\theta'), ylabel('\rho');
 %     axis on, axis normal;
 %     colormap(hot);
-    
+%     drawnow
+
 %% line detection
-    %Yay! More hardcoded parameters to tweak.
+    
     n1 = 5;
     n2 = 9;
 
@@ -112,7 +116,7 @@ function finalBoxes = louloudis(binarizedImage)
                         'Rho',{});
     
     rowIndex = 1;
-    lineLabels = zeros(imgWidth,imgHeight);
+    lineLabels = zeros(imgHeight,imgWidth);
 
     tic
     
@@ -120,16 +124,15 @@ function finalBoxes = louloudis(binarizedImage)
     %and removes values assigned to line until no peaks high enough remain.
     %Additionally skew is monitored.
     while 1
-        sizes = cellfun('size', voterNumberCell, 1);
+        sizes = cellfun('size', voterCell, 1);
         [maxValue, maxIndex] = max(sizes(:));
-        
         if maxValue < n1
             break
         end
         
-        [maxIRow, maxICol] = ind2sub(size(voterNumberCell),maxIndex);
+        [maxIRow, maxICol] = ind2sub(size(voterCell),maxIndex);
 
-        nearVoters = voterNumberCell(maxIRow-5:maxIRow+5,maxICol);
+        nearVoters = voterCell(maxIRow-5:maxIRow+5,maxICol);
         voterNumbers = cell2mat(nearVoters(~cellfun('isempty',nearVoters)));
         
         uniqueVoters = unique(voterNumbers)';
@@ -155,26 +158,58 @@ function finalBoxes = louloudis(binarizedImage)
         
         rowIndex = rowIndex+1;
         
-        voterNumberCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
-                                  voterNumberCell,...
-                                  'UniformOutput',false);
+        %this operation might need optimization
+        voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
+                            voterCell,...
+                            'UniformOutput',false);
+        
     end
-    toc
+    disp(['Line detection done in ', num2str(toc), ' seconds'])
     
     %Additional constraint is applied to remove lines with excessive skew.
+    %Excessive skew defined by parameter n2.
     domSkewAngle = mean([lineStruct.SkewAngle]);
     lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
     lineLabels(~ismember(labels, [lineStruct.Line]))=0;
     
     %% post-processing
     
+    %find line end points
+    numOfLines = length(lineStruct);
+    endPointCell = cell(numOfLines,2);
+
+    for ii = 1:numOfLines
+        xLimits = [0,imgWidth];
+        yLimits = [0,imgHeight];
+        ys = (lineStruct(ii).Rho+xLimits.*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
+        outIndx = 0>ys | ys>imgHeight;
+        ys(outIndx)=yLimits(outIndx);
+        xs = (lineStruct(ii).Rho+yLimits.*sind(lineStruct(ii).Theta))/cosd(lineStruct(ii).Theta);
+        outIndx = 0>xs | xs>imgHeight;
+        xs(outIndx)=xLimits(outIndx);
+        endPointCell{ii,1}=xs;
+        endPointCell{ii,2}=ys;
+    end
+    
+    imshow(lineLabels);
+    hold on;
+    for ii =1:numOfLines
+        plot(endPointCell{ii,1},endPointCell{ii,2},'LineWidth',2);
+    end
+    
+    %intersection points?
+%     xy1 = cell2mat(endPointCell);
+%     out = lineSegmentIntersect(xy1,xy1)
+
     %draw vertical line to the middle of image
+    lineX = imgWidth/2;
     %check if crossing lines have smaller than average distance at this
     %point
     %merge lines if so
     
     
     %% visualization stuffs
+    figure(),
     imshow(lineLabels);
     hold on;
     
@@ -185,25 +220,36 @@ function finalBoxes = louloudis(binarizedImage)
     %row
     rhos = [lineStruct.Rho];
     thetas = -[lineStruct.Theta];
-    ystrt=rhos.*cosd(thetas);
+    lineAmount = length(lineStruct);
+    xStarts = zeros(lineAmount,1);
+    yStarts = xStarts;
+    x = 0:imgWidth;
     
+%     for ii = 1:lineAmount
+%         rho = lineStruct(ii).Rho;
+%         theta = abs(lineStruct(ii).Theta);
+%         ystart = rho*cosd(theta);
+%         y = (rho-x*cosd(theta))/sind(theta);
+%         plot(x,y);
+%     end
+
     for ii = 1:length(lineStruct)
-        fplot(@(x) tand(-lineStruct(ii).Theta)*x+ystrt(ii),...
+        %+x for some reason
+        func = @(x) (lineStruct(ii).Rho+x*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
+        fplot(func,...
               'LineWidth',2,...
               'LineStyle','-');
     end
-   
-    %orientation
-    for ii = 1:length(lineStruct)
-        orientation = lineStruct(ii).SkewAngle;
-        centroid = lineStruct(ii).Centroid;
-        ysrt=centroid(2)+centroid(1)*tand(orientation);
-        fplot(@(x) tand(-orientation)*x+ysrt,...
-              'LineWidth',1,...
-              'LineStyle',':');
-        
-
-    end
+%    
+%     %orientation
+%     for ii = 1:length(lineStruct)
+%         orientation = lineStruct(ii).SkewAngle;
+%         centroid = lineStruct(ii).Centroid;
+%         ysrt=centroid(2)+centroid(1)*tand(orientation);
+%         fplot(@(x) tand(-orientation)*x+ysrt,...
+%               'LineWidth',1,...
+%               'LineStyle',':');
+%     end
     
 	%row boxes
 %     boxProps = regionprops(lineLabels,'BoundingBox');
@@ -218,8 +264,6 @@ function finalBoxes = louloudis(binarizedImage)
 %     visualizeMoreBoxes(subset2,'c',1);
 %     visualizeMoreBoxes(subset3,'m',1);
 
-    
-    
 
     finalBoxes = [];
 end

@@ -4,7 +4,6 @@ function aoiStruct = preprocess(path,testedValue)
     [image, map]=imread(path);
     
     %IAM database
-    
     wienerFilterSize = 10;
     %wiener filter can cause some disortion
     %wienerFilterSize = -1;
@@ -49,7 +48,7 @@ function aoiStruct = preprocess(path,testedValue)
     
     
     
-    disp('Preprocessing...');
+
     tic;
     p = preprocessor(image,...
                      map,...
@@ -61,7 +60,7 @@ function aoiStruct = preprocess(path,testedValue)
                      strokeWidthThreshold);
     
     preprocessedImage = p.preprocess;
-    toc;
+    disp(['Pre processing done in ', num2str(toc), ' seconds'])
     
     boxes = louloudis(preprocessedImage);
 
