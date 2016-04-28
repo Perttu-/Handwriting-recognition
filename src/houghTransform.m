@@ -11,10 +11,12 @@ function  [rhos,accArr,voterCell] = houghTransform(image,thetas,rhoRes)
     numRhos = numel(rhos);
     accArr = zeros(numRhos,numThetas);
     voterCell = cell(numRhos,numThetas);
-    voterArray = accArr;
     thetas=thetas-90;
     for ii = 1:length(xIndices)
-        r = xIndices(ii).*cosd(thetas)+yIndices(ii).*sind(thetas);
+        %negative Y here because image coordinates origin is in upper-left
+        %corner. Original Hessian form:
+        % rho = x*cos(theta) + y*sin(theta)
+        r = xIndices(ii).*cosd(thetas)-yIndices(ii).*sind(thetas);
         for jj = 1:numThetas
             tBin = round((thetas(jj)-min(thetas))/((max(thetas)-min(thetas))/(numThetas-1)))+1;
             rBin = round((r(jj)-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;

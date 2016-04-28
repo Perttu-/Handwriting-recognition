@@ -91,8 +91,8 @@ function finalBoxes = louloudis(binarizedImage)
     end
     %% Hough transform mapping
     tic
-    thetas = 85:95;
-    %thetas = 40:130;
+    %thetas = 85:95;
+    thetas = 40:130;
     [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
     disp(['Hough Transform done in ', num2str(toc), ' seconds'])
 %     figure(),
@@ -176,54 +176,81 @@ function finalBoxes = louloudis(binarizedImage)
     
     %find line end points
     numOfLines = length(lineStruct);
-    endPointCell = cell(numOfLines,2);
-
+    linePoints  = zeros(numOfLines,2);
+    xLimits = [0,imgWidth];
+    yLimits = [0,imgHeight];
     for ii = 1:numOfLines
-        xLimits = [0,imgWidth];
-        yLimits = [0,imgHeight];
-        ys = (lineStruct(ii).Rho+xLimits.*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
-        outIndx = 0>ys | ys>imgHeight;
-        ys(outIndx)=yLimits(outIndx);
-        xs = (lineStruct(ii).Rho+yLimits.*sind(lineStruct(ii).Theta))/cosd(lineStruct(ii).Theta);
-        outIndx = 0>xs | xs>imgHeight;
-        xs(outIndx)=xLimits(outIndx);
-        endPointCell{ii,1}=xs;
-        endPointCell{ii,2}=ys;
+        theta = lineStruct(ii).Theta;
+        rho = lineStruct(ii).Rho;
+        ys = (rho-xLimits.*cosd(theta))/sind(theta);
+        outIndxY = 0>ys | ys>imgHeight;
+        ys(outIndxY)=yLimits(outIndxY);
+        xs = (rho-yLimits.*sind(theta))/cosd(theta);
+        outIndxX = 0>xs | xs>imgHeight;
+        xs(outIndxX)=xLimits(outIndxX);
+        linePoints(ii,1) = xs(1);
+        linePoints(ii,2) = ys(1);
+        linePoints(ii,3) = xs(2);
+        linePoints(ii,4) = ys(2);
     end
     
     imshow(lineLabels);
     hold on;
     for ii =1:numOfLines
-        plot(endPointCell{ii,1},endPointCell{ii,2},'LineWidth',2);
+        plot([linePoints(ii,1),linePoints(ii,3)],...
+             [linePoints(ii,2),linePoints(ii,4)],...
+             'LineWidth',2);
     end
     
-    %intersection points?
-%     xy1 = cell2mat(endPointCell);
-%     out = lineSegmentIntersect(xy1,xy1)
-
+    %intersecting lines
+    intersection = lineSegmentIntersect(linePoints,linePoints);
+    [cLine1,cLine2]=find(tril(intersection.intAdjacencyMatrix));
+    
     %draw vertical line to the middle of image
-    lineX = imgWidth/2;
-    %check if crossing lines have smaller than average distance at this
-    %point
-    %merge lines if so
+    midX = imgWidth/2;
+    centerLineX = [midX,midX];
+    centerLineY = [0,imgHeight];
+    plot(centerLineX, centerLineY,...
+         'LineWidth',2,...
+         'LineStyle',':');
+    hold off;
+    figure(),imagesc(lineLabels);
+    title('Before merging');
+    %Check if crossing lines have smaller than average distance at the
+    %center of image and merge them if so. 
+    %Note: the array lineLabels is the final container of the lines as 
+    %lineStruct is not valid after the merging.
+    centerLine = [centerLineX(1),centerLineY(1),centerLineX(2),centerLineY(2)];
+    middleIntersection = lineSegmentIntersect(linePoints,centerLine);
+    yIntersects = middleIntersection.intMatrixY;
+    avgDistance = mean(abs(diff(sort(yIntersects))));
     
-    
+    for ii=1:length(cLine1)
+        crossLine1Y = yIntersects(cLine1(ii));
+        crossLine2Y = yIntersects(cLine2(ii));
+        distance = abs(crossLine1Y-crossLine2Y);
+        if distance<avgDistance
+            lineLabels(ismember(lineLabels,cLine1(ii)))=cLine2(ii);
+        end
+    end
+    figure(),imagesc(lineLabels);
+    title('After merging');
     %% visualization stuffs
-    figure(),
-    imshow(lineLabels);
-    hold on;
+%     figure(),
+%     imshow(lineLabels);
+%     hold on;
     
     %centroids
-    [r,c] = find(centroidImg);
-    plot(c,r,'mo');
+%     [r,c] = find(centroidImg);
+%     plot(c,r,'mo');
     
     %row
-    rhos = [lineStruct.Rho];
-    thetas = -[lineStruct.Theta];
-    lineAmount = length(lineStruct);
-    xStarts = zeros(lineAmount,1);
-    yStarts = xStarts;
-    x = 0:imgWidth;
+%     rhos = [lineStruct.Rho];
+%     thetas = -[lineStruct.Theta];
+%     lineAmount = length(lineStruct);
+%     xStarts = zeros(lineAmount,1);
+%     yStarts = xStarts;
+%     x = 0:imgWidth;
     
 %     for ii = 1:lineAmount
 %         rho = lineStruct(ii).Rho;
@@ -233,13 +260,13 @@ function finalBoxes = louloudis(binarizedImage)
 %         plot(x,y);
 %     end
 
-    for ii = 1:length(lineStruct)
-        %+x for some reason
-        func = @(x) (lineStruct(ii).Rho+x*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
-        fplot(func,...
-              'LineWidth',2,...
-              'LineStyle','-');
-    end
+%     for ii = 1:length(lineStruct)
+%         %+x for some reason
+%         func = @(x) (lineStruct(ii).Rho+x*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
+%         fplot(func,...
+%               'LineWidth',2,...
+%               'LineStyle','-');
+%     end
 %    
 %     %orientation
 %     for ii = 1:length(lineStruct)
