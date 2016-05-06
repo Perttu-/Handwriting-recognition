@@ -11,7 +11,6 @@ Some test images are taken from IAM handwriting database.
 - Stroke width analysis
 
 ####Layout Analysis:
-- Bounding box expansion to find areas of interest
-- Rlsa(run length smearing algorithm) for row and word detection
+
 TODO: Implement row detection that works with overlapping lines.
 

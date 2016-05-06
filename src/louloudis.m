@@ -91,10 +91,10 @@ function finalBoxes = louloudis(binarizedImage)
     end
     %% Hough transform mapping
     tic
-    %thetas = 85:95;
-    thetas = 40:130;
+    thetas = 85:95;
+    %thetas = 40:130;
     [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
-    disp(['Hough Transform done in ', num2str(toc), ' seconds'])
+    disp(['Hough Transform done in ', num2str(toc), ' seconds']);
 %     figure(),
 %     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
 %        'InitialMagnification','fit');
@@ -158,27 +158,32 @@ function finalBoxes = louloudis(binarizedImage)
         
         rowIndex = rowIndex+1;
         
-        %this operation might need optimization
+        %this operation takes most of the time. Running time depends on 
+        %centroid pixel amount and Hough accumulator array size.
+        tic
         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
                             voterCell,...
                             'UniformOutput',false);
-        
+        toc
+
     end
-    disp(['Line detection done in ', num2str(toc), ' seconds'])
+    
     
     %Additional constraint is applied to remove lines with excessive skew.
     %Excessive skew defined by parameter n2.
     domSkewAngle = mean([lineStruct.SkewAngle]);
     lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
     lineLabels(~ismember(labels, [lineStruct.Line]))=0;
+    disp(['Line detection done in ', num2str(toc), ' seconds']);
     
     %% post-processing
-    
+    tic
     %find line end points
     numOfLines = length(lineStruct);
     linePoints  = zeros(numOfLines,2);
     xLimits = [0,imgWidth];
     yLimits = [0,imgHeight];
+    
     for ii = 1:numOfLines
         theta = lineStruct(ii).Theta;
         rho = lineStruct(ii).Rho;
@@ -218,8 +223,9 @@ function finalBoxes = louloudis(binarizedImage)
     title('Before merging');
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
-    %Note: the array lineLabels is the final container of the lines as 
+    %Note: The array lineLabels is the final container of the lines as 
     %lineStruct is not valid after the merging.
+
     centerLine = [centerLineX(1),centerLineY(1),centerLineX(2),centerLineY(2)];
     middleIntersection = lineSegmentIntersect(linePoints,centerLine);
     yIntersects = middleIntersection.intMatrixY;
@@ -229,45 +235,23 @@ function finalBoxes = louloudis(binarizedImage)
         crossLine1Y = yIntersects(cLine1(ii));
         crossLine2Y = yIntersects(cLine2(ii));
         distance = abs(crossLine1Y-crossLine2Y);
+        %Note: Row above other might be merged with the lower if it is too 
+        %close. (skewLine2.png)
         if distance<avgDistance
             lineLabels(ismember(lineLabels,cLine1(ii)))=cLine2(ii);
         end
     end
+    
+    disp(['Line merging done in ', num2str(toc), ' seconds'])
     figure(),imagesc(lineLabels);
     title('After merging');
-    %% visualization stuffs
-%     figure(),
-%     imshow(lineLabels);
-%     hold on;
     
+    %% visualization stuffs
+
     %centroids
 %     [r,c] = find(centroidImg);
 %     plot(c,r,'mo');
-    
-    %row
-%     rhos = [lineStruct.Rho];
-%     thetas = -[lineStruct.Theta];
-%     lineAmount = length(lineStruct);
-%     xStarts = zeros(lineAmount,1);
-%     yStarts = xStarts;
-%     x = 0:imgWidth;
-    
-%     for ii = 1:lineAmount
-%         rho = lineStruct(ii).Rho;
-%         theta = abs(lineStruct(ii).Theta);
-%         ystart = rho*cosd(theta);
-%         y = (rho-x*cosd(theta))/sind(theta);
-%         plot(x,y);
-%     end
-
-%     for ii = 1:length(lineStruct)
-%         %+x for some reason
-%         func = @(x) (lineStruct(ii).Rho+x*cosd(lineStruct(ii).Theta))/sind(lineStruct(ii).Theta);
-%         fplot(func,...
-%               'LineWidth',2,...
-%               'LineStyle','-');
-%     end
-%    
+      
 %     %orientation
 %     for ii = 1:length(lineStruct)
 %         orientation = lineStruct(ii).SkewAngle;

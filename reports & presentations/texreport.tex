@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\title{%
+  Handwriting Recognition \\
+  \large Pre-processing and Layout Analysis}
+
+\author{Perttu Pitk{\"a}nen}
+
+\begin{document}
+ \maketitle
+
+ \newpage
+ \addcontentsline{toc}{section}{Abstract}
+ \section*{Abstract}
+
+  Abstract text
+
+
+ \newpage
+ \addcontentsline{toc}{section}{Table of Contents}
+ \tableofcontents
+
+
+ \newpage
+ \addcontentsline{toc}{section}{Glossary}
+ \section*{Glossary}
+
+  OCR Optical Character Recognition
+
+  HWR Handwriting Recognition
+
+ \newpage
+ \section{Introduction}
+  Optical Character Recognition (OCR) is the process of analyzing a image input of  text and recognizing and extracting the characters to digital from. More specific case of character recognition process is the task of handwriting recognition (HWR) which concentrates on analyzing human hand written characters instead of printed characters. The unpredictable nature of human handwriting can make the task more challenging ascompared to printed text. Most HWR systems can be divided into two recognition approaches: \textit{online handwriting recognition} and \textit{offline handwriting recognition}. Offline handwriting recognition means analyzing an existing static image for handwritten text. Online handwriting recognition, on the other hand, is about analyzing the handwritten text on input including strokes and their order for example in touch screen appliances such as smartphones and tablet PCs.
+
+  Handwriting recognition can be applied to many practical uses such as document digitizaton or novel human-computer interaction method. Handwriting has remained popular as a way to take notes and transfer information, even though increased popularity and technological advancements of handheld digital devices have made digital information saving increasingly convinient. The process of handwriting recognition is still undergoing development.
+
+  For reliable results the handwritten input image must be processed appropriately. This includes preprocessing and layout analysis of which aim to enhance the image quality for later processing and find the different bodies of text. There is no general consensus of which methods or algorithms give the best results. This research will experiment with different methods to gain insight on each method or algorithms strengths and weaknesses.
+
+\newpage
+\section{Background}
+  For long writing has been an important way of communicating for humans.  Advacements with personal computers has diversified the methods to store and display textual information which has brought up new challenges and problems considering the transformation between traditional information and digital data. One of these challenges is the process of digitizing written text to computer readable and editable form.
+
+  Textual information can be in diverse forms and styles. These styles include machine printed text and handwritten text. Different approaches must be used when digitizing aforementioned styles of text.
+
+  Plenty of research has been conducted and several systems have been implemented for the purpose of optical character recognition and handwriting recognition. These systems can have drastically different approaches for processing the data, even if the data is similar.
+
+\subsection{Writing Recognition}
+Typical OCR and HWR systems consist of three phases:
+\begin{enumerate}
+  \item{Preprocessing}
+  \item{Layout Analysis}
+  \item{Feature Extraction}
+  \item{Classification}
+\end{enumerate}
+1. Preprocessing
+(including Layout analysis)
+2. Feature extraction
+3. Classification
+
+In image preprocessing stage the quality of image is enhanced and the area of interest is located. Additionally layout analysis phase can be included into the preprocessing stage. The feature extraction stage captures the distinctive characteristics of the digitized characters for recognition. Lastly in during the classification stage the feature vectors are processed to identify the characters and words. Each of these stages reduce the amount of information to be processed at a later step. \cite{Cheriet2007}
+
+  \subsubsection{Preprocessing}
+  \subsubsection{Layout Analysis}
+  \subsubsection{Feature Extraction}
+  \subsubsection{Classification}
+
+\subsection{State of the Art}
+  Tesseract etc
+
+\newpage
+\section{Implementation}
+implmnt
+
+\newpage
+\section{Evaluation}
+evltn
+
+\newpage
+\bibliographystyle{abbrv}
+\bibliography{hwr_bibliography}
+
+
+\end{document}
