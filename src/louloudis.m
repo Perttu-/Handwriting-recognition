@@ -93,7 +93,7 @@ function finalBoxes = louloudis(binarizedImage)
     tic
     thetas = 85:95;
     %thetas = 40:130;
-    [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
+    [rhos,~,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
     disp(['Hough Transform done in ', num2str(toc), ' seconds']);
 %     figure(),
 %     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
@@ -160,11 +160,11 @@ function finalBoxes = louloudis(binarizedImage)
         
         %this operation takes most of the time. Running time depends on 
         %centroid pixel amount and Hough accumulator array size.
-        tic
+        
         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
                             voterCell,...
                             'UniformOutput',false);
-        toc
+        
 
     end
     
@@ -219,8 +219,10 @@ function finalBoxes = louloudis(binarizedImage)
          'LineWidth',2,...
          'LineStyle',':');
     hold off;
-    figure(),imagesc(lineLabels);
-    title('Before merging');
+    
+%     figure(),imagesc(lineLabels);
+%     title('Before merging');
+    
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
     %Note: The array lineLabels is the final container of the lines as 
@@ -243,8 +245,18 @@ function finalBoxes = louloudis(binarizedImage)
     end
     
     disp(['Line merging done in ', num2str(toc), ' seconds'])
-    figure(),imagesc(lineLabels);
-    title('After merging');
+%     figure(),imagesc(lineLabels);
+%     title('After merging');
+
+    %find CCs that weren't assigned to any line
+    ccsInLines = [lineStruct.Line];
+    subset1CCs = [subset1.Index];
+    ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
+    [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
+    
+    %find distance between each of these centroid pixels and nearest
+    %detected line. somehow...
+    
     
     %% visualization stuffs
 

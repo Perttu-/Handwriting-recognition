@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: texreport.aux
+The style file: abbrv.bst
+Database file #1: hwr_bibliography.bib
+Warning--empty journal in ABBYY
+Warning--empty year in ABBYY
+Warning--empty publisher in Cheriet2007
+Warning--empty journal in Dalal
+Warning--empty year in Dalal
+You've used 12 entries,
+            2118 wiz_defined-function locations,
+            561 strings with 5672 characters,
+and the built_in function-call counts, 3208 in all, are:
+= -- 309
+> -- 128
+< -- 2
++ -- 52
+- -- 40
+* -- 158
+:= -- 534
+add.period$ -- 34
+call.type$ -- 12
+change.case$ -- 55
+chr.to.int$ -- 0
+cite$ -- 17
+duplicate$ -- 125
+empty$ -- 279
+format.name$ -- 40
+if$ -- 683
+int.to.chr$ -- 0
+int.to.str$ -- 12
+missing$ -- 7
+newline$ -- 61
+num.names$ -- 24
+pop$ -- 91
+preamble$ -- 1
+purify$ -- 44
+quote$ -- 0
+skip$ -- 109
+stack$ -- 0
+substring$ -- 149
+swap$ -- 28
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 46
+warning$ -- 5
+while$ -- 32
+width$ -- 14
+write$ -- 115
+(There were 5 warnings)

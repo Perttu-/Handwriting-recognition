@@ -1,0 +1,9 @@
+#!/bin/sh
+
+latex texreport
+bibtex texreport.aux
+latex texreport
+latex texreport
+latex texreport
+#xdvi texreport.dvi &
+okular texreport.dvi

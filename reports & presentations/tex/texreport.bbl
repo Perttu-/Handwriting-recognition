@@ -1,0 +1,73 @@
+\begin{thebibliography}{10}
+
+\bibitem{ABBYY}
+ABBYY.
+\newblock {ABBYY FineReader}.
+
+\bibitem{Angelica}
+A.~D. Angelica and J.~Schmidhuber.
+\newblock {How bio-inspired deep learning keeps winning competitions}.
+\newblock
+  \url{http://www.kurzweilai.net/how-bio-inspired-deep-learning-keeps-winning-competitions}.
+
+\bibitem{Breuel2007}
+T.~Breuel.
+\newblock {Announcing the OCRopus Open Source OCR System}.
+\newblock
+  \url{https://web.archive.org/web/20150313051644/http://googlecode.blogspot.com/2007/04/announcing-ocropus-open-source-ocr.html},
+  2007.
+
+\bibitem{Cheriet2007}
+M.~Cheriet, N.~Kharma, C.~Liu, and C.~Suen.
+\newblock {\em {Character recognition systems: a guide for students and
+  practitioners}}.
+\newblock 2007.
+
+\bibitem{CognitiveTechnologies2016}
+{Cognitive Technologies}.
+\newblock {CuneiForm}.
+\newblock
+  \url{http://cognitiveforms.com/products{\_}and{\_}services/cuneiform}, 2016.
+
+\bibitem{Dalal}
+M.~S. Dalal.
+\newblock {A Survey for Feature Extraction Methods in Handwritten Script
+  Identification}.
+
+\bibitem{Dalal2005}
+N.~Dalal and B.~Triggs.
+\newblock {Histograms of Oriented Gradients for Human Detection}.
+\newblock {\em CVPR '05: Proceedings of the 2005 IEEE Computer Society
+  Conference on Computer Vision and Pattern Recognition (CVPR'05) - Volume 1},
+  pages 886--893, 2005.
+
+\bibitem{FreeSoftwareFoundation2016}
+{Free Software Foundation}.
+\newblock {Ocrad - The GNU OCR}.
+\newblock \url{https://www.gnu.org/software/ocrad/}, 2016.
+
+\bibitem{Kelly}
+B.~Kelly.
+\newblock {How Evernote's Image Recognition Works}.
+\newblock
+  \url{https://blog.evernote.com/tech/2013/07/18/how-evernotes-image-recognition-works/}.
+
+\bibitem{Pesch2012}
+H.~Pesch, M.~Hamdani, J.~Forster, and H.~Ney.
+\newblock {Analysis of Preprocessing Techniques for Latin Handwriting
+  Recognition}.
+\newblock {\em 2012 International Conference on Frontiers in Handwriting
+  Recognition}, pages 280--284, 2012.
+
+\bibitem{Smith2007a}
+R.~Smith.
+\newblock {An overview of the tesseract OCR engine}.
+\newblock {\em Proceedings of the International Conference on Document Analysis
+  and Recognition, ICDAR}, 2:629--633, 2007.
+
+\bibitem{TheMathWorksa}
+I.~{The MathWorks}.
+\newblock {Image Processing Toolbox}.
+\newblock \url{http://se.mathworks.com/products/image/}.
+
+\end{thebibliography}

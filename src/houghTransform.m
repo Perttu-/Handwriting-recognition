@@ -9,6 +9,7 @@ function  [rhos,accArr,voterCell] = houghTransform(image,thetas,rhoRes)
     
     numThetas = numel(thetas);
     numRhos = numel(rhos);
+    %accArr is needed only to visualize accumulator array
     accArr = zeros(numRhos,numThetas);
     voterCell = cell(numRhos,numThetas);
     thetas=thetas-90;

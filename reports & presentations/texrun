@@ -1,7 +1,0 @@
-#!/bin/sh
-
-latex texreport.tex
-bibtex texreport.aux
-latex texreport.tex
-latex texreport.tex
-xdvi texreport.dvi &
