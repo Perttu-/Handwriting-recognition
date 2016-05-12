@@ -5,12 +5,12 @@ function visualizeMoreBoxes(boundingBoxes,color,width)
         bboxes = boundingBoxes;
     end
     
-    hold on;
+    
     for ii = 1:size(bboxes,1)
         box = bboxes(ii,:);
         rectangle('Position',box,...
                   'EdgeColor',color,...
                   'LineWidth',width);
     end
-    hold off;
+    
 end

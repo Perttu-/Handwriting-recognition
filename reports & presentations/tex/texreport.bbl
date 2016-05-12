@@ -59,6 +59,11 @@ H.~Pesch, M.~Hamdani, J.~Forster, and H.~Ney.
 \newblock {\em 2012 International Conference on Frontiers in Handwriting
   Recognition}, pages 280--284, 2012.
 
+\bibitem{Sauvola2000}
+J.~Sauvola and M.~Pietik{\"{a}}inen.
+\newblock {Adaptive document image binarization}.
+\newblock {\em Pattern Recognition}, 33(2):225--236, 2000.
+
 \bibitem{Smith2007a}
 R.~Smith.
 \newblock {An overview of the tesseract OCR engine}.
@@ -69,5 +74,11 @@ R.~Smith.
 I.~{The MathWorks}.
 \newblock {Image Processing Toolbox}.
 \newblock \url{http://se.mathworks.com/products/image/}.
+
+\bibitem{TheMathWorksWiener}
+I.~{The MathWorks}.
+\newblock {Noise Removal}.
+\newblock
+  \url{http://www.mathworks.com/help/images/noise-removal.html#buh9ylp-72}.
 
 \end{thebibliography}

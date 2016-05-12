@@ -98,7 +98,7 @@
           Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time.[----sources??----] [image also pls]
 
     \subsection{State of the Art}
-      The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning and neural networks to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are previously mentioned Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad \cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are not capable of handwriting recognition by default. Additionally, handwriting recognition algorithms developed by Jürgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
+      The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning and neural networks to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad\cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are designed to process printed text and are not capable of handwriting recognition by default. Although for example Tesseract can be trained to detect any kind of text.\cite{Smith2007a} Additionally, handwriting recognition algorithms developed by Jürgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
 
 
   \newpage
@@ -106,18 +106,20 @@
     The goal of this research is to gain insight on different methods that can be applied to pre-processing and layout analysis. Different methods were experimented with and the results were compared to merit and de-merit these methods and algorithms. Studied methods were aquired from various sources such as scientific papers or websites.
     \subsection{Methods for Pre-Processing}
       As mentioned before pre-processing requires various filters and transforms to enhance image quality. More specifically aiming the resulting image to contain only textual elements and as little noise as possible. For this research experimented methods are as follows:
-      \begin{description}
-        \item [Noise Removal]
-        \item [Contras Enhancement]
-        \item [Binarization]
-        \item [Component Property Analysis]
-        \item [Stroke Width Analysis]
-      \end{description}
+
+        \subsubsection{Noise Removal}
+          Noise in image can affect negatively to the rest of the recognition process. For that reason it is important to remove as much noise as possible without losing any textual information. For this purpose adaptive Wiener filter was chosen. Prior to using this filter image is converted to grayscale. Adaptive Wieners main advantage is that it can apply varying amounts of filtering to areas having different variations thus preserving textual information better than linear filtering.\cite{TheMathWorksWiener}
+        \subsubsection{Contrast Enhancement}
+          To make the text more prominent the contrast of the image can be enhanced. For this purpose
+        \subsubsection{Binarization}
+        \subsubsection{Component Property Analysis}
+        \subsubsection{Stroke Width Analysis}
+
 
     \subsection{Methods for Layout Analysis}
       To find information about tex location within the image layout analysis methods should be applied. The goal is to exclude irrelevant components that might remain after pre-proessing and extract only the textual objects from the input image with information about the relative location within the document. Following methods were used in experiments:
       \begin{description}
-        \item [Bounding Box Expansion Method] [thorough explanation and images and stuff pls]
+        \item [Bounding Box Expansion Method] [thorough explanations and images and stuff pls]
         \item [Run Length Smearing Algorithm (RLSA)]
         \item [Block Based Hough Transform Mapping]
       \end{description}
@@ -131,12 +133,8 @@
         \item [Image acquisition] Matlab can process jpg, png and gif images to name a few.
         \item [Conversion to grayscale] Matlab function \code{rgb2gray(I)} eliminates hue and saturation information and keeps lumination. The image must be rgb color model before conversion.
         \item [Noise removal] This is done with n x m adaptive Wiener filter provided in MATLAB image processing toolbox. The filter size must be defined beforehand. In this case the filter size will be adjusted according to input data and test results.
-        \item [Binarization] Sauvola algorithm is used as it is one of the most popular binarization methods and it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm.
-        \code{sauvola(I, [M, N], threshold, padding)}
-        I = image
-        [M, N] = MxN neighborhood used to determine the adaptive threshold for that area.
-        Threshold (k) = user defined parameter. Used in the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values remove more noise but result in more fractioned results. There is no consensus for choosing these values so they should be chosen case by case basis.
-        Padding = the method to handle border pixels. Default mode is replicate which replicates the border pixels.
+        \item [Binarization] Sauvola algorithm as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000}
+        Following  constraints must be defined prior to binarization procedure: The dimensions of MxN neighborhood used to determine the adaptive threshold for that area. Threshold k ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis.
       \end{description}
 
       \subsection{Layout Analysis Implementation}

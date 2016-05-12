@@ -165,7 +165,6 @@ function finalBoxes = louloudis(binarizedImage)
                             voterCell,...
                             'UniformOutput',false);
         
-
     end
     
     
@@ -199,13 +198,9 @@ function finalBoxes = louloudis(binarizedImage)
         linePoints(ii,4) = ys(2);
     end
     
-    imshow(lineLabels);
+    %figure(),imshow(lineLabels);
     hold on;
-    for ii =1:numOfLines
-        plot([linePoints(ii,1),linePoints(ii,3)],...
-             [linePoints(ii,2),linePoints(ii,4)],...
-             'LineWidth',2);
-    end
+    
     
     %intersecting lines
     intersection = lineSegmentIntersect(linePoints,linePoints);
@@ -215,13 +210,27 @@ function finalBoxes = louloudis(binarizedImage)
     midX = imgWidth/2;
     centerLineX = [midX,midX];
     centerLineY = [0,imgHeight];
-    plot(centerLineX, centerLineY,...
-         'LineWidth',2,...
-         'LineStyle',':');
-    hold off;
+%     plot(centerLineX, centerLineY,...
+%          'LineWidth',2,...
+%          'LineStyle',':');
+%     hold off;
     
 %     figure(),imagesc(lineLabels);
 %     title('Before merging');
+    
+    imshow(binarizedImage);
+    drawnow
+    hold on;
+    for ii = 1:length(subset1)
+        pboxes = cell2mat(subset1(ii).PieceBoxCell);
+        visualizeMoreBoxes(pboxes,'y',1);
+    end
+    
+    for ii =1:numOfLines
+        plot([linePoints(ii,1),linePoints(ii,3)],...
+             [linePoints(ii,2),linePoints(ii,4)],...
+             'LineWidth',2);
+    end
     
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
@@ -253,9 +262,36 @@ function finalBoxes = louloudis(binarizedImage)
     subset1CCs = [subset1.Index];
     ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
     [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
+    %cPoints = [cCol,cRow]; %change into order X,Y
+    cPoints = [cRow,cCol];
+    rowCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
     
     %find distance between each of these centroid pixels and nearest
-    %detected line. somehow...
+    %detected line. 
+    candidatePoints = [];
+    for ii = 1:length(cPoints)
+        p = cPoints(ii,:);
+        %find nearest line
+        pY = p(2);
+        tmp = abs(rowCentYs-pY);
+        [~,minIdx] = min(tmp);
+        closestLine = linePoints(minIdx,:);
+        q1 = closestLine(1:2);
+        q2 = closestLine(3:4);
+        distance = abs(det([q2-q1;p-q1]))/norm(q2-q1);
+        %"If [distance] ranges around the average distance of adjacent lines 
+        %then the corresponding block is considered as a candidate to 
+        %belong to a new text line." -Louloudis et.al 
+        %'Ranges around' means what exactly? 
+        if distance <= avgDistance*1.1
+            pId=centroidImg(p(1),p(2));
+            candidatePoints(end+1,:) = pId;
+
+        end
+    end
+    
+    
+
     
     
     %% visualization stuffs

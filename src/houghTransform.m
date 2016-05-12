@@ -15,7 +15,7 @@ function  [rhos,accArr,voterCell] = houghTransform(image,thetas,rhoRes)
     thetas=thetas-90;
     for ii = 1:length(xIndices)
         %negative Y here because image coordinates origin is in upper-left
-        %corner. Original Hessian form:
+        %corner compared to typical lower-left corner Original Hessian form:
         % rho = x*cos(theta) + y*sin(theta)
         r = xIndices(ii).*cosd(thetas)-yIndices(ii).*sind(thetas);
         for jj = 1:numThetas

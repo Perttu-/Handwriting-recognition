@@ -143,6 +143,8 @@ classdef preprocessor<handle
             else
                 obj.noiselessImage = obj.grayImage;
             end
+            
+            %% Adapthisteg???
 
             %% Binarization
             %binarize image with adaptive Sauvola algorithm 

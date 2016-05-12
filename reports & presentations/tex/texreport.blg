@@ -8,45 +8,45 @@ Warning--empty year in ABBYY
 Warning--empty publisher in Cheriet2007
 Warning--empty journal in Dalal
 Warning--empty year in Dalal
-You've used 12 entries,
+You've used 14 entries,
             2118 wiz_defined-function locations,
-            561 strings with 5672 characters,
-and the built_in function-call counts, 3208 in all, are:
-= -- 309
-> -- 128
+            573 strings with 5925 characters,
+and the built_in function-call counts, 3745 in all, are:
+= -- 363
+> -- 148
 < -- 2
-+ -- 52
-- -- 40
-* -- 158
-:= -- 534
-add.period$ -- 34
-call.type$ -- 12
-change.case$ -- 55
++ -- 60
+- -- 46
+* -- 189
+:= -- 623
+add.period$ -- 40
+call.type$ -- 14
+change.case$ -- 64
 chr.to.int$ -- 0
-cite$ -- 17
-duplicate$ -- 125
-empty$ -- 279
-format.name$ -- 40
-if$ -- 683
+cite$ -- 19
+duplicate$ -- 143
+empty$ -- 328
+format.name$ -- 46
+if$ -- 796
 int.to.chr$ -- 0
-int.to.str$ -- 12
-missing$ -- 7
-newline$ -- 61
-num.names$ -- 24
-pop$ -- 91
+int.to.str$ -- 14
+missing$ -- 8
+newline$ -- 71
+num.names$ -- 28
+pop$ -- 102
 preamble$ -- 1
-purify$ -- 44
+purify$ -- 51
 quote$ -- 0
-skip$ -- 109
+skip$ -- 125
 stack$ -- 0
-substring$ -- 149
-swap$ -- 28
+substring$ -- 184
+swap$ -- 30
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 46
+type$ -- 54
 warning$ -- 5
-while$ -- 32
-width$ -- 14
-write$ -- 115
+while$ -- 38
+width$ -- 16
+write$ -- 135
 (There were 5 warnings)
