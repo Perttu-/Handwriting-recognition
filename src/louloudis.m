@@ -199,8 +199,7 @@ function finalBoxes = louloudis(binarizedImage)
     end
     
     %figure(),imshow(lineLabels);
-    hold on;
-    
+    %hold on;
     
     %intersecting lines
     intersection = lineSegmentIntersect(linePoints,linePoints);
@@ -218,8 +217,8 @@ function finalBoxes = louloudis(binarizedImage)
 %     figure(),imagesc(lineLabels);
 %     title('Before merging');
     
-    imshow(binarizedImage);
-    drawnow
+    imshow(labels);
+    %drawnow
     hold on;
     for ii = 1:length(subset1)
         pboxes = cell2mat(subset1(ii).PieceBoxCell);
@@ -262,13 +261,15 @@ function finalBoxes = louloudis(binarizedImage)
     subset1CCs = [subset1.Index];
     ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
     [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
-    %cPoints = [cCol,cRow]; %change into order X,Y
-    cPoints = [cRow,cCol];
+    cPoints = [cCol,cRow]; %change into order X,Y
+    %cPoints = [cRow,cCol];
     rowCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
     
     %find distance between each of these centroid pixels and nearest
     %detected line. 
+    
     candidatePoints = [];
+    [centRows,centCols] = find(centroidImg);
     for ii = 1:length(cPoints)
         p = cPoints(ii,:);
         %find nearest line
@@ -278,20 +279,30 @@ function finalBoxes = louloudis(binarizedImage)
         closestLine = linePoints(minIdx,:);
         q1 = closestLine(1:2);
         q2 = closestLine(3:4);
-        distance = abs(det([q2-q1;p-q1]))/norm(q2-q1);
+        
+        distance = det([q2-q1;p-q1])/norm(q2-q1);
+        newY = rowCentYs(minIdx)+distance;
+        newLineYRange = newY-5:newY+5;
+        centsInRange = centRows(centRows>newY-5 & centRows<newY+5);
+        % continue from here
+        
+        
         %"If [distance] ranges around the average distance of adjacent lines 
         %then the corresponding block is considered as a candidate to 
-        %belong to a new text line." -Louloudis et.al 
+        %belong to a new text line." -Louloudis et.al. 
         %'Ranges around' means what exactly? 
-        if distance <= avgDistance*1.1
-            pId=centroidImg(p(1),p(2));
+        loweredDistance = distance*0.9;
+        if loweredDistance<= avgDistance
+            pId=centroidImg(p(2),p(1));
             candidatePoints(end+1,:) = pId;
-
         end
     end
     
-    
-
+    sub1Pieces = [subset1.PiecesAmount];
+    candPieceAmount = sub1Pieces(ismember([subset1.Index],candidatePoints));
+    candOccurences = histcounts(candidatePoints,'BinMethod','Integers');
+    candOccurences(candOccurences==0)=[];
+    objsInNewLine = candidatePoints(candOccurences >= 0.5*candPieceAmount);
     
     
     %% visualization stuffs
