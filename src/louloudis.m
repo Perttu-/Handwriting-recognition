@@ -193,6 +193,7 @@ function finalBoxes = louloudis(binarizedImage)
         outIndxX = 0>xs | xs>imgHeight;
         xs(outIndxX)=xLimits(outIndxX);
         linePoints(ii,1) = xs(1);
+        
         linePoints(ii,2) = ys(1);
         linePoints(ii,3) = xs(2);
         linePoints(ii,4) = ys(2);
@@ -263,39 +264,41 @@ function finalBoxes = louloudis(binarizedImage)
     [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
     cPoints = [cCol,cRow]; %change into order X,Y
     %cPoints = [cRow,cCol];
-    rowCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
+    detLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
     
     %find distance between each of these centroid pixels and nearest
     %detected line. 
     
-    candidatePoints = [];
+    newLineStruct = struct('YLoc',[],...
+                           'Index',[]);
     [centRows,centCols] = find(centroidImg);
     for ii = 1:length(cPoints)
         p = cPoints(ii,:);
         %find nearest line
         pY = p(2);
-        tmp = abs(rowCentYs-pY);
+        tmp = abs(detLineCentYs-pY);
         [~,minIdx] = min(tmp);
         closestLine = linePoints(minIdx,:);
-        q1 = closestLine(1:2);
-        q2 = closestLine(3:4);
-        
-        distance = det([q2-q1;p-q1])/norm(q2-q1);
-        newY = rowCentYs(minIdx)+distance;
-        newLineYRange = newY-5:newY+5;
-        centsInRange = centRows(centRows>newY-5 & centRows<newY+5);
-        % continue from here
-        
+        sp = closestLine(1:2);
+        ep = closestLine(3:4);
+        %and distance to it
+        distance = det([ep-sp;p-sp])/norm(ep-sp);
+        absDist = abs(distance);
+        %using one distance to identify different new lines
+        newLineY = sign(distance)*avgDistance+detLineCentYs(minIdx);
         
         %"If [distance] ranges around the average distance of adjacent lines 
         %then the corresponding block is considered as a candidate to 
         %belong to a new text line." -Louloudis et.al. 
-        %'Ranges around' means what exactly? 
-        loweredDistance = distance*0.9;
-        if loweredDistance<= avgDistance
-            pId=centroidImg(p(2),p(1));
-            candidatePoints(end+1,:) = pId;
+        %'Ranges around' means what exactly?
+        margin = 0.2;
+        if absDist < margin*avgDistance+avgDistance && absDist > margin*avgDistance-avgDistance            
+            newLineStruct(ii).YLoc = newLineY;
+            newLineStruct(ii).Index = centroidImg(p(2),p(1));
+            %siivoa jotenki paremmaksi
         end
+        
+        
     end
     
     sub1Pieces = [subset1.PiecesAmount];
