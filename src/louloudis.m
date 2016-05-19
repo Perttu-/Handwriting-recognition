@@ -1,7 +1,23 @@
-function finalBoxes = louloudis(binarizedImage)
-%Implementation based on paper  
-%"Line And Word Segmentation of Handwritten Documents (2009)" 
+function lineLabels = louloudis(binarizedImage)
+%Implementation based on papers  
+%"Line And Word Segmentation of Handwritten Documents (2009)" and
+%"A Block-Based Hough Transform Mapping for Text Line Detection in 
+%Handwritten Documents" (2006)
 %by Louloudis et.al.
+
+%% Constraints:
+%--Input image must be single column text
+%--Input image must have horizontal text lines.
+%--Margin value must be defined when generating new lines from objects that 
+%  weren't assigned to any line with hough transform method.
+%--If two lines are too close to each other and their lines cross they are
+%  falsefully merged as one.
+%--If some subset1 components remain to be classfied to any lines they must
+%  be near to the other text lines to be classified correctly otherwise
+%  they are left out.
+
+margin = 0.25;
+
 %% pre-procesing
     [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
@@ -19,10 +35,12 @@ function finalBoxes = louloudis(binarizedImage)
                    'PiecesAmount',[]);
                
     subset2=struct('BoundingBox',[],...
-                   'Image',[]);
+                   'Image',[],...
+                   'Index',[]);
                
     subset3=struct('BoundingBox',[],...
-                   'Image',[]);
+                   'Image',[],...
+                   'Index',[]);
     indx1=1;
     indx2=1;
     indx3=1;
@@ -31,23 +49,29 @@ function finalBoxes = louloudis(binarizedImage)
         box = boxes(ii).BoundingBox;
         H = box(:,4);
         W = box(:,3);
+        componentImage = boxes(ii).Image;
+        componentImage = componentImage+0;
+        componentImage(componentImage==1)=ii;
+        [~,~,ccIndex] = find(componentImage,1);
         
-        wordImage = boxes(ii).Image;
-        wordImage = wordImage+0;
-        wordImage(wordImage==1)=ii;
         if (0.5 * AH <= H) && (H < 3*AH) && (0.5 * AW <= W)
             subset1(indx1).BoundingBox = box;
-            subset1(indx1).Image = wordImage;
+            subset1(indx1).Image = componentImage;
+            subset1(indx1).Index = ccIndex;
             indx1 = indx1+1;
         end
+        
         if (H >= 3 * AH)
             subset2(indx2).BoundingBox = box;
-            subset2(indx2).Image = wordImage;
+            subset2(indx2).Image = componentImage;
+            subset2(indx2).Index = ccIndex;
             indx2 = indx2+1;
         end
+        
         if (((H < 3 * AH) && (0.5 * AW > W) || ((H < 0.5 * AH) && (0.5 * AW < W))))
             subset3(indx3).BoundingBox = box;
-            subset3(indx3).Image = wordImage;
+            subset3(indx3).Image = componentImage;
+            subset3(indx3).Index = ccIndex;
             indx3 = indx3+1;
         end
     end
@@ -57,7 +81,7 @@ function finalBoxes = louloudis(binarizedImage)
 
     for ii = 1:length(subset1)
         box = subset1(ii).BoundingBox;
-        wordImage = subset1(ii).Image;
+        componentImage = subset1(ii).Image;
         boxWidth = box(3);
         xSplit = 0;
         piecesAmount = ceil(boxWidth/AW);
@@ -72,7 +96,7 @@ function finalBoxes = louloudis(binarizedImage)
                 xSplit = boxWidth-lastXWidth;
                 newBox = [xSplit,0,lastXWidth,box(4)];
             end
-            cropped = imcrop(wordImage, newBox);
+            cropped = imcrop(componentImage, newBox);
             binCropped = logical(cropped);
             centroidSt = regionprops(uint8(binCropped), 'Centroid');
             centroid = centroidSt.Centroid;
@@ -83,16 +107,14 @@ function finalBoxes = louloudis(binarizedImage)
             relBoxes{jj,:}=relationalBox;
             relationalCentroid = [centroid(1)+newBox(1)+box(1)-0.5,centroid(2)+newBox(2)+box(2)-0.5];
             roundedCentroid = round(relationalCentroid);
-            [~,~,id] = find(cropped,1);
-            centroidImg(roundedCentroid(2),roundedCentroid(1))=id;
+            centroidImg(roundedCentroid(2),roundedCentroid(1))=subset1(ii).Index;
         end
-        subset1(ii).Index = id;
+        %subset1(ii).Index = id;
         subset1(ii).PieceBoxCell = relBoxes;
     end
     %% Hough transform mapping
     tic
     thetas = 85:95;
-    %thetas = 40:130;
     [rhos,~,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
     disp(['Hough Transform done in ', num2str(toc), ' seconds']);
 %     figure(),
@@ -167,15 +189,16 @@ function finalBoxes = louloudis(binarizedImage)
         
     end
     
-    
     %Additional constraint is applied to remove lines with excessive skew.
     %Excessive skew defined by parameter n2.
-    domSkewAngle = mean([lineStruct.SkewAngle]);
+    domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
     lineLabels(~ismember(labels, [lineStruct.Line]))=0;
     disp(['Line detection done in ', num2str(toc), ' seconds']);
     
+    
     %% post-processing
+    %% Merge crossing lines into one line if they are close
     tic
     %find line end points
     numOfLines = length(lineStruct);
@@ -193,7 +216,6 @@ function finalBoxes = louloudis(binarizedImage)
         outIndxX = 0>xs | xs>imgHeight;
         xs(outIndxX)=xLimits(outIndxX);
         linePoints(ii,1) = xs(1);
-        
         linePoints(ii,2) = ys(1);
         linePoints(ii,3) = xs(2);
         linePoints(ii,4) = ys(2);
@@ -218,19 +240,18 @@ function finalBoxes = louloudis(binarizedImage)
 %     figure(),imagesc(lineLabels);
 %     title('Before merging');
     
-    imshow(labels);
-    %drawnow
-    hold on;
-    for ii = 1:length(subset1)
-        pboxes = cell2mat(subset1(ii).PieceBoxCell);
-        visualizeMoreBoxes(pboxes,'y',1);
-    end
-    
-    for ii =1:numOfLines
-        plot([linePoints(ii,1),linePoints(ii,3)],...
-             [linePoints(ii,2),linePoints(ii,4)],...
-             'LineWidth',2);
-    end
+%     imshow(labels);
+%     hold on;
+%     for ii = 1:length(subset1)
+%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
+%         visualizeMoreBoxes(pboxes,'y',1);
+%     end
+%     
+%     for ii =1:numOfLines
+%         plot([linePoints(ii,1),linePoints(ii,3)],...
+%              [linePoints(ii,2),linePoints(ii,4)],...
+%              'LineWidth',2);
+%     end
     
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
@@ -252,61 +273,100 @@ function finalBoxes = louloudis(binarizedImage)
             lineLabels(ismember(lineLabels,cLine1(ii)))=cLine2(ii);
         end
     end
+    clearvars lineStruct;
     
     disp(['Line merging done in ', num2str(toc), ' seconds'])
 %     figure(),imagesc(lineLabels);
 %     title('After merging');
-
-    %find CCs that weren't assigned to any line
-    ccsInLines = [lineStruct.Line];
+    
+    %% Generate new lines from CCs that werent assigned to any line
+    %This is quite a edge-case. For most images we never get here
+    %Also this assumes that the undetected lines or objects must be close 
+    %to other text lines
+    tic
+    ccsInLines = unique(labels(lineLabels~=0));
     subset1CCs = [subset1.Index];
     ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
-    [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
-    cPoints = [cCol,cRow]; %change into order X,Y
-    %cPoints = [cRow,cCol];
-    detLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
-    
-    %find distance between each of these centroid pixels and nearest
-    %detected line. 
-    
-    newLineStruct = struct('YLoc',[],...
-                           'Index',[]);
-    [centRows,centCols] = find(centroidImg);
-    for ii = 1:length(cPoints)
-        p = cPoints(ii,:);
-        %find nearest line
-        pY = p(2);
-        tmp = abs(detLineCentYs-pY);
-        [~,minIdx] = min(tmp);
-        closestLine = linePoints(minIdx,:);
-        sp = closestLine(1:2);
-        ep = closestLine(3:4);
-        %and distance to it
-        distance = det([ep-sp;p-sp])/norm(ep-sp);
-        absDist = abs(distance);
-        %using one distance to identify different new lines
-        newLineY = sign(distance)*avgDistance+detLineCentYs(minIdx);
+    if ccsNotInLine
+        [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
+        cPoints = [cCol,cRow]; %change into order X,Y
+        foundLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
+
+        %find distance between each of these centroid pixels and nearest
+        %detected line. 
+        imagesc(labels);
         
-        %"If [distance] ranges around the average distance of adjacent lines 
-        %then the corresponding block is considered as a candidate to 
-        %belong to a new text line." -Louloudis et.al. 
-        %'Ranges around' means what exactly?
-        margin = 0.2;
-        if absDist < margin*avgDistance+avgDistance && absDist > margin*avgDistance-avgDistance            
-            newLineStruct(ii).YLoc = newLineY;
-            newLineStruct(ii).Index = centroidImg(p(2),p(1));
-            %siivoa jotenki paremmaksi
+        candidateLineStruct = struct('YLoc',[],...
+                                     'Indices',[]);
+        newIndex = 1;
+        %make sure we are proceeding from top downwards
+        sortedCPoints = sortrows(cPoints,2);
+        for ii = 1:length(sortedCPoints) %ii=8 virhe
+            p = sortedCPoints(ii,:);
+            newComponentId = centroidImg(p(2),p(1));
+            %find nearest line
+            pY = p(2);
+            [~,minIdx] = min(abs(foundLineCentYs-pY));
+            closestLineY = foundLineCentYs(minIdx);
+            distance = pY-closestLineY;
+            absDist = abs(distance);
+
+            %Using previously found line if close to it
+            %Otherwise assigning a new distance to line which is average
+            %distance apart from closest line
+            if absDist < margin*avgDistance
+                newLineY = closestLineY;
+            else
+                newLineY = sign(distance)*avgDistance+foundLineCentYs(minIdx);
+            end
+
+            %"If [distance] ranges around the average distance of adjacent lines 
+            %then the corresponding block is considered as a candidate to 
+            %belong to a new text line." -Louloudis et.al. 
+            %'Ranges around' means what exactly?
+            if absDist < margin*avgDistance+avgDistance      
+                oldIndex = find([candidateLineStruct.YLoc]==newLineY);
+
+                if oldIndex
+                    candidateLineStruct(oldIndex).YLoc = newLineY;
+                    oldComponents = [candidateLineStruct(oldIndex).Indices];
+                    candidateLineStruct(oldIndex).Indices = [oldComponents,newComponentId];
+                else
+                    candidateLineStruct(newIndex).YLoc = newLineY;
+                    candidateLineStruct(newIndex).Indices = newComponentId;
+                    foundLineCentYs(end+1) = newLineY;
+                    newIndex = newIndex+1;
+                end
+            end
         end
-        
-        
+
+        %categorize newly found lines into the label image
+        highestLabel = max(lineLabels(:));
+        subset1Indx = [subset1.Index];
+        subset1Pieces = [subset1.PiecesAmount];
+
+        for ii = 1:length(candidateLineStruct)
+            indicesInArea=[candidateLineStruct(ii).Indices];
+            piecesInArea = histcounts(indicesInArea,'BinMethod','Integers');
+            piecesInArea(piecesInArea==0)=[];
+            %Remove value if at least half of corresponding block-centroids 
+            %are not in area.
+            indicesInArea(piecesInArea<0.5*subset1Pieces(ismember(subset1Indx,indicesInArea)))=[];
+            newLabel = highestLabel+ii;
+            lineLabels(ismember(labels,indicesInArea))=newLabel;
+        end
+        disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
     end
     
-    sub1Pieces = [subset1.PiecesAmount];
-    candPieceAmount = sub1Pieces(ismember([subset1.Index],candidatePoints));
-    candOccurences = histcounts(candidatePoints,'BinMethod','Integers');
-    candOccurences(candOccurences==0)=[];
-    objsInNewLine = candidatePoints(candOccurences >= 0.5*candPieceAmount);
+    imagesc(lineLabels);
     
+    %% Classify subset 3 values to closest line
+    
+    %% Subset2 Processing
+    for ii = 1:length(subset2)
+        sub2BBox = subset2(ii).BoundingBox;
+        %find 
+    end
     
     %% visualization stuffs
 
@@ -338,5 +398,4 @@ function finalBoxes = louloudis(binarizedImage)
 %     visualizeMoreBoxes(subset3,'m',1);
 
 
-    finalBoxes = [];
 end
