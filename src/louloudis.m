@@ -109,7 +109,6 @@ margin = 0.25;
             roundedCentroid = round(relationalCentroid);
             centroidImg(roundedCentroid(2),roundedCentroid(1))=subset1(ii).Index;
         end
-        %subset1(ii).Index = id;
         subset1(ii).PieceBoxCell = relBoxes;
     end
     %% Hough transform mapping
@@ -221,9 +220,6 @@ margin = 0.25;
         linePoints(ii,4) = ys(2);
     end
     
-    %figure(),imshow(lineLabels);
-    %hold on;
-    
     %intersecting lines
     intersection = lineSegmentIntersect(linePoints,linePoints);
     [cLine1,cLine2]=find(tril(intersection.intAdjacencyMatrix));
@@ -232,26 +228,6 @@ margin = 0.25;
     midX = imgWidth/2;
     centerLineX = [midX,midX];
     centerLineY = [0,imgHeight];
-%     plot(centerLineX, centerLineY,...
-%          'LineWidth',2,...
-%          'LineStyle',':');
-%     hold off;
-    
-%     figure(),imagesc(lineLabels);
-%     title('Before merging');
-    
-%     imshow(labels);
-%     hold on;
-%     for ii = 1:length(subset1)
-%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
-%         visualizeMoreBoxes(pboxes,'y',1);
-%     end
-%     
-%     for ii =1:numOfLines
-%         plot([linePoints(ii,1),linePoints(ii,3)],...
-%              [linePoints(ii,2),linePoints(ii,4)],...
-%              'LineWidth',2);
-%     end
     
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
@@ -276,36 +252,34 @@ margin = 0.25;
     clearvars lineStruct;
     
     disp(['Line merging done in ', num2str(toc), ' seconds'])
-%     figure(),imagesc(lineLabels);
-%     title('After merging');
     
     %% Generate new lines from CCs that werent assigned to any line
-    %This is quite a edge-case. For most images we never get here
+    %This is quite a edge-case. For most images (IAM database) we never get here
     %Also this assumes that the undetected lines or objects must be close 
-    %to other text lines
+    %to other text lines.
     tic
     ccsInLines = unique(labels(lineLabels~=0));
     subset1CCs = [subset1.Index];
     ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
+    foundLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
+    
     if ccsNotInLine
         [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
-        cPoints = [cCol,cRow]; %change into order X,Y
-        foundLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
-
+        cPoints = [cRow,cCol];
+       
         %find distance between each of these centroid pixels and nearest
         %detected line. 
-        imagesc(labels);
-        
         candidateLineStruct = struct('YLoc',[],...
                                      'Indices',[]);
         newIndex = 1;
         %make sure we are proceeding from top downwards
-        sortedCPoints = sortrows(cPoints,2);
-        for ii = 1:length(sortedCPoints) %ii=8 virhe
+        sortedCPoints = sortrows(cPoints,2); 
+        
+        for ii = 1:length(sortedCPoints) 
             p = sortedCPoints(ii,:);
-            newComponentId = centroidImg(p(2),p(1));
+            newComponentId = centroidImg(p(1),p(2));
             %find nearest line
-            pY = p(2);
+            pY = p(1);
             [~,minIdx] = min(abs(foundLineCentYs-pY));
             closestLineY = foundLineCentYs(minIdx);
             distance = pY-closestLineY;
@@ -335,6 +309,7 @@ margin = 0.25;
                     candidateLineStruct(newIndex).YLoc = newLineY;
                     candidateLineStruct(newIndex).Indices = newComponentId;
                     foundLineCentYs(end+1) = newLineY;
+                    linePoints(end+1,:) = [0,newLineY,imgWidth,newLineY];
                     newIndex = newIndex+1;
                 end
             end
@@ -358,15 +333,46 @@ margin = 0.25;
         disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
     end
     
-    imagesc(lineLabels);
+%     imshow(labels);
+%     hold on
+%     visualizeMoreBoxes(subset2,'c',2);
+ 
+    %% Categorize subset 3 values to the closest line
+    for ii = 1:length(subset3)
+        sub3BBox = subset3(ii).BoundingBox;
+        yloc = sub3BBox(2)+(sub3BBox(4)/2);
+        [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
+        lineLabels(labels==subset3(ii).Index)=closestRowIndex;
+    end
     
-    %% Classify subset 3 values to closest line
+    figure(),imshow(labels);
+    hold on;
+    visualizeMoreBoxes(subset2,'c',1);
     
     %% Subset2 Processing
-    for ii = 1:length(subset2)
-        sub2BBox = subset2(ii).BoundingBox;
-        %find 
+    sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
+    bboxLXs = [sub2BBoxes(:,1),sub2BBoxes(:,1)];
+    bboxLYs = [sub2BBoxes(:,2),sub2BBoxes(:,2)+sub2BBoxes(:,4)];
+    bboxRXs = [sub2BBoxes(:,1)+sub2BBoxes(:,3),sub2BBoxes(:,1)+sub2BBoxes(:,3)];
+    bboxRYs = [sub2BBoxes(:,2),sub2BBoxes(:,2)+sub2BBoxes(:,4)];
+    
+    vertLineArray = [bboxLXs(:,1),bboxLYs(:,1),bboxLXs(:,2),bboxLYs(:,2);...
+                     bboxRXs(:,1),bboxRYs(:,1),bboxRXs(:,2),bboxRYs(:,2)];
+    
+    intersection = lineSegmentIntersect(vertLineArray,linePoints);
+    scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'r');
+    finalLineAmount = size(linePoints,1);
+    avgLineIntersection = zeros(finalLineAmount,1);
+    intersectionYs = [intersection.intMatrixY];
+    for ii = 1:finalLineAmount
+        %something like this idk see you next week
+        avgLineIntersection(ii) = mean(intersectionYs(:,ii));
     end
+    
+%     for ii = 1:length(subset2)
+%         line([bboxLXs(ii,1),bboxLXs(ii,2)],[bboxLYs(ii,1),bboxLYs(ii,2)]);
+%         line([bboxRXs(ii,1),bboxRXs(ii,2)],[bboxRYs(ii,1),bboxRYs(ii,2)]);
+%     end
     
     %% visualization stuffs
 
