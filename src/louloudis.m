@@ -275,7 +275,7 @@ margin = 0.25;
         %make sure we are proceeding from top downwards
         sortedCPoints = sortrows(cPoints,2); 
         
-        for ii = 1:length(sortedCPoints) 
+        for ii = 1:size(sortedCPoints,1) 
             p = sortedCPoints(ii,:);
             newComponentId = centroidImg(p(1),p(2));
             %find nearest line
@@ -333,6 +333,8 @@ margin = 0.25;
         disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
     end
     
+    finalLineAmount = size(linePoints,1);
+    disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
 %     imshow(labels);
 %     hold on
 %     visualizeMoreBoxes(subset2,'c',2);
@@ -344,36 +346,38 @@ margin = 0.25;
         [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
         lineLabels(labels==subset3(ii).Index)=closestRowIndex;
     end
-    
-    figure(),imshow(labels);
-    hold on;
-    visualizeMoreBoxes(subset2,'c',1);
+%     
+%     figure(),imshow(labels);
+%     hold on;
+%     visualizeMoreBoxes(subset2,'c',1);
     
     %% Subset2 Processing
+
     sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
-    bboxLXs = [sub2BBoxes(:,1),sub2BBoxes(:,1)];
-    bboxLYs = [sub2BBoxes(:,2),sub2BBoxes(:,2)+sub2BBoxes(:,4)];
-    bboxRXs = [sub2BBoxes(:,1)+sub2BBoxes(:,3),sub2BBoxes(:,1)+sub2BBoxes(:,3)];
-    bboxRYs = [sub2BBoxes(:,2),sub2BBoxes(:,2)+sub2BBoxes(:,4)];
-    
-    vertLineArray = [bboxLXs(:,1),bboxLYs(:,1),bboxLXs(:,2),bboxLYs(:,2);...
-                     bboxRXs(:,1),bboxRYs(:,1),bboxRXs(:,2),bboxRYs(:,2)];
-    
-    intersection = lineSegmentIntersect(vertLineArray,linePoints);
-    scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'r');
-    finalLineAmount = size(linePoints,1);
-    avgLineIntersection = zeros(finalLineAmount,1);
+    [ul,ur,ll,lr] = extractBoxCornerCoords(sub2BBoxes);
+    boxLineArray = [ul(:,1),ul(:,2),ur(:,1),ur(:,2);...
+                    ll(:,1),ll(:,2),lr(:,1),lr(:,2);...
+                    ul(:,1),ul(:,2),ll(:,1),ll(:,2);...
+                    ur(:,1),ur(:,2),lr(:,1),lr(:,2)];
+                
+    intersection = lineSegmentIntersect(boxLineArray,linePoints);
     intersectionYs = [intersection.intMatrixY];
-    for ii = 1:finalLineAmount
-        %something like this idk see you next week
-        avgLineIntersection(ii) = mean(intersectionYs(:,ii));
+    
+    for ii = 1:size(sub2BBoxes,1)
+        %find average intersection height for each line for all of the
+        %boxes
     end
     
-%     for ii = 1:length(subset2)
-%         line([bboxLXs(ii,1),bboxLXs(ii,2)],[bboxLYs(ii,1),bboxLYs(ii,2)]);
-%         line([bboxRXs(ii,1),bboxRXs(ii,2)],[bboxRYs(ii,1),bboxRYs(ii,2)]);
-%     end
     
+    figure(), imshow(labels);
+    hold on;
+    for ii = 1:length(subset2)
+        line([ul(ii,1),ur(ii,1)],[ul(ii,2),ur(ii,2)]);
+        line([ll(ii,1),lr(ii,1)],[ll(ii,2),lr(ii,2)]);
+        line([ul(ii,1),ll(ii,1)],[ul(ii,2),ll(ii,2)]);
+        line([ur(ii,1),lr(ii,1)],[ur(ii,2),lr(ii,2)]);
+    end
+    scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'xr');
     %% visualization stuffs
 
     %centroids
