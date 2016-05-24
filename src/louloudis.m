@@ -36,7 +36,9 @@ margin = 0.25;
                
     subset2=struct('BoundingBox',[],...
                    'Image',[],...
-                   'Index',[]);
+                   'Index',[],...
+                   'IntersectingLines',[],...
+                   'AvgYIntersect',[]);
                
     subset3=struct('BoundingBox',[],...
                    'Image',[],...
@@ -111,6 +113,7 @@ margin = 0.25;
         end
         subset1(ii).PieceBoxCell = relBoxes;
     end
+    
     %% Hough transform mapping
     tic
     thetas = 85:95;
@@ -257,6 +260,14 @@ margin = 0.25;
     %This is quite a edge-case. For most images (IAM database) we never get here
     %Also this assumes that the undetected lines or objects must be close 
     %to other text lines.
+    
+    %"If [distance] ranges around the average distance of adjacent lines 
+    %then the corresponding block is considered as a candidate to 
+    %belong to a new text line." -Louloudis et.al. 
+    %'Ranges around' means what exactly?
+    %Using variable 'margin' to adjust the distance that defines 
+    %'ranges around' 
+    
     tic
     ccsInLines = unique(labels(lineLabels~=0));
     subset1CCs = [subset1.Index];
@@ -285,19 +296,15 @@ margin = 0.25;
             distance = pY-closestLineY;
             absDist = abs(distance);
 
-            %Using previously found line if close to it
-            %Otherwise assigning a new distance to line which is average
-            %distance apart from closest line
+            %Using previously found line if within the margin distance from
+            %it. Otherwise assigning a new position to line which is 
+            %average distance apart from closest line.
             if absDist < margin*avgDistance
                 newLineY = closestLineY;
             else
                 newLineY = sign(distance)*avgDistance+foundLineCentYs(minIdx);
             end
 
-            %"If [distance] ranges around the average distance of adjacent lines 
-            %then the corresponding block is considered as a candidate to 
-            %belong to a new text line." -Louloudis et.al. 
-            %'Ranges around' means what exactly?
             if absDist < margin*avgDistance+avgDistance      
                 oldIndex = find([candidateLineStruct.YLoc]==newLineY);
 
@@ -335,9 +342,6 @@ margin = 0.25;
     
     finalLineAmount = size(linePoints,1);
     disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
-%     imshow(labels);
-%     hold on
-%     visualizeMoreBoxes(subset2,'c',2);
  
     %% Categorize subset 3 values to the closest line
     for ii = 1:length(subset3)
@@ -346,45 +350,86 @@ margin = 0.25;
         [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
         lineLabels(labels==subset3(ii).Index)=closestRowIndex;
     end
-%     
-%     figure(),imshow(labels);
-%     hold on;
-%     visualizeMoreBoxes(subset2,'c',1);
-    
-    %% Subset2 Processing
 
+    %% Subset2 Processing
+    figure(),imshow(labels);
+    hold on;
+    visualizeMoreBoxes(subset2,'c',1);
     sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
+    
     [ul,ur,ll,lr] = extractBoxCornerCoords(sub2BBoxes);
-    boxLineArray = [ul(:,1),ul(:,2),ur(:,1),ur(:,2);...
+    boxSidesArray = [ul(:,1),ul(:,2),ur(:,1),ur(:,2);...
                     ll(:,1),ll(:,2),lr(:,1),lr(:,2);...
                     ul(:,1),ul(:,2),ll(:,1),ll(:,2);...
                     ur(:,1),ur(:,2),lr(:,1),lr(:,2)];
                 
-    intersection = lineSegmentIntersect(boxLineArray,linePoints);
+    intersection = lineSegmentIntersect(boxSidesArray,linePoints);
     intersectionYs = [intersection.intMatrixY];
     
-    for ii = 1:size(sub2BBoxes,1)
-        %find average intersection height for each line for all of the
-        %boxes
-    end
-    
-    
-    figure(), imshow(labels);
-    hold on;
-    for ii = 1:length(subset2)
-        line([ul(ii,1),ur(ii,1)],[ul(ii,2),ur(ii,2)]);
-        line([ll(ii,1),lr(ii,1)],[ll(ii,2),lr(ii,2)]);
-        line([ul(ii,1),ll(ii,1)],[ul(ii,2),ll(ii,2)]);
-        line([ur(ii,1),lr(ii,1)],[ur(ii,2),lr(ii,2)]);
-    end
-    scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'xr');
-    %% visualization stuffs
+    for ii = 1:size(subset2,2)
+        %find which lines intersect this box and the average height for the
+        %intersections.
+        [ul,ur,ll,lr] = extractBoxCornerCoords([subset2(ii).BoundingBox]);
 
+        boxSidesArray = [ul(1),ul(2),ur(1),ur(2);...
+                         ll(1),ll(2),lr(1),lr(2);...
+                         ul(1),ul(2),ll(1),ll(2);...
+                         ur(1),ur(2),lr(1),lr(2)];
+                     
+        intersection = lineSegmentIntersect(boxSidesArray,linePoints);
+        intersectYs = [intersection.intMatrixY];
+        intersectYs(isnan(intersectYs))=0;
+        [~,interC,interVal] = find(intersectYs);
+        intersectingLines = unique(interC);
+        interLinesAmount = length(intersectingLines);
+        avgYIntersect = zeros(interLinesAmount,1);
+        
+        for jj = 1:interLinesAmount
+            avgYIntersect(jj)=mean(interVal(interC==intersectingLines(jj)));
+        end
+        
+        relAvgYIntersect = sort(avgYIntersect-ul(2));
+        
+        if size(avgYIntersect,1)>1
+            %Checking if only a fraction of the CC is under the specified
+            %line. The line is higher from lowest line by a tenth of the 
+            %distance between lowest and second-lowest line.
+            yLowest = relAvgYIntersect(end);
+            y2ndLowest = relAvgYIntersect(end-1);
+            image = subset2(ii).Image;
+            below2ndLowLineSum = sum(sum(image(round(y2ndLowest):end,:)));
+            tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
+            belowTenthHigherLineSum = sum(sum(image(round(tenthHigherY):end,:)));
+            
+            if belowTenthHigherLineSum/below2ndLowLineSum <= 0.08;
+                relAvgYIntersect(relAvgYIntersect==yLowest)=[];
+            end
+            
+            
+        end
+        
+        subset2(ii).IntersectingLines = intersectingLines;
+        subset2(ii).AvgYIntersect = avgYIntersect;
+        
+    end
+    
+
+    %% visualization stuffs
+    
+%     figure(), imshow(labels);
+%     hold on;
+%     for ii = 1:length(subset2)
+%         line([ul(ii,1),ur(ii,1)],[ul(ii,2),ur(ii,2)]);
+%         line([ll(ii,1),lr(ii,1)],[ll(ii,2),lr(ii,2)]);
+%         line([ul(ii,1),ll(ii,1)],[ul(ii,2),ll(ii,2)]);
+%         line([ur(ii,1),lr(ii,1)],[ur(ii,2),lr(ii,2)]);
+%     end
+%     scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'xr');
     %centroids
 %     [r,c] = find(centroidImg);
 %     plot(c,r,'mo');
       
-%     %orientation
+    %orientation
 %     for ii = 1:length(lineStruct)
 %         orientation = lineStruct(ii).SkewAngle;
 %         centroid = lineStruct(ii).Centroid;
@@ -398,7 +443,9 @@ margin = 0.25;
 %     boxProps = regionprops(lineLabels,'BoundingBox');
 %     visualizeMoreBoxes(boxProps,'g',2);
 
-	%subset boxes
+	%subset boxes 
+
+    
 %     for ii = 1:length(subset1)
 %         pboxes = cell2mat(subset1(ii).PieceBoxCell);
 %         visualizeMoreBoxes(pboxes,'y',1);
