@@ -388,15 +388,16 @@ margin = 0.25;
             avgYIntersect(jj)=mean(interVal(interC==intersectingLines(jj)));
         end
         
-        relAvgYIntersect = sort(avgYIntersect-ul(2));
-        
         if size(avgYIntersect,1)>1
+            relAvgYIntersect = sort(avgYIntersect-ul(2));
             %Checking if only a fraction of the CC is under the specified
             %line. The line is higher from lowest line by a tenth of the 
             %distance between lowest and second-lowest line.
             yLowest = relAvgYIntersect(end);
             y2ndLowest = relAvgYIntersect(end-1);
             image = subset2(ii).Image;
+            skeletonImg = bwmorph(image,'skel',Inf);
+            
             below2ndLowLineSum = sum(sum(image(round(y2ndLowest):end,:)));
             tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
             belowTenthHigherLineSum = sum(sum(image(round(tenthHigherY):end,:)));
@@ -405,7 +406,20 @@ margin = 0.25;
                 relAvgYIntersect(relAvgYIntersect==yLowest)=[];
             end
             
-            
+            for jj = 1:size(relAvgYIntersect)-1
+                yi = relAvgYIntersect(jj);
+                yip1 = relAvgYIntersect(jj+1);
+                zoneHiLim = yi+(yip1-yi)/2;
+                zoneSkel = skeletonImg(zoneHiLim:yip1,:);
+                branchPoints = bwmorph(zoneSkel,'branchpoints');
+                if sum(sum(branchPoints))>0
+                    %remove also 3x3 neighbour of these pixels
+                    branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);
+                    zoneSkel = zoneSkel~=(zoneSkel&branchPoints);
+                else
+                    
+                end
+            end
         end
         
         subset2(ii).IntersectingLines = intersectingLines;
