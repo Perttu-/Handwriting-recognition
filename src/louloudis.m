@@ -16,8 +16,15 @@ function lineLabels = louloudis(binarizedImage)
 %  be near to the other text lines to be classified correctly otherwise
 %  they are left out.
 
-margin = 0.25;
-
+%Required Hough block contribution to detect line.
+n1 = 5; 
+%n1 = 1;
+%Excessive skew constraint is applied if (Hough)contribution is less than n2 
+n2 = 9;
+%Margin determines how close the undetected lines must be to the detected
+%lines to be assigned correctly.
+%margin = 0.25;
+margin = 0.40;
 %% pre-procesing
     [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
@@ -28,21 +35,21 @@ margin = 0.25;
     %Here the notation is mostly similar to the paper.
     AH = mean(boxList(:,4));
     AW = AH;
-    subset1=struct('BoundingBox',[],...
-                   'Image',[],...
-                   'Index',[],...
-                   'PieceBoxCell',[],...
-                   'PiecesAmount',[]);
+    subset1=struct('BoundingBox',{},...
+                   'Image',{},...
+                   'Index',{},...
+                   'PieceBoxCell',{},...
+                   'PiecesAmount',{});
                
-    subset2=struct('BoundingBox',[],...
-                   'Image',[],...
-                   'Index',[],...
-                   'IntersectingLines',[],...
-                   'AvgYIntersect',[]);
+    subset2=struct('BoundingBox',{},...
+                   'Image',{},...
+                   'Index',{},...
+                   'IntersectingLines',{},...
+                   'AvgYIntersect',{});
                
-    subset3=struct('BoundingBox',[],...
-                   'Image',[],...
-                   'Index',[]);
+    subset3=struct('BoundingBox',{},...
+                   'Image',{},...
+                   'Index',{});
     indx1=1;
     indx2=1;
     indx3=1;
@@ -117,7 +124,7 @@ margin = 0.25;
     %% Hough transform mapping
     tic
     thetas = 85:95;
-    [rhos,~,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
+    [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
     disp(['Hough Transform done in ', num2str(toc), ' seconds']);
 %     figure(),
 %     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
@@ -130,8 +137,7 @@ margin = 0.25;
 
 %% line detection
     
-    n1 = 5;
-    n2 = 9;
+
 
     lineStruct = struct('Line',{},...
                         'Contribution',{},...
@@ -192,7 +198,6 @@ margin = 0.25;
     end
     
     %Additional constraint is applied to remove lines with excessive skew.
-    %Excessive skew defined by parameter n2.
     domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
     lineLabels(~ismember(labels, [lineStruct.Line]))=0;
@@ -280,8 +285,8 @@ margin = 0.25;
        
         %find distance between each of these centroid pixels and nearest
         %detected line. 
-        candidateLineStruct = struct('YLoc',[],...
-                                     'Indices',[]);
+        candidateLineStruct = struct('YLoc',{},...
+                                     'Indices',{});
         newIndex = 1;
         %make sure we are proceeding from top downwards
         sortedCPoints = sortrows(cPoints,2); 
@@ -299,13 +304,14 @@ margin = 0.25;
             %Using previously found line if within the margin distance from
             %it. Otherwise assigning a new position to line which is 
             %average distance apart from closest line.
-            if absDist < margin*avgDistance
-                newLineY = closestLineY;
-            else
-                newLineY = sign(distance)*avgDistance+foundLineCentYs(minIdx);
-            end
-
-            if absDist < margin*avgDistance+avgDistance      
+            if absDist < margin*avgDistance+avgDistance
+                
+                if absDist < margin*avgDistance
+                    newLineY = closestLineY;
+                else
+                    newLineY = sign(distance)*avgDistance+foundLineCentYs(minIdx);
+                end
+                
                 oldIndex = find([candidateLineStruct.YLoc]==newLineY);
 
                 if oldIndex
@@ -323,110 +329,129 @@ margin = 0.25;
         end
 
         %categorize newly found lines into the label image
-        highestLabel = max(lineLabels(:));
         subset1Indx = [subset1.Index];
         subset1Pieces = [subset1.PiecesAmount];
-
+        highestLabel = max(lineLabels(:));
         for ii = 1:length(candidateLineStruct)
+            
             indicesInArea=[candidateLineStruct(ii).Indices];
             piecesInArea = histcounts(indicesInArea,'BinMethod','Integers');
             piecesInArea(piecesInArea==0)=[];
             %Remove value if at least half of corresponding block-centroids 
             %are not in area.
-            indicesInArea(piecesInArea<0.5*subset1Pieces(ismember(subset1Indx,indicesInArea)))=[];
-            newLabel = highestLabel+ii;
-            lineLabels(ismember(labels,indicesInArea))=newLabel;
+            indicesInArea(piecesInArea<(0.5*subset1Pieces(ismember(subset1Indx,indicesInArea))))=[];
+            highestLabel = highestLabel+1;
+            lineLabels(ismember(labels,indicesInArea))=highestLabel;
         end
+        
         disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
     end
     
-    finalLineAmount = size(linePoints,1);
-    disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
+    %finalLineAmount = size(linePoints,1);
+    disp(['Final amount of text lines: ', num2str(highestLabel)]);
  
     %% Categorize subset 3 values to the closest line
+    %Not if they are too far away (average distance)
     for ii = 1:length(subset3)
         sub3BBox = subset3(ii).BoundingBox;
         yloc = sub3BBox(2)+(sub3BBox(4)/2);
-        [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
-        lineLabels(labels==subset3(ii).Index)=closestRowIndex;
+        minDistance = min(abs(foundLineCentYs-yloc));
+        if minDistance < avgDistance
+            [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
+            lineLabels(labels==subset3(ii).Index)=closestRowIndex;
+        end
     end
 
     %% Subset2 Processing
-    figure(),imshow(labels);
-    hold on;
-    visualizeMoreBoxes(subset2,'c',1);
-    sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
-    
-    [ul,ur,ll,lr] = extractBoxCornerCoords(sub2BBoxes);
-    boxSidesArray = [ul(:,1),ul(:,2),ur(:,1),ur(:,2);...
-                    ll(:,1),ll(:,2),lr(:,1),lr(:,2);...
-                    ul(:,1),ul(:,2),ll(:,1),ll(:,2);...
-                    ur(:,1),ur(:,2),lr(:,1),lr(:,2)];
-                
-    intersection = lineSegmentIntersect(boxSidesArray,linePoints);
-    intersectionYs = [intersection.intMatrixY];
-    
-    for ii = 1:size(subset2,2)
-        %find which lines intersect this box and the average height for the
-        %intersections.
-        [ul,ur,ll,lr] = extractBoxCornerCoords([subset2(ii).BoundingBox]);
+    if ~isempty(subset2)
+        tic
+%         figure(),imshow(labels);
+%         hold on;
+%         visualizeMoreBoxes(subset2,'c',1);
+%         sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
 
-        boxSidesArray = [ul(1),ul(2),ur(1),ur(2);...
-                         ll(1),ll(2),lr(1),lr(2);...
-                         ul(1),ul(2),ll(1),ll(2);...
-                         ur(1),ur(2),lr(1),lr(2)];
-                     
-        intersection = lineSegmentIntersect(boxSidesArray,linePoints);
-        intersectYs = [intersection.intMatrixY];
-        intersectYs(isnan(intersectYs))=0;
-        [~,interC,interVal] = find(intersectYs);
-        intersectingLines = unique(interC);
-        interLinesAmount = length(intersectingLines);
-        avgYIntersect = zeros(interLinesAmount,1);
-        
-        for jj = 1:interLinesAmount
-            avgYIntersect(jj)=mean(interVal(interC==intersectingLines(jj)));
-        end
-        
-        if size(avgYIntersect,1)>1
-            relAvgYIntersect = sort(avgYIntersect-ul(2));
-            %Checking if only a fraction of the CC is under the specified
-            %line. The line is higher from lowest line by a tenth of the 
-            %distance between lowest and second-lowest line.
-            yLowest = relAvgYIntersect(end);
-            y2ndLowest = relAvgYIntersect(end-1);
-            image = subset2(ii).Image;
-            skeletonImg = bwmorph(image,'skel',Inf);
-            
-            below2ndLowLineSum = sum(sum(image(round(y2ndLowest):end,:)));
-            tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
-            belowTenthHigherLineSum = sum(sum(image(round(tenthHigherY):end,:)));
-            
-            if belowTenthHigherLineSum/below2ndLowLineSum <= 0.08;
-                relAvgYIntersect(relAvgYIntersect==yLowest)=[];
+
+        for ii = 1:size(subset2,2)
+            %find which lines intersect this box and the average height for the
+            %intersections.
+            [ul,ur,ll,lr] = extractBoxCornerCoords([subset2(ii).BoundingBox]);
+
+            boxSidesArray = [ul(1),ul(2),ur(1),ur(2);...
+                             ll(1),ll(2),lr(1),lr(2);...
+                             ul(1),ul(2),ll(1),ll(2);...
+                             ur(1),ur(2),lr(1),lr(2)];
+
+            intersection = lineSegmentIntersect(boxSidesArray,linePoints);
+            intersectYs = [intersection.intMatrixY];
+            intersectYs(isnan(intersectYs))=0;
+            [~,interC,interVal] = find(intersectYs);
+            intersectingLines = unique(interC);
+            interLinesAmount = length(intersectingLines);
+            avgYIntersect = zeros(interLinesAmount,1);
+
+            for jj = 1:interLinesAmount
+                avgYIntersect(jj)=mean(interVal(interC==intersectingLines(jj)));
             end
-            
-            for jj = 1:size(relAvgYIntersect)-1
-                yi = relAvgYIntersect(jj);
-                yip1 = relAvgYIntersect(jj+1);
-                zoneHiLim = yi+(yip1-yi)/2;
-                zoneSkel = skeletonImg(zoneHiLim:yip1,:);
-                branchPoints = bwmorph(zoneSkel,'branchpoints');
-                if sum(sum(branchPoints))>0
-                    %remove also 3x3 neighbour of these pixels
-                    branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);
-                    zoneSkel = zoneSkel~=(zoneSkel&branchPoints);
-                else
-                    
+
+            if interLinesAmount>1
+                relAvgYIntersect = sort(avgYIntersect-ul(2));
+                %Checking if only a fraction of the CC is under the specified
+                %line. The line is higher from lowest line by a tenth of the 
+                %distance between lowest and second-lowest line.
+                yLowest = relAvgYIntersect(end);
+                y2ndLowest = relAvgYIntersect(end-1);
+                image = subset2(ii).Image;
+                skeletonImg = bwmorph(image,'skel',Inf);
+
+                below2ndLowLineSum = sum(sum(image(round(y2ndLowest):end,:)));
+                tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
+                belowTenthHigherLineSum = sum(sum(image(round(tenthHigherY):end,:)));
+
+                if belowTenthHigherLineSum/below2ndLowLineSum <= 0.08;
+                    relAvgYIntersect(relAvgYIntersect==yLowest)=[];
                 end
+                
+%                 figure(),imagesc(skeletonImg);
+%                 hold on;
+                skelWidth = size(skeletonImg,2);
+                skeletonImgStruct = struct('Image',[]);
+                for jj = 1:size(relAvgYIntersect)-1
+                    yi = relAvgYIntersect(jj);
+                    yip1 = relAvgYIntersect(jj+1);
+                    zoneHiLim = yi+(yip1-yi)/2;
+                    branchPoints = bwmorph(skeletonImg,'branchpoints');
+
+                    if sum(sum(branchPoints))>0
+                        %selecting only area in the zone
+                        branchPoints(1:round(zoneHiLim),:)=0;
+                        branchPoints(round(yip1):end,:)=0;
+                        %remove also 3x3 neighbour of these junction pixels
+                        branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);      
+                        skeletonImg = skeletonImg~=(skeletonImg&branchPoints);
+                    else
+                        %If no junction points exist in zone, remove skeleton 
+                        %points in the center of the zone.
+                        centerRowY = round((zoneHiLim+yip1)/2);
+                        skeletonImg(centerRowY,:)=0;
+                    end
+                    
+                    skeletonLabels = bwlabel(skeletonImg,8);
+                    yiInter = skeletonLabels(round(yi),:);
+                    interCCs = unique(yiInter(yiInter~=0));
+                    flag1Img = ismember(skeletonLabels,interCCs);
+                    flag2Img = ~ismember(skeletonLabels,interCCs)&skeletonLabels~=0;
+                    skeletonImg = double(skeletonImg);
+                    skeletonImg(skeletonImg&flag1Img)=1;
+                    skeletonImg(skeletonImg&flag2Img)=2;
+                    skeletonImgStruct(jj).Image = skeletonImg;
+                    %figure this out
+                end
+                
+                
             end
         end
-        
-        subset2(ii).IntersectingLines = intersectingLines;
-        subset2(ii).AvgYIntersect = avgYIntersect;
-        
+        disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
     end
-    
 
     %% visualization stuffs
     
@@ -439,6 +464,7 @@ margin = 0.25;
 %         line([ur(ii,1),lr(ii,1)],[ur(ii,2),lr(ii,2)]);
 %     end
 %     scatter(intersection.intMatrixX(:),intersection.intMatrixY(:),[],'xr');
+
     %centroids
 %     [r,c] = find(centroidImg);
 %     plot(c,r,'mo');
@@ -458,15 +484,17 @@ margin = 0.25;
 %     visualizeMoreBoxes(boxProps,'g',2);
 
 	%subset boxes 
+    figure(),imshow(binarizedImage);
+    title('Subgroups Visualized');
+    for ii = 1:length(subset1)
+        pboxes = cell2mat(subset1(ii).PieceBoxCell);
+        visualizeMoreBoxes(pboxes,'y',1);
+    end
+    visualizeMoreBoxes(subset2,'c',1);
+    visualizeMoreBoxes(subset3,'m',1);
 
-    
-%     for ii = 1:length(subset1)
-%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
-%         visualizeMoreBoxes(pboxes,'y',1);
-%     end
-% 
-%     visualizeMoreBoxes(subset2,'c',1);
-%     visualizeMoreBoxes(subset3,'m',1);
-
+    figure(),imagesc(lineLabels);
+    boxProps = regionprops(lineLabels,'BoundingBox');
+    visualizeMoreBoxes(boxProps,'g',2);
 
 end
