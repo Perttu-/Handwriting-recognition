@@ -137,8 +137,6 @@ margin = 0.40;
 
 %% line detection
     
-
-
     lineStruct = struct('Line',{},...
                         'Contribution',{},...
                         'SkewAngle',{},...
@@ -347,8 +345,8 @@ margin = 0.40;
         disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
     end
     
-    %finalLineAmount = size(linePoints,1);
-    disp(['Final amount of text lines: ', num2str(highestLabel)]);
+    finalLineAmount  = max(lineLabels(:));
+    disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
  
     %% Categorize subset 3 values to the closest line
     %Not if they are too far away (average distance)
@@ -370,7 +368,7 @@ margin = 0.40;
 %         visualizeMoreBoxes(subset2,'c',1);
 %         sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
 
-
+        flagImageStruct = struct('Image',[]);
         for ii = 1:size(subset2,2)
             %find which lines intersect this box and the average height for the
             %intersections.
@@ -392,63 +390,99 @@ margin = 0.40;
             for jj = 1:interLinesAmount
                 avgYIntersect(jj)=mean(interVal(interC==intersectingLines(jj)));
             end
+            
+            intersectionArray = [intersectingLines,avgYIntersect];
 
+%             imWidth = size(subset2(ii).Image,2);
+%             figure(), imshow(subset2(ii).Image);
+%             hold on;
+            
             if interLinesAmount>1
-                relAvgYIntersect = sort(avgYIntersect-ul(2));
+                sortedIntersectArr = sortrows(intersectionArray,2);
+                relAvgYIntersect = sortedIntersectArr(:,2)-ul(2);
                 %Checking if only a fraction of the CC is under the specified
                 %line. The line is higher from lowest line by a tenth of the 
                 %distance between lowest and second-lowest line.
                 yLowest = relAvgYIntersect(end);
                 y2ndLowest = relAvgYIntersect(end-1);
-                image = subset2(ii).Image;
-                skeletonImg = bwmorph(image,'skel',Inf);
+                processedImage = subset2(ii).Image;
 
-                below2ndLowLineSum = sum(sum(image(round(y2ndLowest):end,:)));
+                below2ndLowLineSum = sum(sum(processedImage(round(y2ndLowest):end,:)));
                 tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
-                belowTenthHigherLineSum = sum(sum(image(round(tenthHigherY):end,:)));
+                belowTenthHigherLineSum = sum(sum(processedImage(round(tenthHigherY):end,:)));
 
                 if belowTenthHigherLineSum/below2ndLowLineSum <= 0.08;
                     relAvgYIntersect(relAvgYIntersect==yLowest)=[];
                 end
                 
-%                 figure(),imagesc(skeletonImg);
-%                 hold on;
-                skelWidth = size(skeletonImg,2);
-                skeletonImgStruct = struct('Image',[]);
+                
+                finalFlagImage = processedImage;
+                
                 for jj = 1:size(relAvgYIntersect)-1
                     yi = relAvgYIntersect(jj);
                     yip1 = relAvgYIntersect(jj+1);
                     zoneHiLim = yi+(yip1-yi)/2;
-                    branchPoints = bwmorph(skeletonImg,'branchpoints');
-
+                    binSkeletonImg = bwmorph(processedImage,'skel',Inf);
+                    flagSkeletonImg = double(binSkeletonImg);
+                    branchPoints = bwmorph(binSkeletonImg,'branchpoints');
+                    
+%                     line([0,imWidth],[yi,yi],'Color','r');
+%                     line([0,imWidth],[yip1,yip1],'Color','y');
+%                     line([0,imWidth],[zoneHiLim,zoneHiLim],'Color','g','LineStyle',':');
+%                     drawnow
+                    
                     if sum(sum(branchPoints))>0
                         %selecting only area in the zone
                         branchPoints(1:round(zoneHiLim),:)=0;
                         branchPoints(round(yip1):end,:)=0;
                         %remove also 3x3 neighbour of these junction pixels
-                        branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);      
-                        skeletonImg = skeletonImg~=(skeletonImg&branchPoints);
+                        branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);
+                        flagSkeletonImg = binSkeletonImg~=(binSkeletonImg&branchPoints);
                     else
                         %If no junction points exist in zone, remove skeleton 
                         %points in the center of the zone.
                         centerRowY = round((zoneHiLim+yip1)/2);
-                        skeletonImg(centerRowY,:)=0;
+                        flagSkeletonImg(centerRowY,:)=0;
                     end
                     
-                    skeletonLabels = bwlabel(skeletonImg,8);
+                    skeletonLabels = bwlabel(flagSkeletonImg,8);
                     yiInter = skeletonLabels(round(yi),:);
                     interCCs = unique(yiInter(yiInter~=0));
                     flag1Img = ismember(skeletonLabels,interCCs);
                     flag2Img = ~ismember(skeletonLabels,interCCs)&skeletonLabels~=0;
-                    skeletonImg = double(skeletonImg);
-                    skeletonImg(skeletonImg&flag1Img)=1;
-                    skeletonImg(skeletonImg&flag2Img)=2;
-                    skeletonImgStruct(jj).Image = skeletonImg;
-                    %figure this out
+                    flagSkeletonImg = double(flagSkeletonImg);
+                    flagSkeletonImg(logical(flagSkeletonImg)&flag1Img)=1;
+                    flagSkeletonImg(logical(flagSkeletonImg)&flag2Img)=2;
+                    %assign the value of nearest skeleton pixel to each
+                    %pixel in subset2 image
+                    tmpSub2Image = logical(processedImage);
+                    tmpSub2Image(tmpSub2Image==1)=0;
+                    tmpSub2Image= tmpSub2Image+flagSkeletonImg;
+                    [~,nearest] = bwdist(tmpSub2Image);
+                    finalNearest = double(nearest).*(logical(nearest)&logical(processedImage));
+                    nearestIdx=find(finalNearest);
+                    flaggedImage = double(processedImage);
+                    
+                    for k = 1:length(nearestIdx)
+                        nearestSkelLoc = nearestIdx(k);
+                        newSkelFlag = flagSkeletonImg(nearestSkelLoc);
+                        flaggedImage(finalNearest==nearestSkelLoc)=newSkelFlag;
+                    end
+                    
+                    %Excluding previously found part from further processing.
+                    processedImage = flaggedImage>1;
+                    finalFlagImage = (finalFlagImage+flaggedImage);
+                    
                 end
-                
+                flagImageStruct(ii).Image = finalFlagImage;
+                %here the images have indexes too big, but in theory it
+                %works as intended
+
+            else
+                %If only one line intersects the object.
                 
             end
+            
         end
         disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
     end
@@ -484,17 +518,17 @@ margin = 0.40;
 %     visualizeMoreBoxes(boxProps,'g',2);
 
 	%subset boxes 
-    figure(),imshow(binarizedImage);
-    title('Subgroups Visualized');
-    for ii = 1:length(subset1)
-        pboxes = cell2mat(subset1(ii).PieceBoxCell);
-        visualizeMoreBoxes(pboxes,'y',1);
-    end
-    visualizeMoreBoxes(subset2,'c',1);
-    visualizeMoreBoxes(subset3,'m',1);
-
-    figure(),imagesc(lineLabels);
-    boxProps = regionprops(lineLabels,'BoundingBox');
-    visualizeMoreBoxes(boxProps,'g',2);
+%     figure(),imshow(binarizedImage);
+%     title('Subgroups Visualized');
+%     for ii = 1:length(subset1)
+%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
+%         visualizeMoreBoxes(pboxes,'y',1);
+%     end
+%     visualizeMoreBoxes(subset2,'c',1);
+%     visualizeMoreBoxes(subset3,'m',1);
+% 
+%     figure(),imagesc(lineLabels);
+%     boxProps = regionprops(lineLabels,'BoundingBox');
+%     visualizeMoreBoxes(boxProps,'g',2);
 
 end
