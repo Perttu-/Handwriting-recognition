@@ -1,9 +1,15 @@
-function lineLabels = louloudis(binarizedImage)
+function lineLabels = detectLines(binarizedImage,n1,n2,margin)
 %Implementation based on papers  
 %"Line And Word Segmentation of Handwritten Documents (2009)" and
 %"A Block-Based Hough Transform Mapping for Text Line Detection in 
 %Handwritten Documents" (2006)
 %by Louloudis et.al.
+
+%% Functionality
+% Input: Binarized image containing preferably only textual components
+% with as little noise as possible.
+% Output: Image which has different labels for each text line.
+
 
 %% Constraints:
 %--Input image must be single column text
@@ -17,14 +23,16 @@ function lineLabels = louloudis(binarizedImage)
 %  they are left out.
 
 %Required Hough block contribution to detect line.
-n1 = 5; 
+%n1 = 5; 
 %n1 = 1;
+
 %Excessive skew constraint is applied if (Hough)contribution is less than n2 
-n2 = 9;
+%n2 = 9;
+
 %Margin determines how close the undetected lines must be to the detected
 %lines to be assigned correctly.
 %margin = 0.25;
-margin = 0.40;
+%margin = 0.40;
 %% pre-procesing
     [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
@@ -363,22 +371,21 @@ margin = 0.40;
     %% Subset2 Processing
     if ~isempty(subset2)
         tic
-%         figure(),imshow(labels);
-%         hold on;
-%         visualizeMoreBoxes(subset2,'c',1);
-%         sub2BBoxes = reshape([subset2.BoundingBox],4,[])';
-
-        flagImageStruct = struct('Image',[]);
+        flagImageStruct = struct('Image',[],...
+                                 'BoundingBox',[]);
         for ii = 1:size(subset2,2)
             %find which lines intersect this box and the average height for the
             %intersections.
-            [ul,ur,ll,lr] = extractBoxCornerCoords([subset2(ii).BoundingBox]);
+            bbox = [subset2(ii).BoundingBox];
+            flagImageStruct(ii).BoundingBox = bbox;
+            [ul,ur,ll,lr] = extractBoxCornerCoords(bbox);
 
             boxSidesArray = [ul(1),ul(2),ur(1),ur(2);...
                              ll(1),ll(2),lr(1),lr(2);...
                              ul(1),ul(2),ll(1),ll(2);...
                              ur(1),ur(2),lr(1),lr(2)];
 
+            
             intersection = lineSegmentIntersect(boxSidesArray,linePoints);
             intersectYs = [intersection.intMatrixY];
             intersectYs(isnan(intersectYs))=0;
@@ -393,7 +400,7 @@ margin = 0.40;
             
             intersectionArray = [intersectingLines,avgYIntersect];
 
-%             imWidth = size(subset2(ii).Image,2);
+             imWidth = size(subset2(ii).Image,2);
 %             figure(), imshow(subset2(ii).Image);
 %             hold on;
             
@@ -405,7 +412,7 @@ margin = 0.40;
                 %distance between lowest and second-lowest line.
                 yLowest = relAvgYIntersect(end);
                 y2ndLowest = relAvgYIntersect(end-1);
-                processedImage = subset2(ii).Image;
+                processedImage = logical(subset2(ii).Image);
 
                 below2ndLowLineSum = sum(sum(processedImage(round(y2ndLowest):end,:)));
                 tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
@@ -415,10 +422,9 @@ margin = 0.40;
                     relAvgYIntersect(relAvgYIntersect==yLowest)=[];
                 end
                 
+                finalFlagImage = double(processedImage);
                 
-                finalFlagImage = processedImage;
-                
-                for jj = 1:size(relAvgYIntersect)-1
+                for jj = 1:size(relAvgYIntersect,1)-1
                     yi = relAvgYIntersect(jj);
                     yip1 = relAvgYIntersect(jj+1);
                     zoneHiLim = yi+(yip1-yi)/2;
@@ -433,11 +439,12 @@ margin = 0.40;
                     
                     if sum(sum(branchPoints))>0
                         %selecting only area in the zone
-                        branchPoints(1:round(zoneHiLim),:)=0;
-                        branchPoints(round(yip1):end,:)=0;
+                        zoneBranchPoints = branchPoints;
+                        zoneBranchPoints(1:round(zoneHiLim),:)=0;
+                        zoneBranchPoints(round(yip1):end,:)=0;
                         %remove also 3x3 neighbour of these junction pixels
-                        branchPoints = imdilate(branchPoints,[1,1,1;1,1,1;1,1,1]);
-                        flagSkeletonImg = binSkeletonImg~=(binSkeletonImg&branchPoints);
+                        zoneBranchPoints = imdilate(zoneBranchPoints,[1,1,1;1,1,1;1,1,1]);
+                        flagSkeletonImg = binSkeletonImg~=(binSkeletonImg&zoneBranchPoints);
                     else
                         %If no junction points exist in zone, remove skeleton 
                         %points in the center of the zone.
@@ -471,25 +478,41 @@ margin = 0.40;
                     
                     %Excluding previously found part from further processing.
                     processedImage = flaggedImage>1;
-                    finalFlagImage = (finalFlagImage+flaggedImage);
+                    finalFlagImage = (finalFlagImage+(flaggedImage==2));
                     
                 end
                 flagImageStruct(ii).Image = finalFlagImage;
-                %here the images have indexes too big, but in theory it
-                %works as intended
-
             else
-                %If only one line intersects the object.
-                
+                %If only one line intersects the object we don't need to
+                %split it.
+                flagImageStruct(ii).Image = double(subset2(ii).Image>0);
             end
-            
         end
+        %Assign these new components to correct lines.
+        for ii = 1:length(flagImageStruct)
+            flagImage = flagImageStruct(ii).Image;
+            bbox = round(flagImageStruct(ii).BoundingBox);
+            upperYLoc = bbox(2);
+            prop = regionprops(flagImage,'Centroid');
+            for jj = 1:length(prop)
+                centroidY = prop(jj).Centroid(2);
+                componentImage = flagImage==jj;
+                componentYLoc = centroidY+upperYLoc;
+                minDistance = min(abs(foundLineCentYs-componentYLoc));
+                [~,closestRowIndex] = min(abs(foundLineCentYs-componentYLoc));
+                newComp = componentImage*closestRowIndex;
+                lineLabels(bbox(2):bbox(2)+bbox(4)-1,bbox(1):bbox(1)+bbox(3)-1)=...
+                lineLabels(bbox(2):bbox(2)+bbox(4)-1,bbox(1):bbox(1)+bbox(3)-1)+newComp;
+            end
+        end
+        
         disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
     end
 
     %% visualization stuffs
     
-%     figure(), imshow(labels);
+    % Line intersections with subset2 boxes
+%     figure(), imshow(binarizedImage);
 %     hold on;
 %     for ii = 1:length(subset2)
 %         line([ul(ii,1),ur(ii,1)],[ul(ii,2),ur(ii,2)]);
@@ -513,12 +536,7 @@ margin = 0.40;
 %               'LineStyle',':');
 %     end
     
-	%row boxes
-%     boxProps = regionprops(lineLabels,'BoundingBox');
-%     visualizeMoreBoxes(boxProps,'g',2);
-
-	%subset boxes 
-%     figure(),imshow(binarizedImage);
+    %subset boxes 
 %     title('Subgroups Visualized');
 %     for ii = 1:length(subset1)
 %         pboxes = cell2mat(subset1(ii).PieceBoxCell);
@@ -527,7 +545,15 @@ margin = 0.40;
 %     visualizeMoreBoxes(subset2,'c',1);
 %     visualizeMoreBoxes(subset3,'m',1);
 % 
-%     figure(),imagesc(lineLabels);
+
+	%Lines
+    figure(),imagesc(lineLabels);
+    axis equal;
+    axis tight;
+    title('Final Text Lines');
+    visualizeMoreBoxes(subset2,'c',1);
+    %visualizeMoreBoxes(subset1,'r',1);
+%      figure(),imagesc(lineLabels);
 %     boxProps = regionprops(lineLabels,'BoundingBox');
 %     visualizeMoreBoxes(boxProps,'g',2);
 

@@ -1,8 +1,9 @@
-function aoiStruct = preprocess(path,testedValue)
+function HWR(path,testedValue)
 %% Initialization
     close all;
     [image, map]=imread(path);
     
+%% Constraints
     %IAM database
     wienerFilterSize = 5;
     %wiener filter can cause some disortion
@@ -14,11 +15,11 @@ function aoiStruct = preprocess(path,testedValue)
     strokeWidthThreshold = 0.8;
     %strokeWidthThreshold = 0.6;
     skewCorrection = 0;
-    aoiXExpansionAmount = 40;
-    aoiYExpansionAmount = 60;
-    areaRatioThreshold = 0.004;
-    rlsaRowThreshold = 300;
-    rlsaWordThreshold = 30;
+%     aoiXExpansionAmount = 40;
+%     aoiYExpansionAmount = 60;
+%     areaRatioThreshold = 0.004;
+%     rlsaRowThreshold = 300;
+%     rlsaWordThreshold = 30;
 
     
 %     p.wienerFilterSize = 2;
@@ -46,9 +47,7 @@ function aoiStruct = preprocess(path,testedValue)
 %     areaRatioThreshold = 0.1;
 %     spaceRatioThreshold = 0.2;
     
-    
-    
-
+%% Preprocessing
     tic;
     p = preprocessor(image,...
                      map,...
@@ -60,10 +59,17 @@ function aoiStruct = preprocess(path,testedValue)
                      strokeWidthThreshold);
     
     preprocessedImage = p.preprocess;
-    disp(['Pre processing done in ', num2str(toc), ' seconds'])
+    disp(['Pre processing done in ', num2str(toc), ' seconds']);
     
-    boxes = louloudis(preprocessedImage);
+%% Layout Analysis
+    tic;
+    n1 = 5;
+    n2 = 9;
+    margin = 0.4;
+    lineLabels = detectLines(preprocessedImage,n1,n2,margin);
+    disp(['Line detection done in ', num2str(toc), ' seconds']);
 
+    %Old stuff
 %     disp('Layout analysis...');
 %     tic
 %     l = layoutAnalyzer(preprocessedImage,...
