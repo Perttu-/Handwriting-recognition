@@ -33,6 +33,7 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
 %lines to be assigned correctly.
 %margin = 0.25;
 %margin = 0.40;
+
 %% pre-procesing
     [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
@@ -104,6 +105,7 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
         piecesAmount = ceil(boxWidth/AW);
         relBoxes=cell(piecesAmount,1);
         subset1(ii).PiecesAmount = piecesAmount;
+        
         for jj = 1:piecesAmount 
             if xSplit+AW <= boxWidth
                 newBox = [xSplit,0,AW,box(4)];
@@ -113,13 +115,12 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
                 xSplit = boxWidth-lastXWidth;
                 newBox = [xSplit,0,lastXWidth,box(4)];
             end
+            
             cropped = imcrop(componentImage, newBox);
             binCropped = logical(cropped);
             centroidSt = regionprops(uint8(binCropped), 'Centroid');
             centroid = centroidSt.Centroid;
-            %Adjusting centroid and boxes to be in relation to the whole 
-            %image for the sake of hough transform for centroids as well as
-            %visualization.
+
             relationalBox = [newBox(1)+box(1),newBox(2)+box(2),newBox(3),newBox(4)];
             relBoxes{jj,:}=relationalBox;
             relationalCentroid = [centroid(1)+newBox(1)+box(1)-0.5,centroid(2)+newBox(2)+box(2)-0.5];
@@ -129,25 +130,17 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
         subset1(ii).PieceBoxCell = relBoxes;
     end
     
-    %% Hough transform mapping
+%% Hough transform mapping
     tic
     thetas = 85:95;
-    [rhos,accArr,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
+    [rhos,~,voterCell]=houghTransform(centroidImg,thetas,0.2*AH);
     disp(['Hough Transform done in ', num2str(toc), ' seconds']);
-%     figure(),
-%     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
-%        'InitialMagnification','fit');
-%     title('Hough Transform');
-%     xlabel('\theta'), ylabel('\rho');
-%     axis on, axis normal;
-%     colormap(hot);
-%     drawnow
 
 %% line detection
-    
-    lineStruct = struct('Line',{},...
+    lineStruct = struct('Components',{},...
                         'Contribution',{},...
                         'SkewAngle',{},...
+                        'Centroid',{},...
                         'Theta',{},...
                         'Rho',{});
     
@@ -185,7 +178,7 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
         %line uses the centroids of splitted components.
         prop = regionprops(double(lineLabels==rowIndex),'Orientation','Centroid');
 
-        lineStruct(rowIndex).Line = objsInLine;
+        lineStruct(rowIndex).Components = objsInLine;
         lineStruct(rowIndex).Contribution = maxValue;
         lineStruct(rowIndex).SkewAngle = prop.Orientation;
         lineStruct(rowIndex).Centroid = prop.Centroid;
@@ -194,9 +187,8 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
         
         rowIndex = rowIndex+1;
         
-        %this operation takes most of the time. Running time depends on 
+        %This operation takes most of the time. Running time depends on 
         %centroid pixel amount and Hough accumulator array size.
-        
         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
                             voterCell,...
                             'UniformOutput',false);
@@ -206,16 +198,16 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
     %Additional constraint is applied to remove lines with excessive skew.
     domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 & (abs([lineStruct.SkewAngle])-domSkewAngle)>2)=[];
-    lineLabels(~ismember(labels, [lineStruct.Line]))=0;
+    lineLabels(~ismember(labels, [lineStruct.Components]))=0;
     disp(['Line detection done in ', num2str(toc), ' seconds']);
     
+    lineStruct = rmfield(lineStruct,'Contribution');
     
-    %% post-processing
+    %% Post-processing
     %% Merge crossing lines into one line if they are close
     tic
-    %find line end points
     numOfLines = length(lineStruct);
-    linePoints  = zeros(numOfLines,2);
+    lineEndPoints  = zeros(numOfLines,2);
     xLimits = [0,imgWidth];
     yLimits = [0,imgHeight];
     
@@ -228,15 +220,16 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
         xs = (rho-yLimits.*sind(theta))/cosd(theta);
         outIndxX = 0>xs | xs>imgHeight;
         xs(outIndxX)=xLimits(outIndxX);
-        linePoints(ii,1) = xs(1);
-        linePoints(ii,2) = ys(1);
-        linePoints(ii,3) = xs(2);
-        linePoints(ii,4) = ys(2);
+        lineEndPoints(ii,1) = xs(1);
+        lineEndPoints(ii,2) = ys(1);
+        lineEndPoints(ii,3) = xs(2);
+        lineEndPoints(ii,4) = ys(2);
     end
+    lineStruct = rmfield(lineStruct,{'Theta','Rho'});
     
     %intersecting lines
-    intersection = lineSegmentIntersect(linePoints,linePoints);
-    [cLine1,cLine2]=find(tril(intersection.intAdjacencyMatrix));
+    intersection = lineSegmentIntersect(lineEndPoints,lineEndPoints);
+    [cLine1Id,cLine2Id]=find(tril(intersection.intAdjacencyMatrix));
     
     %draw vertical line to the middle of image
     midX = imgWidth/2;
@@ -245,62 +238,79 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
     
     %Check if crossing lines have smaller than average distance at the
     %center of image and merge them if so. 
-    %Note: The array lineLabels is the final container of the lines as 
-    %lineStruct is not valid after the merging.
 
     centerLine = [centerLineX(1),centerLineY(1),centerLineX(2),centerLineY(2)];
-    middleIntersection = lineSegmentIntersect(linePoints,centerLine);
+    middleIntersection = lineSegmentIntersect(lineEndPoints,centerLine);
     yIntersects = middleIntersection.intMatrixY;
     avgDistance = mean(abs(diff(sort(yIntersects))));
-    
-    for ii=1:length(cLine1)
-        crossLine1Y = yIntersects(cLine1(ii));
-        crossLine2Y = yIntersects(cLine2(ii));
+    for ii=1:length(cLine1Id)
+        firstLine = cLine1Id(ii);
+        secondLine = cLine2Id(ii);
+        crossLine1Y = yIntersects(firstLine);
+        crossLine2Y = yIntersects(secondLine);
         distance = abs(crossLine1Y-crossLine2Y);
         %Note: Row above other might be merged with the lower if it is too 
         %close. (skewLine2.png)
+        
         if distance<avgDistance
-            lineLabels(ismember(lineLabels,cLine1(ii)))=cLine2(ii);
+            %Merging removes first line and uses second line as new line.
+            lineLabels(ismember(lineLabels,firstLine))=secondLine;
+            tmpNewLineImg = (lineLabels>=1).*ismember(lineLabels,secondLine);
+            prop = regionprops(tmpNewLineImg,'Orientation','Centroid');
+            lineStruct(secondLine).SkewAngle = prop.Orientation;
+            lineStruct(secondLine).Centroid = prop.Centroid;
+            lineStruct(secondLine).Components = [lineStruct(firstLine).Components,...
+                                                 lineStruct(secondLine).Components];
+            lineStruct(firstLine)=[];
         end
     end
-    clearvars lineStruct;
+
     
     disp(['Line merging done in ', num2str(toc), ' seconds'])
     
     %% Generate new lines from CCs that werent assigned to any line
-    %This is quite a edge-case. For most images (IAM database) we never get here
-    %Also this assumes that the undetected lines or objects must be close 
+    %This assumes that the undetected lines or objects must be close 
     %to other text lines.
+
+    %Using variable 'margin' to adjust how far the unclassified object must
+    %be to a line to be categorized to that line.
     
-    %"If [distance] ranges around the average distance of adjacent lines 
-    %then the corresponding block is considered as a candidate to 
-    %belong to a new text line." -Louloudis et.al. 
-    %'Ranges around' means what exactly?
-    %Using variable 'margin' to adjust the distance that defines 
-    %'ranges around' 
+    %actually ranges around dist > 0.9*avgDist
+    %pls fix
+    
+    %almost works. see a01-026.png
     
     tic
     ccsInLines = unique(labels(lineLabels~=0));
     subset1CCs = [subset1.Index];
     ccsNotInLine = subset1CCs(~ismember(subset1CCs,ccsInLines));
-    foundLineCentYs= mean([linePoints(:,2),linePoints(:,4)],2);
+    foundLineCentYs= mean([lineEndPoints(:,2),lineEndPoints(:,4)],2);
     
     if ccsNotInLine
         [cRow,cCol]=find(ismember(centroidImg,ccsNotInLine));
+        figure(),imshow(labels.*double(ismember(labels,ccsNotInLine)));
+        hold on;
+        for ii = 1:length(lineStruct)
+            orientation = lineStruct(ii).SkewAngle;
+            centroid = lineStruct(ii).Centroid;
+            ysrt=centroid(2)+centroid(1)*tand(orientation);
+            fplot(@(x) tand(-orientation)*x+ysrt,...
+                  'LineWidth',1,...
+                  'LineStyle',':');
+        end
         cPoints = [cRow,cCol];
-       
-        %find distance between each of these centroid pixels and nearest
-        %detected line. 
-        candidateLineStruct = struct('YLoc',{},...
-                                     'Indices',{});
+        candLineStruct = struct('YLoc',{},...
+                                'Indices',{},...
+                                'OldLine',{});
+
         newIndex = 1;
         %make sure we are proceeding from top downwards
-        sortedCPoints = sortrows(cPoints,2); 
+        %sortedCPoints = sortrows(cPoints,1); 
+        sortedCPoints = cPoints;
         
         for ii = 1:size(sortedCPoints,1) 
             p = sortedCPoints(ii,:);
             newComponentId = centroidImg(p(1),p(2));
-            %find nearest line
             pY = p(1);
             [~,minIdx] = min(abs(foundLineCentYs-pY));
             closestLineY = foundLineCentYs(minIdx);
@@ -310,44 +320,63 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
             %Using previously found line if within the margin distance from
             %it. Otherwise assigning a new position to line which is 
             %average distance apart from closest line.
-            if absDist < margin*avgDistance+avgDistance
-                
-                if absDist < margin*avgDistance
-                    newLineY = closestLineY;
+            
+            if absDist < margin*avgDistance
+                %Close enought to be categorized into existing line.
+                %maybe combine these to ifs into one with and
+                locInStruct = find([candLineStruct(:).YLoc]==closestLineY);
+                if locInStruct
+                    %If the existing line is one of the previously detected
+                    %new lines, we use that.
+                    candLineStruct(locInStruct).Indices = [candLineStruct(locInStruct).Indices,...
+                                                           newComponentId];
                 else
-                    newLineY = sign(distance)*avgDistance+foundLineCentYs(minIdx);
-                end
-                
-                oldIndex = find([candidateLineStruct.YLoc]==newLineY);
-
-                if oldIndex
-                    candidateLineStruct(oldIndex).YLoc = newLineY;
-                    oldComponents = [candidateLineStruct(oldIndex).Indices];
-                    candidateLineStruct(oldIndex).Indices = [oldComponents,newComponentId];
-                else
-                    candidateLineStruct(newIndex).YLoc = newLineY;
-                    candidateLineStruct(newIndex).Indices = newComponentId;
-                    foundLineCentYs(end+1) = newLineY;
-                    linePoints(end+1,:) = [0,newLineY,imgWidth,newLineY];
+                    candLineStruct(newIndex).YLoc = pY;
+                    candLineStruct(newIndex).Indices = newComponentId;
+                    candLineStruct(newIndex).OldLine = minIdx;
+                    foundLineCentYs(end+1) = pY;
+                    lineEndPoints(end+1,:) = [0,pY,imgWidth,pY];
                     newIndex = newIndex+1;
+                end
+            else
+            
+                if absDist < margin*avgDistance+avgDistance
+                    %Close enough to other lines to be a new line.
+                    candLineStruct(newIndex).YLoc = pY;
+                    candLineStruct(newIndex).Indices = newComponentId;
+                    candLineStruct(newIndex).OldLine = 0;
+                    foundLineCentYs(end+1) = pY;
+                    lineEndPoints(end+1,:) = [0,pY,imgWidth,pY];
+                    newIndex = newIndex+1;
+                    
+                else
+                     %idk
+
                 end
             end
         end
-
         %categorize newly found lines into the label image
+        
+        % TODO categorize also to line struct
         subset1Indx = [subset1.Index];
         subset1Pieces = [subset1.PiecesAmount];
         highestLabel = max(lineLabels(:));
-        for ii = 1:length(candidateLineStruct)
-            
-            indicesInArea=[candidateLineStruct(ii).Indices];
+        for ii = 1:length(candLineStruct)
+            indicesInArea=[candLineStruct(ii).Indices];
             piecesInArea = histcounts(indicesInArea,'BinMethod','Integers');
             piecesInArea(piecesInArea==0)=[];
             %Remove value if at least half of corresponding block-centroids 
             %are not in area.
             indicesInArea(piecesInArea<(0.5*subset1Pieces(ismember(subset1Indx,indicesInArea))))=[];
+            
+            if candLineStruct(ii).OldLine~=0
+                newLabel = candLineStruct(ii).OldLine;
+            else
+                highestLabel = highestLabel+1;
+                newLabel = highestLabel;
+            end
             highestLabel = highestLabel+1;
-            lineLabels(ismember(labels,indicesInArea))=highestLabel;
+            lineLabels(ismember(labels,indicesInArea))=newLabel;
         end
         
         disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
@@ -357,14 +386,19 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
     disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
  
     %% Categorize subset 3 values to the closest line
-    %Not if they are too far away (average distance)
+    %Not if they are too far away (more than average distance)
+    %figure(),imagesc(labels),hold on
     for ii = 1:length(subset3)
         sub3BBox = subset3(ii).BoundingBox;
+        %visualizeMoreBoxes(sub3BBox,'y',1);
         yloc = sub3BBox(2)+(sub3BBox(4)/2);
-        minDistance = min(abs(foundLineCentYs-yloc));
-        if minDistance < avgDistance
-            [~,closestRowIndex] = min(abs(foundLineCentYs-yloc));
+        [minDistance,closestRowIndex] = min(abs(foundLineCentYs-yloc));
+        if minDistance < 0.2*avgDistance
+            %doesn't quite work with e.g. a01-026.png ii==27
+            %probably because of detecting the undetected lines
             lineLabels(labels==subset3(ii).Index)=closestRowIndex;
+        else
+            lineLabels(labels==subset3(ii).Index)=0;
         end
     end
 
@@ -385,8 +419,7 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
                              ul(1),ul(2),ll(1),ll(2);...
                              ur(1),ur(2),lr(1),lr(2)];
 
-            
-            intersection = lineSegmentIntersect(boxSidesArray,linePoints);
+            intersection = lineSegmentIntersect(boxSidesArray,lineEndPoints);
             intersectYs = [intersection.intMatrixY];
             intersectYs(isnan(intersectYs))=0;
             [~,interC,interVal] = find(intersectYs);
@@ -399,10 +432,6 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
             end
             
             intersectionArray = [intersectingLines,avgYIntersect];
-
-             imWidth = size(subset2(ii).Image,2);
-%             figure(), imshow(subset2(ii).Image);
-%             hold on;
             
             if interLinesAmount>1
                 sortedIntersectArr = sortrows(intersectionArray,2);
@@ -431,11 +460,6 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
                     binSkeletonImg = bwmorph(processedImage,'skel',Inf);
                     flagSkeletonImg = double(binSkeletonImg);
                     branchPoints = bwmorph(binSkeletonImg,'branchpoints');
-                    
-%                     line([0,imWidth],[yi,yi],'Color','r');
-%                     line([0,imWidth],[yip1,yip1],'Color','y');
-%                     line([0,imWidth],[zoneHiLim,zoneHiLim],'Color','g','LineStyle',':');
-%                     drawnow
                     
                     if sum(sum(branchPoints))>0
                         %selecting only area in the zone
@@ -498,7 +522,6 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
                 centroidY = prop(jj).Centroid(2);
                 componentImage = flagImage==jj;
                 componentYLoc = centroidY+upperYLoc;
-                minDistance = min(abs(foundLineCentYs-componentYLoc));
                 [~,closestRowIndex] = min(abs(foundLineCentYs-componentYLoc));
                 newComp = componentImage*closestRowIndex;
                 lineLabels(bbox(2):bbox(2)+bbox(4)-1,bbox(1):bbox(1)+bbox(3)-1)=...
@@ -551,10 +574,10 @@ function lineLabels = detectLines(binarizedImage,n1,n2,margin)
     axis equal;
     axis tight;
     title('Final Text Lines');
-    visualizeMoreBoxes(subset2,'c',1);
+    %visualizeMoreBoxes(subset2,'c',1);
     %visualizeMoreBoxes(subset1,'r',1);
 %      figure(),imagesc(lineLabels);
-%     boxProps = regionprops(lineLabels,'BoundingBox');
-%     visualizeMoreBoxes(boxProps,'g',2);
+     boxProps = regionprops(lineLabels,'BoundingBox');
+     visualizeMoreBoxes(boxProps,'g',2);
 
 end

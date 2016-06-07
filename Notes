@@ -143,3 +143,13 @@ houg vis
             break
         end
     end
+------
+
+%     figure(),
+%     imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
+%        'InitialMagnification','fit');
+%     title('Hough Transform');
+%     xlabel('\theta'), ylabel('\rho');
+%     axis on, axis normal;
+%     colormap(hot);
+%     drawnow
