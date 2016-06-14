@@ -153,3 +153,118 @@ houg vis
 %     axis on, axis normal;
 %     colormap(hot);
 %     drawnow
+
+
+        %rewrite this
+%         for ii = 1:size(cPoints,1) 
+%             p = cPoints(ii,:);
+%             newComponentId = centroidImg(p(1),p(2));
+%             pY = p(1);
+%             foundLineCentYs = sort(foundLineCentYs);
+%             [minDist,minIdx]=min(abs(foundLineCentYs-pY));
+%             closestLineY = foundLineCentYs(minIdx);
+%             distance = pY-closestLineY;
+%             absDist = abs(distance);
+% 
+%             %Using previously found line if within the margin distance from
+%             %it. Otherwise assigning a new position to line which is 
+%             %average distance apart from closest line.
+%             if absDist < sameLineMargin*avgDistance
+%                 %Close enought to be categorized into existing line.
+%                 locInStruct = find([candLineStruct(:).YLoc]==closestLineY);
+%                 if locInStruct
+%                     %If the existing line is one of the previously detected
+%                     %new lines, we use that.
+%                     candLineStruct(locInStruct).Indices = [candLineStruct(locInStruct).Indices,...
+%                                                            newComponentId];
+%                 else
+%                     candLineStruct(newIndex).YLoc = pY;
+%                     candLineStruct(newIndex).Indices = newComponentId;
+%                     candLineStruct(newIndex).OldLine = minIdx;
+%                     foundLineCentYs(end+1) = pY;
+%                     lineEndPoints(end+1,:) = [0,pY,imgWidth,pY];
+%                     newIndex = newIndex+1;
+%                 end
+%             else
+%                 if absDist > closeAvgDistMargin*avgDistance
+%                     %Close enough to other lines to be a new line.
+%                     candLineStruct(newIndex).YLoc = pY;
+%                     candLineStruct(newIndex).Indices = newComponentId;
+%                     candLineStruct(newIndex).OldLine = 0;
+%                     foundLineCentYs(end+1) = pY; %problem may be here?
+%                     lineEndPoints(end+1,:) = [0,pY,imgWidth,pY];
+%                     newIndex = newIndex+1;
+%                     
+%                 else
+%                      %idk
+% 
+%                 end
+%             end
+%         end
+
+-------
+
+[pYs,pXs,val]=find(centroidImg.*ismember(centroidImg,ccsNotInLine));
+
+        candLineStruct = struct('YLoc',{},...
+                                'Indices',{},...
+                                'OldLine',{});
+
+        newIndex = 1;
+        
+
+        
+        for ii = 1:size(pYs,1)
+            %plot(pXs(ii),pYs(ii), 'r*');
+            newComponentId = val(ii);
+            [minDist,minIdx]=min(abs(foundLineCentYs-pYs(ii)));
+            closestLineY = foundLineCentYs(minIdx);
+            distance = abs(pYs(ii)-closestLineY);
+            if distance > closeAvgDistMargin*avgDistance
+                candLineStruct(newIndex).OldLine = 0;
+            else
+                candLineStruct(newIndex).OldLine = 1;
+            end
+            candLineStruct(newIndex).YLoc = pYs(ii);
+            candLineStruct(newIndex).Indices = newComponentId;
+            
+            newIndex=newIndex+1;
+        end
+        
+        %Categorizing newly found lines into the label image
+        
+        
+        
+        subset1Indx = [subset1.Index];
+        subset1Pieces = [subset1.PiecesAmount];
+        highestLabel = max(lineLabels(:));
+        
+        for ii = 1:length(candLineStruct)
+            indicesInArea=[candLineStruct(ii).Indices];
+            piecesInArea = histcounts(indicesInArea,'BinMethod','Integers');
+            piecesInArea(piecesInArea==0)=[];
+            uniqueComponentsInArea = unique(indicesInArea);
+            %Remove value if at least half of corresponding block-centroids 
+            %are not in area.
+            indicesInArea(piecesInArea<(0.5*subset1Pieces(ismember(subset1Indx,indicesInArea))))=[];
+            tmpLineImg = logical(labels).*ismember(labels,indicesInArea);
+            prop = regionprops(tmpLineImg,'Centroid','Orientation');
+            oldLine = candLineStruct(ii).OldLine;
+            if oldLine~=0
+                centroid = [lineStruct(:).Centroid];
+                [~,minId]=min(centroid(1:2:end)-candLineStruct(ii).YLoc);
+                newLabel = minId;
+                %newLabel = oldLine;
+                
+            else
+                highestLabel = highestLabel+1;
+                newLabel = highestLabel;
+                indexOfNewLine = length(lineStruct)+1;
+                lineStruct(indexOfNewLine).SkewAngle = prop.Orientation;
+                lineStruct(indexOfNewLine).Centroid = prop.Centroid;
+            end
+            highestLabel = highestLabel+1;
+            lineLabels(ismember(labels,uniqueComponentsInArea))=newLabel;
+
+        end
+        

@@ -64,9 +64,20 @@ function HWR(path,testedValue)
 %% Layout Analysis
     tic;
     n1 = 5;
-    n2 = 9;
-    margin = 0.4;
-    lineLabels = detectLines(preprocessedImage,n1,n2,margin);
+    %n2 = 9;
+    n2 = 5;
+    voterMargin = 4;
+    skewDevLim = 5;
+    aroundAvgDistMargin = 0.7;
+    sameLineMargin = 0.5;
+    lineLabels = detectLines(preprocessedImage,...
+                             n1,...
+                             n2,...
+                             voterMargin,...
+                             skewDevLim,...
+                             aroundAvgDistMargin,...
+                             sameLineMargin);
+                         
     disp(['Line detection done in ', num2str(toc), ' seconds']);
 
     %Old stuff
