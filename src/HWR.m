@@ -1,4 +1,4 @@
-function HWR(path,testedValue)
+function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,verbose)
 %% Initialization
     close all;
     [image, map]=imread(path);
@@ -48,7 +48,7 @@ function HWR(path,testedValue)
 %     spaceRatioThreshold = 0.2;
     
 %% Preprocessing
-    tic;
+    preprocessingStartTime = tic;
     p = preprocessor(image,...
                      map,...
                      wienerFilterSize,...
@@ -59,39 +59,32 @@ function HWR(path,testedValue)
                      strokeWidthThreshold);
     
     preprocessedImage = p.preprocess;
-    disp(['Pre processing done in ', num2str(toc), ' seconds']);
+    preprocessingTime = toc(preprocessingStartTime);
+    if verbose
+        disp(['Pre processing done in ', num2str(preprocessingTime), ' seconds']);
+    end
     
 %% Layout Analysis
-    tic;
+    rowDetectionStartTime = tic;
     n1 = 5;
-    %n2 = 9;
     n2 = 5;
-    voterMargin = 4;
+    voterMargin = 6;
     skewDevLim = 5;
     aroundAvgDistMargin = 0.7;
     sameLineMargin = 0.5;
-    lineLabels = detectLines(preprocessedImage,...
-                             n1,...
-                             n2,...
-                             voterMargin,...
-                             skewDevLim,...
-                             aroundAvgDistMargin,...
-                             sameLineMargin);
-                         
-    disp(['Line detection done in ', num2str(toc), ' seconds']);
-
-    %Old stuff
-%     disp('Layout analysis...');
-%     tic
-%     l = layoutAnalyzer(preprocessedImage,...
-%                        aoiXExpansionAmount,...
-%                        aoiYExpansionAmount,...
-%                        areaRatioThreshold,...
-%                        rlsaRowThreshold ,...
-%                        rlsaWordThreshold);
-%     
-%     aoiStruct = l.analyze;
-%     toc
-%     
-% 	visualizeLayout(p.originalImage, aoiStruct, 3);
-
+    rowVerbose = 0;
+    visualization = 0;
+    [lineLabels,lineAmount] = detectLines(preprocessedImage,...
+                                          n1,...
+                                          n2,...
+                                          voterMargin,...
+                                          skewDevLim,...
+                                          aroundAvgDistMargin,...
+                                          sameLineMargin,...
+                                          rowVerbose,...
+                                          visualization);
+                                      
+    rowDetectionTime = toc(rowDetectionStartTime);
+    if verbose
+        disp(['Found ',num2str(lineAmount),' lines in ', num2str(rowDetectionTime), ' seconds']);
+    end

@@ -1,10 +1,12 @@
-function lineLabels = detectLines(binarizedImage,...
-                                  n1,...
-                                  n2,...
-                                  voterMargin,...
-                                  skewDevLim,...
-                                  aroundAvgDistMargin,...
-                                  sameLineMargin)
+function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
+                                                        n1,...
+                                                        n2,...
+                                                        voterMargin,...
+                                                        skewDevLim,...
+                                                        aroundAvgDistMargin,...
+                                                        sameLineMargin,...
+                                                        verbose,...
+                                                        visualization)
 %Implementation based on papers  
 %"Line And Word Segmentation of Handwritten Documents (2009)" and
 %"A Block-Based Hough Transform Mapping for Text Line Detection in 
@@ -21,21 +23,20 @@ function lineLabels = detectLines(binarizedImage,...
 %% Constraints:
 %--Input image must be single column text
 %--Input image must have horizontal text lines.
-%--Margin value must be defined when generating new lines from objects that 
+%--Margin values must be defined when generating new lines from objects that 
 %  weren't assigned to any line with hough transform method.
-%--If two lines are too close to each other and their lines cross they are
-%  falsefully merged as one.
-%--If some subset1 components remain to be classfied to any lines they must
-%  be near to the other text lines to be classified correctly otherwise
-%  they are left out.
+%--If two lines are too close to each other and their lines cross they
+%  might be falsefully merged as one.
 
+%% Proposed values for constant variables and explanations
 %Required Hough block contribution to detect line.
 %n1 = 5; 
 %n1 = 1;
 
 %Excessive skew constraint is applied if (Hough)contribution is less than n2 
 %n2 = 9;
-%n2=5;
+%n2 = 5;
+
 %Margin determines how close the undetected lines must be to the detected
 %lines to be assigned correctly.
 %margin = 0.25;
@@ -52,18 +53,16 @@ function lineLabels = detectLines(binarizedImage,...
 %For object that is not assigned to any line with Hough transform mapping.
 %This parameter determines how close the distance of has to be to the 
 %average distance so it can be candidate to a new line.
-%closeAvgDistMargin = 0.9;
+%aroundAvgDistMargin = 0.9;
 %aroundAvgDistMargin = 0.7;
+
 %This parameter determines if the unassigned object can be assigned to a
 %already existing line.
 %sameLineMargin = 0.5;
 
-%Adjusting colormap for better visualization
-editedCm = prism;
-editedCm(1,:)=[0,0,0];
 
-totalTimeStart = tic;
 %% pre-procesing
+    totalTimeStart = tic;
     [imgHeight,imgWidth]=size(binarizedImage);
     labels = bwlabel(binarizedImage,8);
     boxes = regionprops(logical(labels), 'BoundingBox','Image');
@@ -167,9 +166,10 @@ totalTimeStart = tic;
 %% Hough transform mapping
     tic
     thetas = 85:95;
-    [rhos,~,voterCell] = houghTransform(centroidImg,thetas,0.2*AH);
-    disp(['Hough Transform done in ', num2str(toc), ' seconds']);
-
+    [rhos,accArr,voterCell,voterArray] = houghTransform(centroidImg,thetas,0.2*AH);
+    if verbose
+        disp(['Hough Transform done in ', num2str(toc), ' seconds']);
+    end
 %% line detection
     tic
     lineStruct = struct('Contribution',{},...
@@ -186,6 +186,7 @@ totalTimeStart = tic;
     %and removes values assigned to line until no peaks high enough remain.
     %Additionally skew is monitored.
     objsAssignedToLine = zeros();
+    cellTic = tic;
     while 1
         sizes = cellfun('size', voterCell, 1);
         [maxValue, maxIndex] = max(sizes(:));
@@ -213,9 +214,7 @@ totalTimeStart = tic;
         %Here orientation i.e. skew angle is not same as the theta.
         %The orientation takes whole objects into account whereas Hough
         %line uses the centroids of splitted components.
-        %prop = regionprops(double(lineLabels==centroid(2)),'Orientation','Centroid');
 
-        objsAssignedToLine = [objsAssignedToLine,objsInLine];
         lineStruct(lineIndex).Contribution = maxValue;
         lineStruct(lineIndex).SkewAngle = prop.Orientation;
         lineStruct(lineIndex).CentroidY = prop.Centroid(2);
@@ -227,20 +226,23 @@ totalTimeStart = tic;
         
         %This operation takes most of the time. Running time depends on 
         %centroid pixel amount and Hough accumulator array size.
+        
         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
                             voterCell,...
                             'UniformOutput',false);
         
+        
     end
-    
+    disp(['hough cell processing time ',num2str(toc(cellTic))]);
     %Additional constraint is applied to remove lines with excessive skew.
     domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 &...
                (abs([lineStruct.SkewAngle])-domSkewAngle)>skewDevLim)=[];
     lineLabels(~ismember(labels, objsAssignedToLine))=0;
-    disp(['Initial line detection done in ', num2str(toc), ' seconds']);
-    
-    lineStruct = rmfield(lineStruct,'Contribution');
+    if verbose
+        disp(['Initial line detection done in ', num2str(toc), ' seconds']);
+    end
+    lineStruct = rmfield(lineStruct, 'Contribution');
     
     %% Post-processing
     %% Merge crossing lines into one line if they are close
@@ -265,7 +267,7 @@ totalTimeStart = tic;
         lineEndPoints(ii,4) = ys(2);
     end
     
-    lineStruct = rmfield(lineStruct,{'Theta','Rho'});
+    lineStruct = rmfield(lineStruct,{'Theta', 'Rho'});
     
     %Intersecting lines
     intersection = lineSegmentIntersect(lineEndPoints,lineEndPoints);
@@ -305,8 +307,9 @@ totalTimeStart = tic;
             lineStruct(newIndex).CentroidX = newCentroid(1);
         end
     end
-
-    disp(['Line merging done in ', num2str(toc), ' seconds'])
+    if verbose
+        disp(['Line merging done in ', num2str(toc), ' seconds'])
+    end
     
     %% Generate new lines from CCs that werent assigned to any line
     %Constant variable 'sameLineMargin' adjusts how near the previously 
@@ -386,13 +389,15 @@ totalTimeStart = tic;
             end
             lineLabels(ismember(labels,indices))=newLabel;
         end
-
-        disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
+        if verbose
+            disp(['Detecting previously undetected lines done in ', num2str(toc), ' seconds']);
+        end
     end
     
     finalLineAmount  = length(lineStruct);
-    disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
-    
+    if verbose
+        disp(['Final amount of text lines: ', num2str(finalLineAmount)]);
+    end
     %% Categorize subset 3 values to the closest line
     %The subset3 objects are removed if they are further than average
     %distance from nearest line.
@@ -408,8 +413,9 @@ totalTimeStart = tic;
             lineLabels(labels==subset3(ii).Index)=0;
         end
     end
-    disp(['Processing subset3 done in ', num2str(toc), ' seconds']);
-    
+    if verbose
+        disp(['Processing subset3 done in ', num2str(toc), ' seconds']);
+    end
     %% Subset2 Processing
     if ~isempty(subset2)
         tic
@@ -444,9 +450,10 @@ totalTimeStart = tic;
             if interLinesAmount>1
                 sortedIntersectArr = sortrows(intersectionArray,2);
                 relAvgYIntersect = sortedIntersectArr(:,2)-ul(2);
-                %Checking if only a fraction of the CC is under the specified
-                %line. The line is higher from lowest line by a tenth of the 
-                %distance between lowest and second-lowest line.
+                %Checking if only a fraction of the CC is under the
+                %specified line. The line is higher from lowest line by a
+                %tenth of the distance between lowest and second-lowest
+                %line.
                 yLowest = relAvgYIntersect(end);
                 y2ndLowest = relAvgYIntersect(end-1);
                 roundedY2ndLowest = round(y2ndLowest);
@@ -544,13 +551,27 @@ totalTimeStart = tic;
                 lineLabels(bbox(2):bbox(2)+bbox(4)-1,bbox(1):bbox(1)+bbox(3)-1)+newComp;
             end
         end
-        
-        disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
+        if verbose
+            disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
+        end
+    end
+    
+    %Applying more intuitive labels to text lines
+    centroidYs = [lineStruct.CentroidY];    
+    [~,topDownOrder] = sort(centroidYs,'ascend');
+    newLineLabels = zeros(imgHeight,imgWidth);
+    
+    for ii = 1:length(topDownOrder)
+        oldLabel = centroidYs(topDownOrder(ii));
+        newLineLabels(lineLabels==oldLabel)=ii;
+    end
+    
+    if verbose
+        disp('----------------------------------------');
+        disp(['Total line detection time ', num2str(toc(totalTimeStart)), ' seconds']);
+        disp('----------------------------------------');
     end
 
-    disp('----------------------------------------');
-    disp(['Total line detection time ', num2str(toc(totalTimeStart)), ' seconds']);
-    disp('----------------------------------------');
     %% Visualization
     
     % Line intersections with subset2 boxes
@@ -567,48 +588,51 @@ totalTimeStart = tic;
     %Subset1 splitted components centroids
 %     [r,c] = find(centroidImg);
 %     plot(c,r,'mo');
-      
-    %orientation
-%     for ii = 1:length(lineStruct)
-%         orientation = lineStruct(ii).SkewAngle;
-%         centroid = lineStruct(ii).Centroid;
-%         ysrt=centroid(2)+centroid(1)*tand(orientation);
-%         fplot(@(x) tand(-orientation)*x+ysrt,...
-%               'LineWidth',1,...
-%               'LineStyle',':');
-%     end
-    
-	%Lines
 
-    centroidYs = [lineStruct.CentroidY];    
-    [~,topDownOrder] = sort(centroidYs,'ascend');
-    newLineLabels = zeros(imgHeight,imgWidth);
-    for ii = 1:length(topDownOrder)
-        oldLabel = centroidYs(topDownOrder(ii));
-        newLineLabels(lineLabels==oldLabel)=ii;
+    if visualization
+        %Subset boxes 
+        figure(),imshow(binarizedImage);
+        title('Subsets Visualized');
+        for ii = 1:length(subset1)
+            pboxes = cell2mat(subset1(ii).PieceBoxCell);
+            visualizeMoreBoxes(pboxes,'y',1);
+        end
+        visualizeMoreBoxes(subset2,'c',1);
+        visualizeMoreBoxes(subset3,'m',1);
+        hold off;
+        drawnow;
+        
+        %Hough accumulator array
+        figure(),
+        imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
+           'InitialMagnification','fit');
+        title('Hough Transform Accumulator Array');
+        xlabel('\theta'), ylabel('\rho');
+        axis on, axis normal;
+        colormap(hot);
+        drawnow;
+        
+        %Components assigned to line
+        figure(), imshow(ismember(labels,ccsNotInLine).*labels);
+        figure(), imshow(~ismember(labels,ccsNotInLine).*labels);
+        %Final text lines
+        figure(),imagesc(newLineLabels);
+        title('Final Text Lines');
+        editedCm = prism;
+        editedCm(1,:)=[0,0,0];
+        colormap(editedCm);
+        axis equal;
+        axis tight;
+        
+        hold on;
+        for ii = 1:length(lineStruct)
+            orientation = lineStruct(ii).SkewAngle;
+            centroid = [lineStruct(ii).CentroidX,lineStruct(ii).CentroidY];
+            ysrt=centroid(2)+centroid(1)*tand(orientation);
+            fplot(@(x) tand(-orientation)*x+ysrt,...
+                 'LineWidth',1,...
+                 'LineStyle',':',...
+                 'Color','w');
+        end
     end
-    
-    figure(),imagesc(newLineLabels);
-    colormap(editedCm);
-    axis equal;
-    axis tight;
-    hold on;
-    for ii = 1:length(lineStruct)
-        orientation = lineStruct(ii).SkewAngle;
-        centroid = [lineStruct(ii).CentroidX,lineStruct(ii).CentroidY];
-        ysrt=centroid(2)+centroid(1)*tand(orientation);
-        fplot(@(x) tand(-orientation)*x+ysrt,...
-             'LineWidth',1,...
-             'LineStyle',':',...
-             'Color','g');
-    end
-
-    %subset boxes 
-%     title('Subgroups Visualized');
-%     for ii = 1:length(subset1)
-%         pboxes = cell2mat(subset1(ii).PieceBoxCell);
-%         visualizeMoreBoxes(pboxes,'y',1);
-%     end
-%     visualizeMoreBoxes(subset2,'c',1);
-%     visualizeMoreBoxes(subset3,'m',1);
 end

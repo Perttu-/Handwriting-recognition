@@ -268,3 +268,19 @@ houg vis
 
         end
         
+
+
+    %Old stuff
+%     disp('Layout analysis...');
+%     tic
+%     l = layoutAnalyzer(preprocessedImage,...
+%                        aoiXExpansionAmount,...
+%                        aoiYExpansionAmount,...
+%                        areaRatioThreshold,...
+%                        rlsaRowThreshold ,...
+%                        rlsaWordThreshold);
+%     
+%     aoiStruct = l.analyze;
+%     toc
+%     
+% 	visualizeLayout(p.originalImage, aoiStruct, 3);
