@@ -187,33 +187,41 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     %Additionally skew is monitored.
     objsAssignedToLine = zeros();
     cellTic = tic;
+    
     while 1
-        sizes = cellfun('size', voterCell, 1);
-        [maxValue, maxIndex] = max(sizes(:));
+        %sizes = cellfun('size', voterCell, 1);
+        %[maxValue, maxIndex] = max(sizes(:));
+        maxValue = size(voterArray,3);
         if maxValue < n1
             break
         end
-        
-        [maxIRow, maxICol] = ind2sub(size(voterCell),maxIndex);
+        [maxIRow, maxICol] = find(voterArray(:,:,maxValue));
+        %[maxIRow, maxICol] = ind2sub(size(voterCell),maxIndex);
 
-        nearVoters = voterCell(maxIRow-voterMargin:maxIRow+voterMargin,maxICol);
-        voterNumbers = cell2mat(nearVoters(~cellfun('isempty',nearVoters)));
+        %nearVoters = voterCell(maxIRow-voterMargin:maxIRow+voterMargin,maxICol);
+        %voterNumbers = cell2mat(nearVoters(~cellfun('isempty',nearVoters)));
+        voterNumbers = [];
+        for ii = 1:maxValue
+            currentPage = voterArray(:,:,ii);
+            currentPageNearVoters = currentPage(maxIRow-voterMargin:maxIRow+voterMargin,maxICol);
+            voterNumbers = [voterNumbers; currentPageNearVoters(currentPageNearVoters~=0)];
+        end
+        
         uniqueVoters = unique(voterNumbers)';
         pieceAmounts = [subset1.PiecesAmount];
         pieceAmounts(~ismember([subset1.Index],uniqueVoters))=[];
         occurences = histcounts(voterNumbers,'BinMethod','Integers');
         occurences(occurences==0)=[];
-        
         objsInLine = uniqueVoters(occurences >= 0.5*pieceAmounts);
 
-        %lineLabels(ismember(labels,objsInLine))=lineIndex;
         tempImg = ismember(labels,objsInLine);
         prop = regionprops(double(tempImg),'Centroid','Orientation');
         centroid = prop.Centroid;
         lineLabels(ismember(labels,objsInLine))=centroid(2);
         %Here orientation i.e. skew angle is not same as the theta.
         %The orientation takes whole objects into account whereas Hough
-        %line uses the centroids of splitted components.
+        %line uses the centroids of splitted components. It's a small
+        %difference.
 
         lineStruct(lineIndex).Contribution = maxValue;
         lineStruct(lineIndex).SkewAngle = prop.Orientation;
@@ -226,11 +234,26 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         
         %This operation takes most of the time. Running time depends on 
         %centroid pixel amount and Hough accumulator array size.
+%         celltic =  tic;
+%         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
+%                             voterCell,...
+%                             'UniformOutput',false);
+%         disp(num2str(toc(celltic)));
         
-        voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
-                            voterCell,...
-                            'UniformOutput',false);
+
+%         voterArray = arrayfun(@(x) x(~ismember(x,objsInLine)),...
+%                             voterArray,...
+%                             'UniformOutput',false);
+%         disp(num2str(toc(arrtic)));
+        %arrtic =  tic;
+        for obj = objsInLine
+            %voterArray(voterArray == obj)=0;
+            voterArray = voterArray.*double(voterArray~=obj);
+            %edit the array that there isn't any zero gaps
+        end
+        %disp(num2str(toc(arrtic))); 
         
+
         
     end
     disp(['hough cell processing time ',num2str(toc(cellTic))]);
@@ -591,30 +614,31 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
 
     if visualization
         %Subset boxes 
-        figure(),imshow(binarizedImage);
-        title('Subsets Visualized');
-        for ii = 1:length(subset1)
-            pboxes = cell2mat(subset1(ii).PieceBoxCell);
-            visualizeMoreBoxes(pboxes,'y',1);
-        end
-        visualizeMoreBoxes(subset2,'c',1);
-        visualizeMoreBoxes(subset3,'m',1);
-        hold off;
-        drawnow;
+%         figure(),imshow(binarizedImage);
+%         title('Subsets Visualized');
+%         for ii = 1:length(subset1)
+%             pboxes = cell2mat(subset1(ii).PieceBoxCell);
+%             visualizeMoreBoxes(pboxes,'y',1);
+%         end
+%         visualizeMoreBoxes(subset2,'c',1);
+%         visualizeMoreBoxes(subset3,'m',1);
+%         hold off;
+%         drawnow;
         
         %Hough accumulator array
-        figure(),
-        imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
-           'InitialMagnification','fit');
-        title('Hough Transform Accumulator Array');
-        xlabel('\theta'), ylabel('\rho');
-        axis on, axis normal;
-        colormap(hot);
-        drawnow;
+%         figure(),
+%         imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
+%            'InitialMagnification','fit');
+%         title('Hough Transform Accumulator Array');
+%         xlabel('\theta'), ylabel('\rho');
+%         axis on, axis normal;
+%         colormap(hot);
+%         drawnow;
         
         %Components assigned to line
-        figure(), imshow(ismember(labels,ccsNotInLine).*labels);
-        figure(), imshow(~ismember(labels,ccsNotInLine).*labels);
+        %figure(), imshow(ismember(labels,ccsNotInLine).*labels);
+        %figure(), imshow(~ismember(labels,ccsNotInLine).*labels);
+        
         %Final text lines
         figure(),imagesc(newLineLabels);
         title('Final Text Lines');

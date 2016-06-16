@@ -72,8 +72,8 @@ function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,verbose)
     skewDevLim = 5;
     aroundAvgDistMargin = 0.7;
     sameLineMargin = 0.5;
-    rowVerbose = 0;
-    visualization = 0;
+    rowVerbose = 1;
+    visualization = 1;
     [lineLabels,lineAmount] = detectLines(preprocessedImage,...
                                           n1,...
                                           n2,...
