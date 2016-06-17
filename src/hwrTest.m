@@ -1,6 +1,7 @@
 function hwrTest(folderPath)
     %Input: Full path to directory containing image files with
     %corresponding XML documents.
+    
     imageFiles = dir([folderPath,'/*.png']);
     xmlFiles = dir([folderPath,'/*.xml']);
     numberOfImageFiles = length(imageFiles);
@@ -10,22 +11,85 @@ function hwrTest(folderPath)
         return
     end 
     
-    testStruct = struct('TestName',[],...
-                        'TestValues',[]);
-                    
-    testValues = 1;
+    %% Define these for each test
+    %remember to change testedValue to HWR.m
+    testName = 'n1Test';
+    testValues = 1:2;
+    
+%     testName = 'n2Test';
+%     testValues = 0:20;
+
+%     testName = 'voterMarginTest';
+%     testValues = 0:20;
+
+%     testName = 'skewDevLimTest';
+%     testValues = 0:20;
+
+%     testName = 'aroundAvgDistMarginTest';
+%     testValues = 0:0.1:1;
+
+%     testName = 'sameLineMarginTest';
+%     testValues = 0:0.1:1;
+    
+    %% Testing process
     testTic = tic;
-    for i = 1:size(testStruct,2)
-        for j = 1:length(testValues)
-            for k = 1:numberOfImageFiles
-                disp(['Processing file ', num2str(k) ,'/',num2str(numberOfImageFiles)]);
-                imageName = imageFiles(k).name;
-                xmlName = xmlFiles(k).name;
-                xmlStruct = parseXML(xmlName);
-                totalLines = getLineAmounts(xmlStruct);
-                [foundLines,preProcTime,rowDetTime] = HWR([folderPath,imageName],0);
-            end
+
+    disp(['----- Running test: ',testName,' -----']);
+
+    numberOfTestValues = length(testValues);
+    resultStruct = struct('TestedValue',[],...
+                          'InnerResultStruct',[],...
+                          'AvgPreProcessingTime',[],...
+                          'AvgLineDetectionTime',[],...
+                          'AvgAccuracy',[]);
+
+    for j = 1:numberOfTestValues         
+        disp(['Testing value ', num2str(j) ,'/',num2str(numberOfTestValues)]);
+
+        testedValue = testValues(j);
+        resultStruct(j).TestedValue = testedValue;
+        innerResultStruct = struct('FileName',[],...
+                                   'FoundLines',[],...
+                                   'RealAmountOfLines',[],...
+                                   'PreProcessingTime',[],...
+                                   'LineDetectionTime',[]);
+                               
+        for k = 1:numberOfImageFiles 
+            disp(['Processing Image: ', num2str(k) ,'/',num2str(numberOfImageFiles)]);
+            imageName = imageFiles(k).name;
+            [lineLabels,foundLines,preProcTime,rowDetTime] = HWR([folderPath,imageName],testedValue,0);
+            
+            xmlName = xmlFiles(k).name;
+            xmlStruct = parseXML(xmlName);
+            realLines = getLineAmounts(xmlStruct);
+            
+            innerResultStruct(k).FileName = imageName;
+            innerResultStruct(k).FoundLines = foundLines;
+            innerResultStruct(k).LabelImage = lineLabels;
+            innerResultStruct(k).RealAmountOfLines = realLines;
+            innerResultStruct(k).PreProcessingTime = preProcTime;
+            innerResultStruct(k).LineDetectionTime = rowDetTime;
         end
+        resultStruct(j).InnerResultStruct = innerResultStruct;
     end
-    disp(['Tests took ', num2str(toc(testTic)) ,' seconds']);
+
+    disp(['Test took ', num2str(toc(testTic)) ,' seconds']);
+    
+    
+    %% Calculations
+    for i = 1:size(resultStruct,2)
+        meanPreProcTime = mean([resultStruct(i).InnerResultStruct.PreProcessingTime]);
+        meanLineDetTime = mean([resultStruct(i).InnerResultStruct.LineDetectionTime]);
+        accuracy = [resultStruct(i).InnerResultStruct.FoundLines]./...
+                   [resultStruct(i).InnerResultStruct.RealAmountOfLines];
+
+        resultStruct(i).AvgPreProcessingTime = meanPreProcTime;
+        resultStruct(i).AvgLineDetectionTime = meanLineDetTime;
+        resultStruct(i).AvgAccuracy = mean(accuracy);
+    end
+    
+    %% Save into file
+    mkdir(folderPath,'results');
+    save([folderPath,'/results/', testName,'_results.mat'],'resultStruct');
+    
 end

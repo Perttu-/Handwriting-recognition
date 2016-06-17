@@ -1,20 +1,36 @@
-function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,verbose)
+function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,verbose)
 %% Initialization
     close all;
     [image, map]=imread(path);
     
+    rowVerbose = 0;
+    visualization = 0;
+    
 %% Constraints
+    %replace with testedValue
     %IAM database
+    
+    %pre-processing
     wienerFilterSize = 5;
-    %wiener filter can cause some disortion
-    %wienerFilterSize = -1;
     sauvolaNeighbourhoodSize = 180;
-    %sauvolaThreshold = 0.3;
     sauvolaThreshold = 0.6;
     morphClosingDiscSize = -1;
     strokeWidthThreshold = 0.8;
-    %strokeWidthThreshold = 0.6;
     skewCorrection = 0;
+    
+    %Row detection
+    %n1 = 5;
+    n1 = testedValue;
+    n2 = 5;
+    voterMargin = 6;
+    skewDevLim = 5;
+    aroundAvgDistMargin = 0.7;
+    sameLineMargin = 0.5;
+
+%     wiener filter can cause some disortion
+%     wienerFilterSize = -1;
+%     sauvolaThreshold = 0.3;   
+%     strokeWidthThreshold = 0.6; 
 %     aoiXExpansionAmount = 40;
 %     aoiYExpansionAmount = 60;
 %     areaRatioThreshold = 0.004;
@@ -66,14 +82,7 @@ function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,verbose)
     
 %% Layout Analysis
     rowDetectionStartTime = tic;
-    n1 = 5;
-    n2 = 5;
-    voterMargin = 6;
-    skewDevLim = 5;
-    aroundAvgDistMargin = 0.7;
-    sameLineMargin = 0.5;
-    rowVerbose = 1;
-    visualization = 1;
+
     [lineLabels,lineAmount] = detectLines(preprocessedImage,...
                                           n1,...
                                           n2,...

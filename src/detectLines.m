@@ -166,11 +166,12 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
 %% Hough transform mapping
     tic
     thetas = 85:95;
-    [rhos,accArr,voterCell,voterArray] = houghTransform(centroidImg,thetas,0.2*AH);
+    [rhos,accumulatorArray,voterCell,voterArray] = houghTransform(centroidImg,thetas,0.2*AH);
     if verbose
         disp(['Hough Transform done in ', num2str(toc), ' seconds']);
     end
-%% line detection
+    
+%% Finding lines with Hough transform
     tic
     lineStruct = struct('Contribution',{},...
                         'SkewAngle',{},...
@@ -185,23 +186,20 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     %This loop detects peaks from Hough accumulator array, assigns lines
     %and removes values assigned to line until no peaks high enough remain.
     %Additionally skew is monitored.
-    objsAssignedToLine = zeros();
+    objsAssignedToLine = zeros(1,max(max(accumulatorArray)));
     cellTic = tic;
     
     while 1
-        %sizes = cellfun('size', voterCell, 1);
-        %[maxValue, maxIndex] = max(sizes(:));
-        maxValue = size(voterArray,3);
+        maxValue = max(max(accumulatorArray));
         if maxValue < n1
             break
         end
-        [maxIRow, maxICol] = find(voterArray(:,:,maxValue));
-        %[maxIRow, maxICol] = ind2sub(size(voterCell),maxIndex);
+        
+        [maxIRow, maxICol] = find(accumulatorArray==maxValue,1);
 
-        %nearVoters = voterCell(maxIRow-voterMargin:maxIRow+voterMargin,maxICol);
-        %voterNumbers = cell2mat(nearVoters(~cellfun('isempty',nearVoters)));
         voterNumbers = [];
-        for ii = 1:maxValue
+        %maxValue
+        for ii = 1:size(voterArray,3)
             currentPage = voterArray(:,:,ii);
             currentPageNearVoters = currentPage(maxIRow-voterMargin:maxIRow+voterMargin,maxICol);
             voterNumbers = [voterNumbers; currentPageNearVoters(currentPageNearVoters~=0)];
@@ -213,7 +211,6 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         occurences = histcounts(voterNumbers,'BinMethod','Integers');
         occurences(occurences==0)=[];
         objsInLine = uniqueVoters(occurences >= 0.5*pieceAmounts);
-
         tempImg = ismember(labels,objsInLine);
         prop = regionprops(double(tempImg),'Centroid','Orientation');
         centroid = prop.Centroid;
@@ -223,6 +220,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         %line uses the centroids of splitted components. It's a small
         %difference.
 
+        objsAssignedToLine = [objsAssignedToLine,objsInLine];
         lineStruct(lineIndex).Contribution = maxValue;
         lineStruct(lineIndex).SkewAngle = prop.Orientation;
         lineStruct(lineIndex).CentroidY = prop.Centroid(2);
@@ -232,39 +230,27 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         
         lineIndex = lineIndex+1;
         
-        %This operation takes most of the time. Running time depends on 
-        %centroid pixel amount and Hough accumulator array size.
-%         celltic =  tic;
-%         voterCell = cellfun(@(x) x(~ismember(x,objsInLine)),...
-%                             voterCell,...
-%                             'UniformOutput',false);
-%         disp(num2str(toc(celltic)));
-        
-
-%         voterArray = arrayfun(@(x) x(~ismember(x,objsInLine)),...
-%                             voterArray,...
-%                             'UniformOutput',false);
-%         disp(num2str(toc(arrtic)));
-        %arrtic =  tic;
         for obj = objsInLine
-            %voterArray(voterArray == obj)=0;
-            voterArray = voterArray.*double(voterArray~=obj);
-            %edit the array that there isn't any zero gaps
+            toRemoval  = voterArray==obj;
+            voterArray = voterArray.*double(~toRemoval);
+            accumulatorArray = accumulatorArray-sum(toRemoval,3);
         end
-        %disp(num2str(toc(arrtic))); 
-        
-
-        
     end
-    disp(['hough cell processing time ',num2str(toc(cellTic))]);
+    
+    if verbose
+        disp(['hough cell processing time ',num2str(toc(cellTic))]);
+    end
+    
     %Additional constraint is applied to remove lines with excessive skew.
     domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 &...
                (abs([lineStruct.SkewAngle])-domSkewAngle)>skewDevLim)=[];
     lineLabels(~ismember(labels, objsAssignedToLine))=0;
+    
     if verbose
         disp(['Initial line detection done in ', num2str(toc), ' seconds']);
     end
+    
     lineStruct = rmfield(lineStruct, 'Contribution');
     
     %% Post-processing
@@ -310,6 +296,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     newIndex = 1;
     for ii=1:length(cLine1Id)
         firstLine = cLine1Id(ii);
+        %here is something wrong ii==2 second image in test
         firstLineCentY = lineStruct(firstLine).CentroidY;
         secondLine = cLine2Id(ii);
         secondLineCentY = lineStruct(secondLine).CentroidY;
@@ -330,6 +317,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
             lineStruct(newIndex).CentroidX = newCentroid(1);
         end
     end
+    
     if verbose
         disp(['Line merging done in ', num2str(toc), ' seconds'])
     end
@@ -436,9 +424,11 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
             lineLabels(labels==subset3(ii).Index)=0;
         end
     end
+    
     if verbose
         disp(['Processing subset3 done in ', num2str(toc), ' seconds']);
     end
+    
     %% Subset2 Processing
     if ~isempty(subset2)
         tic
@@ -574,9 +564,11 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
                 lineLabels(bbox(2):bbox(2)+bbox(4)-1,bbox(1):bbox(1)+bbox(3)-1)+newComp;
             end
         end
+        
         if verbose
             disp(['Processing subset2 done in ', num2str(toc), ' seconds']);
         end
+        
     end
     
     %Applying more intuitive labels to text lines
@@ -614,16 +606,16 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
 
     if visualization
         %Subset boxes 
-%         figure(),imshow(binarizedImage);
-%         title('Subsets Visualized');
-%         for ii = 1:length(subset1)
-%             pboxes = cell2mat(subset1(ii).PieceBoxCell);
-%             visualizeMoreBoxes(pboxes,'y',1);
-%         end
-%         visualizeMoreBoxes(subset2,'c',1);
-%         visualizeMoreBoxes(subset3,'m',1);
-%         hold off;
-%         drawnow;
+        figure(),imshow(binarizedImage);
+        title('Subsets Visualized');
+        for ii = 1:length(subset1)
+            pboxes = cell2mat(subset1(ii).PieceBoxCell);
+            visualizeMoreBoxes(pboxes,'y',1);
+        end
+        visualizeMoreBoxes(subset2,'c',1);
+        visualizeMoreBoxes(subset3,'m',1);
+        hold off;
+        drawnow;
         
         %Hough accumulator array
 %         figure(),
