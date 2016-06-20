@@ -2,6 +2,8 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage{enumitem}
 \usepackage{url}
+\usepackage{graphicx}
+
 \def\code#1{\texttt{#1}}
 
 \title{%
@@ -11,7 +13,7 @@
 \author{Perttu Pitk{\"a}nen}
 \newlist{abbrv}{itemize}{1}
 \setlist[abbrv,1]{label=,labelwidth=1in,align=parleft,itemsep=0.1\baselineskip,leftmargin=!}
-
+\graphicspath{ {/home/perttu/Programming/Handwriting-recognition/reports/tex/images/} }
 \begin{document}
 
    \maketitle
@@ -54,7 +56,7 @@
     Plenty of research has been conducted and several systems have been implemented for the purpose of optical character recognition and handwriting recognition. These systems can have drastically different approaches for processing the data, even if the data is similar.
 
   \subsection{Optical Character Recognition}
-    Typical OCR systems consist of three phases:
+    Typical OCR systems consist of four phases:
     \begin{enumerate}
       \item{Pre-processing}
       \item{Layout Analysis}
@@ -64,7 +66,12 @@
 
 
     In image pre-processing stage the quality of image is enhanced and the area of interest is located. Additionally layout analysis phase can be included into the pre-processing stage. The feature extraction stage captures the distinctive characteristics of the digitized characters for recognition. Lastly in during the classification stage the feature vectors are processed to identify the characters and words. Each of these stages reduce the amount of information to be processed at a later step. \cite{Cheriet2007}
-    [graph, diagram or smth. pls]
+    \begin{figure}
+      \centering
+      \includegraphics[natwidth=324,natheight=566,scale=0.4]{flowgraph.png}
+      \caption{Simplified flowgraph of typical character recognition system \label{fig:flow}
+                }
+    \end{figure}
 
       \subsubsection{Pre-processing}
         At pre-processing stage the image is enhanced by applying varying filters, transforms and segmentation to it. For text recognition it is important to reduce noise from the image. This can be done with appropriate filter e.g. Wiener filter.
@@ -95,7 +102,16 @@
           \item Decision tree learning
           \item Random forests
         \end{itemize}
-          Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time.[----sources??----] [image also pls]
+          Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. A simple case k-Nearest Neighbor classification is visualized in figure \ref{fig:knn}. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time.\cite{Beyer}
+          \begin{figure}
+            \centering
+            \includegraphics[natwidth=220,natheight=199,scale=0.6]{knn.png}
+            \caption{Vizualization on how k-nearest neighbours algorithm works. Blue squares
+                      and red triangles represent two groups of data. Green circle is the new
+                      data entry. Depending whether k value is 3 or 5 the new entry is clasified
+                      to the class which has the most representation within the group.\label{fig:knn}
+                      }
+          \end{figure}
 
     \subsection{State of the Art}
       The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning and neural networks to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad\cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are designed to process printed text and are not capable of handwriting recognition by default. Although for example Tesseract can be trained to detect any kind of text.\cite{Smith2007a} Additionally, handwriting recognition algorithms developed by Jürgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
@@ -110,10 +126,13 @@
         \subsubsection{Noise Removal}
           Noise in image can affect negatively to the rest of the recognition process. For that reason it is important to remove as much noise as possible without losing any textual information. For this purpose adaptive Wiener filter was chosen. Prior to using this filter image is converted to grayscale. Adaptive Wieners main advantage is that it can apply varying amounts of filtering to areas having different variations thus preserving textual information better than linear filtering.\cite{TheMathWorksWiener}
         \subsubsection{Contrast Enhancement}
-          To make the text more prominent the contrast of the image can be enhanced. For this purpose
+          To make the text more prominent the contrast of the image can be enhanced. A simple histogram equalization function can be utilizied for this purpose.
         \subsubsection{Binarization}
+          For further processing it is important to binarize the image as well as possible. Several image processing methods require the image to be in a binarized format to work. The binarization provides the system to differentiate between foreground and background pixels in this case the foreground is the written text and background is the writing surface.
         \subsubsection{Component Property Analysis}
+          After binarization the image may still have irrelevant objects such images amongst the text or other irrelevant objects. One method to exclude these objects is to compare several properties of found components with pre-defined parameters. These properties can be for example object area, number of holes in the object and its major and minor axis lengths.
         \subsubsection{Stroke Width Analysis}
+          Characteristically handwriting consists of strokes. More sophisticated method to exclude irrelevant objects from text is to analyze the found objects thickneses variation. Objects with little to none variation in thickness can be considered to be written characters.
 
 
     \subsection{Methods for Layout Analysis}

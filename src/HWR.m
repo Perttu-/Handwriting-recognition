@@ -3,8 +3,8 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     close all;
     [image, map]=imread(path);
     
-    rowVerbose = 0;
-    visualization = 0;
+    rowVerbose = verbose;
+    visualization = verbose;
     
 %% Constraints
     %replace with testedValue

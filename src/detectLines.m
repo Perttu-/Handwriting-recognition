@@ -166,7 +166,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
 %% Hough transform mapping
     tic
     thetas = 85:95;
-    [rhos,accumulatorArray,voterCell,voterArray] = houghTransform(centroidImg,thetas,0.2*AH);
+    [rhos,accumulatorArray,voterArray] = houghTransform(centroidImg,thetas,0.2*AH);
     if verbose
         disp(['Hough Transform done in ', num2str(toc), ' seconds']);
     end
@@ -281,7 +281,8 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     %Intersecting lines
     intersection = lineSegmentIntersect(lineEndPoints,lineEndPoints);
     [cLine1Id,cLine2Id]=find(tril(intersection.intAdjacencyMatrix));
-    
+    cLine1CentY = [lineStruct(cLine1Id).CentroidY];
+    cLine2CentY = [lineStruct(cLine2Id).CentroidY];
     %Draw vertical line to the middle of image
     midX = imgWidth/2;
     centerLineX = [midX,midX];
@@ -294,14 +295,19 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     yIntersects = middleIntersection.intMatrixY;
     avgDistance = mean(abs(diff(sort(yIntersects))));
     newIndex = 1;
-    for ii=1:length(cLine1Id)
-        firstLine = cLine1Id(ii);
+    for ii=1:length(cLine1CentY)
+        lineStructCentYs = [lineStruct.CentroidY];
+        firstLineId = find(lineStructCentYs==cLine1CentY(ii));
+        secondLineId = find(lineStructCentYs==cLine2CentY(ii));
+        %firstLine = cLine1Id(ii);
         %here is something wrong ii==2 second image in test
-        firstLineCentY = lineStruct(firstLine).CentroidY;
-        secondLine = cLine2Id(ii);
-        secondLineCentY = lineStruct(secondLine).CentroidY;
-        crossLine1Y = yIntersects(firstLine);
-        crossLine2Y = yIntersects(secondLine);
+        %firstLineCentY = lineStruct(firstLine).CentroidY;
+        %secondLine = cLine2Id(ii);
+        %secondLineCentY = lineStruct(secondLine).CentroidY;
+        firstLineCentY = cLine1CentY(ii); 
+        secondLineCentY = cLine2CentY(ii);
+        crossLine1Y = yIntersects(firstLineId);
+        crossLine2Y = yIntersects(secondLineId);
         distance = abs(crossLine1Y-crossLine2Y);
         
         if distance<avgDistance
@@ -311,7 +317,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
             prop = regionprops(double(newRowImg),'Orientation','Centroid');
             newCentroid = [prop.Centroid];
             lineLabels(newRowImg)=newCentroid(2);
-            lineStruct([firstLine,secondLine])=[];
+            lineStruct([firstLineId,secondLineId])=[];
             lineStruct(newIndex).SkewAngle = prop.Orientation;
             lineStruct(newIndex).CentroidY = newCentroid(2);
             lineStruct(newIndex).CentroidX = newCentroid(1);

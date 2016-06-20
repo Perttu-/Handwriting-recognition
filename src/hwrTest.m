@@ -14,7 +14,7 @@ function hwrTest(folderPath)
     %% Define these for each test
     %remember to change testedValue to HWR.m
     testName = 'n1Test';
-    testValues = 1:2;
+    testValues = 1:20;
     
 %     testName = 'n2Test';
 %     testValues = 0:20;
@@ -51,6 +51,7 @@ function hwrTest(folderPath)
         innerResultStruct = struct('FileName',[],...
                                    'FoundLines',[],...
                                    'RealAmountOfLines',[],...
+                                   'Accuracy',[],...
                                    'PreProcessingTime',[],...
                                    'LineDetectionTime',[]);
                                
@@ -63,12 +64,15 @@ function hwrTest(folderPath)
             xmlStruct = parseXML(xmlName);
             realLines = getLineAmounts(xmlStruct);
             
+            accuracy = 1-abs(foundLines-realLines)/realLines;
+            
             innerResultStruct(k).FileName = imageName;
             innerResultStruct(k).FoundLines = foundLines;
-            innerResultStruct(k).LabelImage = lineLabels;
             innerResultStruct(k).RealAmountOfLines = realLines;
+            innerResultStruct(k).Accuracy = accuracy;
             innerResultStruct(k).PreProcessingTime = preProcTime;
             innerResultStruct(k).LineDetectionTime = rowDetTime;
+            %innerResultStruct(k).LabelImage = lineLabels;
         end
         resultStruct(j).InnerResultStruct = innerResultStruct;
     end
@@ -80,12 +84,10 @@ function hwrTest(folderPath)
     for i = 1:size(resultStruct,2)
         meanPreProcTime = mean([resultStruct(i).InnerResultStruct.PreProcessingTime]);
         meanLineDetTime = mean([resultStruct(i).InnerResultStruct.LineDetectionTime]);
-        accuracy = [resultStruct(i).InnerResultStruct.FoundLines]./...
-                   [resultStruct(i).InnerResultStruct.RealAmountOfLines];
-
+        meanAccuracy = mean([resultStruct(i).InnerResultStruct.Accuracy]);
         resultStruct(i).AvgPreProcessingTime = meanPreProcTime;
         resultStruct(i).AvgLineDetectionTime = meanLineDetTime;
-        resultStruct(i).AvgAccuracy = mean(accuracy);
+        resultStruct(i).AvgAccuracy = meanAccuracy;
     end
     
     %% Save into file

@@ -5,48 +5,48 @@ The style file: abbrv.bst
 Database file #1: hwr_bibliography.bib
 Warning--empty journal in ABBYY
 Warning--empty year in ABBYY
+Warning--empty journal in Beyer
 Warning--empty publisher in Cheriet2007
 Warning--empty journal in Dalal
-Warning--empty year in Dalal
-You've used 14 entries,
+You've used 15 entries,
             2118 wiz_defined-function locations,
-            573 strings with 5925 characters,
-and the built_in function-call counts, 3745 in all, are:
-= -- 363
-> -- 148
+            578 strings with 5983 characters,
+and the built_in function-call counts, 3952 in all, are:
+= -- 384
+> -- 155
 < -- 2
-+ -- 60
-- -- 46
-* -- 189
-:= -- 623
-add.period$ -- 40
-call.type$ -- 14
-change.case$ -- 64
++ -- 63
+- -- 48
+* -- 194
+:= -- 663
+add.period$ -- 44
+call.type$ -- 15
+change.case$ -- 68
 chr.to.int$ -- 0
-cite$ -- 19
-duplicate$ -- 143
-empty$ -- 328
-format.name$ -- 46
-if$ -- 796
+cite$ -- 20
+duplicate$ -- 153
+empty$ -- 345
+format.name$ -- 48
+if$ -- 838
 int.to.chr$ -- 0
-int.to.str$ -- 14
-missing$ -- 8
-newline$ -- 71
-num.names$ -- 28
-pop$ -- 102
+int.to.str$ -- 15
+missing$ -- 9
+newline$ -- 77
+num.names$ -- 30
+pop$ -- 106
 preamble$ -- 1
-purify$ -- 51
+purify$ -- 54
 quote$ -- 0
-skip$ -- 125
+skip$ -- 133
 stack$ -- 0
-substring$ -- 184
+substring$ -- 189
 swap$ -- 30
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 54
+type$ -- 58
 warning$ -- 5
-while$ -- 38
-width$ -- 16
-write$ -- 135
+while$ -- 40
+width$ -- 17
+write$ -- 146
 (There were 5 warnings)

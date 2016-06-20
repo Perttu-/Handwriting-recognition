@@ -10,6 +10,11 @@ A.~D. Angelica and J.~Schmidhuber.
 \newblock
   \url{http://www.kurzweilai.net/how-bio-inspired-deep-learning-keeps-winning-competitions}.
 
+\bibitem{Beyer}
+Beyer.
+\newblock {When Is "Nearest Neighbor" Meaningful?}
+\newblock 1999.
+
 \bibitem{Breuel2007}
 T.~Breuel.
 \newblock {Announcing the OCRopus Open Source OCR System}.
@@ -33,6 +38,7 @@ M.~Cheriet, N.~Kharma, C.~Liu, and C.~Suen.
 M.~S. Dalal.
 \newblock {A Survey for Feature Extraction Methods in Handwritten Script
   Identification}.
+\newblock 2011.
 
 \bibitem{Dalal2005}
 N.~Dalal and B.~Triggs.

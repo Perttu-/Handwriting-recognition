@@ -1,4 +1,4 @@
-function  [rhos,accArr,voterCell,voterArr] = houghTransform(inputImage,thetas,rhoRes)
+function  [rhos,accArr,voterArr] = houghTransform(inputImage,thetas,rhoRes)
     % Customized implementation of Hough Transform for the purpose of block
     % based Hough Transform mapping. Resulting voter cells contain list of
     % all the contributing connected components.
@@ -11,8 +11,8 @@ function  [rhos,accArr,voterCell,voterArr] = houghTransform(inputImage,thetas,rh
     numRhos = numel(rhos);
     %accArr is needed only to visualize accumulator array
     accArr = zeros(numRhos,numThetas);
-    voterCell = cell(numRhos,numThetas);
-     voterArr = zeros(numRhos,numThetas);
+    %voterCell = cell(numRhos,numThetas);
+    voterArr = zeros(numRhos,numThetas);
     
     %TODO test the 3d  voter array instead of cell
     thetas=thetas-90;
@@ -27,9 +27,9 @@ function  [rhos,accArr,voterCell,voterArr] = houghTransform(inputImage,thetas,rh
             tBin = round((thetas(jj)-min(thetas))/((max(thetas)-min(thetas))/(numThetas-1)))+1;
             rBin = round((r(jj)-min(rhos))/((max(rhos)-min(rhos))/(numRhos-1)))+1;
 
-            oldNumbers = voterCell{rBin,tBin};
+            %oldNumbers = voterCell{rBin,tBin};
             newNumber = inputImage(xIndices(ii), yIndices(ii));
-            voterCell{rBin,tBin} = [oldNumbers ;newNumber];
+            %voterCell{rBin,tBin} = [oldNumbers ;newNumber];
             oldArrNumbers = squeeze(voterArr(rBin,tBin,:));
             oldArrNumbers(oldArrNumbers==0)=[];
             newNumberList = [oldArrNumbers; newNumber];
@@ -41,11 +41,7 @@ function  [rhos,accArr,voterCell,voterArr] = houghTransform(inputImage,thetas,rh
              currentPage(rBin,tBin) = newNumber;
              voterArr(:,:,pageIndex) = currentPage;
              
-%             page = voterArr(:,:,end);
-%             page(rBin,tBin) = newNumber;
-%             voterArr(:,:,end)
-            %voterArr(rBin,tBin,:) = [oldArrNumbers ;image(xIndices(ii), yIndices(ii))];
-            accArr(rBin,tBin) = accArr(rBin,tBin)+1;
+             accArr(rBin,tBin) = accArr(rBin,tBin)+1;
         end
     end
 end
