@@ -3,50 +3,62 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: texreport.aux
 The style file: abbrv.bst
 Database file #1: hwr_bibliography.bib
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis1
+while executing---line 1049 of file abbrv.bst
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis2
+while executing---line 1049 of file abbrv.bst
+Too many commas in name 3 of "Zaidi, Razak and Khansa, Zulkiflee and Mohd, Yamani, Idna, Idris and Emran, Mohd, Tamil and Mohd, Noorzaily Mohamed, Noor and Rosli, Salleh and Mohd, Yaakob and Mashkuri, Yaacob" for entry Razak
+while executing---line 1049 of file abbrv.bst
 Warning--empty journal in ABBYY
 Warning--empty year in ABBYY
 Warning--empty journal in Beyer
 Warning--empty publisher in Cheriet2007
 Warning--empty journal in Dalal
-You've used 15 entries,
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis1
+while executing---line 1090 of file abbrv.bst
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis2
+while executing---line 1090 of file abbrv.bst
+Too many commas in name 3 of "Zaidi, Razak and Khansa, Zulkiflee and Mohd, Yamani, Idna, Idris and Emran, Mohd, Tamil and Mohd, Noorzaily Mohamed, Noor and Rosli, Salleh and Mohd, Yaakob and Mashkuri, Yaacob" for entry Razak
+while executing---line 1090 of file abbrv.bst
+You've used 20 entries,
             2118 wiz_defined-function locations,
-            578 strings with 5983 characters,
-and the built_in function-call counts, 3952 in all, are:
-= -- 384
-> -- 155
+            605 strings with 7084 characters,
+and the built_in function-call counts, 5268 in all, are:
+= -- 505
+> -- 238
 < -- 2
-+ -- 63
-- -- 48
-* -- 194
-:= -- 663
-add.period$ -- 44
-call.type$ -- 15
-change.case$ -- 68
++ -- 97
+- -- 76
+* -- 271
+:= -- 912
+add.period$ -- 59
+call.type$ -- 20
+change.case$ -- 97
 chr.to.int$ -- 0
-cite$ -- 20
-duplicate$ -- 153
-empty$ -- 345
-format.name$ -- 48
-if$ -- 838
+cite$ -- 25
+duplicate$ -- 203
+empty$ -- 430
+format.name$ -- 76
+if$ -- 1094
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 9
-newline$ -- 77
-num.names$ -- 30
-pop$ -- 106
+int.to.str$ -- 20
+missing$ -- 14
+newline$ -- 102
+num.names$ -- 40
+pop$ -- 135
 preamble$ -- 1
-purify$ -- 54
+purify$ -- 78
 quote$ -- 0
-skip$ -- 133
+skip$ -- 170
 stack$ -- 0
-substring$ -- 189
-swap$ -- 30
+substring$ -- 215
+swap$ -- 35
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 58
+type$ -- 78
 warning$ -- 5
-while$ -- 40
-width$ -- 17
-write$ -- 146
-(There were 5 warnings)
+while$ -- 50
+width$ -- 22
+write$ -- 196
+(There were 6 error messages)

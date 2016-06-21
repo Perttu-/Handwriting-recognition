@@ -1,17 +1,22 @@
 \relax 
-\@writefile{toc}{\contentsline {section}{Abstract}{2}}
-\@writefile{toc}{\contentsline {section}{Table of Contents}{3}}
-\@writefile{toc}{\contentsline {section}{List of Abbreviations and Symbols}{4}}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{5}}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}}
+\@writefile{toc}{\contentsline {section}{Table of Contents}{2}}
+\@writefile{toc}{\contentsline {section}{List of Abbreviations and Symbols}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{4}}
 \citation{Cheriet2007}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Simplified flowgraph of typical character recognition system  }}{6}}
-\newlabel{fig:flow}{{1}{6}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Optical Character Recognition}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Pre-processing}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Flowgraph of typical optical character recognition system. The input is an image file with two rows of text and one irrelevant object in it. The goal of each phase is to reduce the amount of processed data for the next phase until after classification the textual data is acquired in computer readable form.  }}{5}}
+\newlabel{fig:flow}{{1}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Optical Character Recognition}{5}}
 \citation{Pesch2012}
 \citation{Dalal2005}
 \citation{Dalal}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces For example horizontal and vertical projection histograms can be used as features to describe the shape of an object.}}{6}}
+\newlabel{fig:feature}{{2}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Pre-processing}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Feature Extraction}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Classification}{6}}
 \citation{Beyer}
 \citation{Kelly}
 \citation{ABBYY}
@@ -21,27 +26,45 @@
 \citation{CognitiveTechnologies2016}
 \citation{Smith2007a}
 \citation{Angelica}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Feature Extraction}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Classification}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Vizualization on how k-nearest neighbours algorithm works. Blue squares and red triangles represent two groups of data. Green circle is the new data entry. Depending whether k value is 3 or 5 the new entry is clasified to the class which has the most representation within the group. }}{8}}
-\newlabel{fig:knn}{{2}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}State of the Art}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Vizualization on how k-nearest neighbours algorithm works. Blue squares and red triangles represent two groups of data. Green circle is the new data entry. Depending whether k value is 3 or 5 the new entry is clasified to the class which has the most representation within the group. }}{7}}
+\newlabel{fig:knn}{{3}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}State of the Art}{7}}
 \citation{TheMathWorksWiener}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Studied Methods (better title?)}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Methods for Pre-Processing}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Noise Removal}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Contrast Enhancement}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Binarization}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.4}Component Property Analysis}{9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.5}Stroke Width Analysis}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Methods for Layout Analysis}{9}}
-\citation{TheMathWorksa}
 \citation{Sauvola2000}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{10}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Pre-processing Implementation}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Pre-Processing}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Methods for Pre-Processing}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Noise Removal}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Contrast Enhancement}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Binarization}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Pre-processing Implementation}{8}}
+\citation{Li}
+\citation{Louloudis1}
+\citation{Louloudis2}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Vizualization of stroke width transform with two different objects using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width.  }}{9}}
+\newlabel{fig:strokewidth}{{4}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Layout Analysis}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Methods for Layout Analysis}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Component Property Analysis}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Stroke Thickness Variation Analysis}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Bounding Box Expansion Method}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Run Length Smearing Algorithm (RLSA)}{9}}
+\citation{Razak}
+\citation{MathworksTextRecognition}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual rows are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. Input image is aquired from IAM Handwriting database.  }}{10}}
+\newlabel{fig:workingrlsa}{{5}{10}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.5}Block Based Hough Transform Mapping}{10}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Layout Analysis Implementation}{10}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{11}}
+\citation{Louloudis1}
+\citation{Louloudis2}
+\citation{IAM}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Three samples from IAM handwriting database of the same text having different writing styles.  }}{12}}
+\newlabel{fig:iamsample}{{6}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate thresholds resulting in noticeably better performance than with one threshold value.  }}{12}}
+\newlabel{fig:binarization}{{7}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Dataset}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Binarization}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{13}}
 \bibstyle{abbrv}
 \bibdata{hwr_bibliography}
 \bibcite{ABBYY}{1}
@@ -54,8 +77,13 @@
 \bibcite{Dalal2005}{8}
 \bibcite{FreeSoftwareFoundation2016}{9}
 \bibcite{Kelly}{10}
-\bibcite{Pesch2012}{11}
-\bibcite{Sauvola2000}{12}
-\bibcite{Smith2007a}{13}
-\bibcite{TheMathWorksa}{14}
-\bibcite{TheMathWorksWiener}{15}
+\bibcite{Li}{11}
+\bibcite{Louloudis1}{12}
+\bibcite{Louloudis2}{13}
+\bibcite{IAM}{14}
+\bibcite{Pesch2012}{15}
+\bibcite{Sauvola2000}{16}
+\bibcite{Smith2007a}{17}
+\bibcite{MathworksTextRecognition}{18}
+\bibcite{TheMathWorksWiener}{19}
+\bibcite{Razak}{20}

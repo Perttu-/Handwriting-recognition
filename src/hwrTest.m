@@ -13,11 +13,11 @@ function hwrTest(folderPath)
     
     %% Define these for each test
     %remember to change testedValue to HWR.m
-    testName = 'n1Test';
-    testValues = 1:20;
+%     testName = 'n1Test';
+%     testValues = 1:20;
     
-%     testName = 'n2Test';
-%     testValues = 0:20;
+    testName = 'n2Test';
+    testValues = 0:20;
 
 %     testName = 'voterMarginTest';
 %     testValues = 0:20;

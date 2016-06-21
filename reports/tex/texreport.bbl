@@ -58,6 +58,31 @@ B.~Kelly.
 \newblock
   \url{https://blog.evernote.com/tech/2013/07/18/how-evernotes-image-recognition-works/}.
 
+\bibitem{Li}
+Li and Lu.
+\newblock {Scene text detection via stroke width.}
+\newblock {\em Pattern Recognition (ICPR), 2012 21st International Conference
+  on. IEEE}, 2012.
+
+\bibitem{Louloudis1}
+P.~H. Louloudis, Gatos.
+\newblock {A Block-Based Hough Transform Mapping for Text Line Detection in
+  Handwritten Documents}.
+\newblock {\em Tenth International Workshop on Frontiers in Handwriting
+  Recognition}, 2006.
+
+\bibitem{Louloudis2}
+P.~H. Louloudis, Gatos.
+\newblock {Text line and word segmentation of handwritten documents}.
+\newblock {\em Pattern Recognition 42}, 2008.
+
+\bibitem{IAM}
+U.~Marti and H.~Bunke.
+\newblock The iam-database: An english sentence database for off-line
+  handwriting recognition.
+\newblock {\em Int. Journal on Document Analysis and Recognition, Volume 5,
+  pages 39 - 46}, 2002.
+
 \bibitem{Pesch2012}
 H.~Pesch, M.~Hamdani, J.~Forster, and H.~Ney.
 \newblock {Analysis of Preprocessing Techniques for Latin Handwriting
@@ -76,15 +101,23 @@ R.~Smith.
 \newblock {\em Proceedings of the International Conference on Document Analysis
   and Recognition, ICDAR}, 2:629--633, 2007.
 
-\bibitem{TheMathWorksa}
+\bibitem{MathworksTextRecognition}
 I.~{The MathWorks}.
-\newblock {Image Processing Toolbox}.
-\newblock \url{http://se.mathworks.com/products/image/}.
+\newblock {Automatically Detect and Recognize Text in Natural Images}.
+\newblock
+  \url{http://www.mathworks.com/help/vision/examples/automatically-detect-and-recognize-text-in-natural-images.html?s_tid=gn_loc_drop}.
 
 \bibitem{TheMathWorksWiener}
 I.~{The MathWorks}.
 \newblock {Noise Removal}.
 \newblock
   \url{http://www.mathworks.com/help/images/noise-removal.html#buh9ylp-72}.
+
+\bibitem{Razak}
+R.~Zaidi, Z.~Khansa, I.~I. Mohd, Yamani, T.~Emran, Mohd, N.~Mohd,
+  Noorzaily~Mohamed, S.~Rosli, Y.~Mohd, and Y.~Mashkuri.
+\newblock Off-line handwriting text line segmentation : A review.
+\newblock {\em IJCSNS International Journal of Computer Science and Network
+  Security, VOL.8 No.7}, 2008.
 
 \end{thebibliography}
