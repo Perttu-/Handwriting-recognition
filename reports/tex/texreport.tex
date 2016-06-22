@@ -24,7 +24,7 @@
 
         \vfill
         \Large
-        Kawamata/Abe laboratory\\
+        Kawamata/Abe Laboratory\\
         Department Of Electronic Engineering\\
         Tohoku University\\
         \today
@@ -59,21 +59,23 @@
 
    \newpage
    \section{Introduction}
-    Optical Character Recognition (OCR) is the process of analyzing a image input of  text and recognizing and extracting the characters to digital from. More specific case of optical character recognition process is the task of handwriting recognition (HWR) which concentrates on analyzing human hand written characters instead of printed characters. The unpredictable nature of human handwriting can make the task more challenging ascompared to printed text. Most HWR systems can be divided into two recognition approaches: \textit{online handwriting recognition} and \textit{offline handwriting recognition}. Offline handwriting recognition means analyzing an existing static image for handwritten text. Online handwriting recognition, on the other hand, is about analyzing the handwritten text on input including strokes and their order for example in touch screen appliances such as smartphones and tablet PCs.
+    Optical Character Recognition (OCR) is the process of analyzing a image input of  text and recognizing and extracting the characters to digital from. More specific case of optical character recognition process is the task of handwriting recognition (HWR) which concentrates on analyzing human hand written characters instead of printed characters. The unpredictable nature of human handwriting can make the task more challenging compared to printed text which is often uniform. Most HWR systems can be divided into two recognition approaches: \textit{online handwriting recognition} and \textit{offline handwriting recognition}. Offline handwriting recognition means analyzing an existing static image for handwritten text. Online handwriting recognition, on the other hand, is about analyzing the handwritten text on input including strokes and their order for example in touch screen appliances such as smartphones and tablet PCs.
 
-    The process of handwriting recognition is still undergoing development. Many of the state of the art systems apply neural networks and machine learning approaches. This research will focus on the image processing aspects of the process e.g. pre-processing and layout analysis. The feature extraction and classification are left as future work.
+    For reliable results the handwritten input image must be processed appropriately. This includes pre-processing and layout analysis of which aim to enhance the image quality for later processing and find the different bodies of text. There is no general consensus of which methods or algorithms give the best results for each of the phases. This research will experiment with different methods to gain insight on each method or algorithms strengths and weaknesses. These methods are often dependant on defined parameters so the effect of these parameters will be throroughly studied.
 
-    For reliable results the handwritten input image must be processed appropriately. This includes pre-processing and layout analysis of which aim to enhance the image quality for later processing and find the different bodies of text. There is no general consensus of which methods or algorithms give the best results. This research will experiment with different methods to gain insight on each method or algorithms strengths and weaknesses. These methods are often dependant on defined parameters so the effect of these parameters will be throroughly studied.
+    The process of handwriting recognition is still undergoing development. Many of the state of the art systems apply neural networks and machine learning approaches. This research will focus on the image processing aspects of the process e.g. pre-processing and layout analysis.
 
   \newpage
   \section{Background}
     Advacements with personal computers has diversified the methods to store and display textual information which has brought up new challenges and problems considering the transformation between traditional information and digital data. One of these challenges is the process of digitizing written text to computer readable and editable form.
 
-    Textual information can be in diverse forms and styles. These styles include machine printed text and handwritten text. Different approaches must be used when digitizing aforementioned styles of text.
+    Textual information can be in diverse forms and styles. These styles include machine printed text and handwritten text. Both machine printed text and handwritten text can have complex typography or the handwriting can han unconventional layout. Different approaches must be used when digitizing aforementioned styles of text.
 
-    Plenty of research has been conducted and several systems have been implemented for the purpose of optical character recognition and handwriting recognition. These systems can have drastically different approaches for processing the data, even if the data is similar.
+    Handwriting recognition can be applied to many practical uses such as document digitizaton or to serve as a novel human-computer interaction method. Handwriting has remained popular as a way to take notes and transfer information in everyday life. Moreover the advancements in handheld digital devices and personal computers have made digital information saving increasingly convinient. However the conversion process from traditional formats to digital seems inconvinient to many.
 
-    Handwriting recognition can be applied to many practical uses such as document digitizaton or a novel human-computer interaction method. Handwriting has remained popular as a way to take notes and transfer information, even though increased popularity and technological advancements of handheld digital devices have made digital information saving increasingly convinient.
+    Plenty of research has been conducted and several systems have been implemented for the purpose of optical character recognition and handwriting recognition. These systems can have drastically different approaches for processing the data, even if the data is similar. However certain similarities occur regarding the general process of text recognition process. Machine learning approaches are also common in regard of classification.
+
+
 
   \subsection{Optical Character Recognition}
 
@@ -119,6 +121,7 @@
         Lastly in the recognition process is the classification phase. The goal of classfication is to find the class in which the new input will be assigned, and by doing that finding which is the most likely textual meaning of each particular component. In the case of hand writing recognition inputs are features extracted from word or character and classes are the corresponding words or characters respectively.
 
         Often during classification machine learning approaches are used. Machine learning algorithms look for repeating patterns in feature space and makes decisions and predictions according to those patterns. Common for machine learning algorithms is that they require some preliminary data to be processed in order to make later classification more robust. Machine learning algorithms that can be applied to text recognition include:
+
         \begin{itemize}
           \item Artificial neural networks
           \item K-Nearest Neighbor
@@ -129,7 +132,8 @@
           \item Decision tree learning
           \item Random forests
         \end{itemize}
-          Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. A simple case k-Nearest Neighbor classification is visualized in figure \ref{fig:knn}. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time.\cite{Beyer}
+
+          Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. A simple case k-Nearest Neighbor classification is visualized in figure \ref{fig:knn}. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time i.e. the curse of dimensionality.\cite{Beyer}
 
           \begin{figure}
             \centering
@@ -148,36 +152,38 @@
   \section{Pre-Processing}
   As mentioned before pre-processing requires various filters and transforms to enhance image quality. Optimally the goal is that the resulting image contains only textual elements and as little noise as possible. This chapter describes the used methods and their implementations using MATLAB.
 
-    \subsection{Methods for Pre-Processing}
 
-        \subsubsection{Noise Removal}
+        \subsection{Noise Removal}
           Noise in image can affect negatively to the rest of the recognition process. For that reason it is important to remove as much noise as possible without losing any textual information. For this purpose adaptive Wiener filter was chosen. Prior to using this filter image is converted to grayscale. Adaptive Wieners main advantage is that it can apply varying amounts of filtering to areas having different variations thus preserving textual information better than linear filtering.\cite{TheMathWorksWiener}
 
-        \subsubsection{Contrast Enhancement}
+          Noise reduction can be done with n x m adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighbourhood size \code{[m n]} as arguments. In this case the neighbourhoodsize will be adjusted according to input data and experiment results.
+
+        \subsection{Contrast Enhancement}
           To make the text more prominent the contrast of the image can be enhanced. A simple histogram equalization function can be utilizied for this purpose.
 
-        \subsubsection{Binarization}
+          MATLABs image processing toolbox provided the function \code{histeq(I)} for histogram equalization. Alternatively the function can be used with parameters \code{I} and \code{hgram} to approximately match the provided histogram \code{hgram}. Although no prior information about desired histogram exists before the processing so a flat histogram is applied to the equalization process.
+
+        \subsection{Binarization}
           For further processing it is important to binarize the image as well as possible. Several image processing methods require the image to be in a binarized format to work. The binarization provides the system to differentiate between foreground and background pixels in this case the foreground is the written text and background is the writing surface.
 
-      \subsection{Pre-processing Implementation}
-        \begin{description}
-          \item [Image acquisition] Matlab can read process jpg, png and gif images by default to name a few. This implementation uses static image files as an input.
-          \item [Conversion to grayscale] Matlab function \code{rgb2gray(I)} eliminates hue and saturation information and keeps lumination. The image must be rgb color model before conversion.
-          \item [Noise removal] Noise reduction can be done with n x m adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighbourhood size \code{[m n]} as arguments. In this case the neighbourhoodsize will be adjusted according to input data and experiment results.
-          \item [Binarization] Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The dimensions of MxN neighborhood used to determine the adaptive threshold for that area. Threshold k ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of k remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
-        \end{description}
+          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The dimensions of MxN neighborhood used to determine the adaptive threshold for that area. Threshold k ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of k remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
+
 
     \newpage
     \section{Layout Analysis}
       To find information about text location within the image layout analysis methods should be applied. The goal is to exclude irrelevant components that might remain after pre-proessing and extract only the textual objects from the input image with information about the relative location within the document. Following methods were implemented for experiments:
 
-      \subsection{Methods for Layout Analysis}
 
-        \subsubsection{Component Property Analysis}
+
+        \subsection{Component Property Analysis}
           After binarization the image may still have irrelevant objects such images amongst the text or other irrelevant objects. One method to exclude these objects is to compare several properties of found components with pre-defined parameters. These properties can be for example object area, number of holes in the object and its major and minor axis lengths.
 
-        \subsubsection{Stroke Thickness Variation Analysis}
+          The MATLABs image processing toolbox  provides function \code{regionprops(BW,properties)} which has many useful methods to find numerical data of objects in binarized image. \code{BW} is in this case the binarized image and \code{properties} is used to define the wanted property. Properties that were used were object area and Euler number. Euler number is in this case the difference between the number of objects and holes in the selected area. For example one object with two holes has the Euler number of -1.
+
+        \subsection{Stroke Thickness Variation Analysis}
           Characteristically handwriting consists of strokes. More sophisticated method to exclude irrelevant objects from text is to analyze the found objects' thickness variation. This method was proposed by Li et.al. \cite{Li} The concept of this method is that objects with little to none variation in thickness can be considered to be written characters, compared to other non-textual objects which can have significantly higher variation. Stroke width transform is visualized in figure \ref{fig:strokewidth}. The objects are then excluded if the scalar value describing the stroke width variation is higher than defined threshold value.
+
+          The Mathworks documentation about one text recognition solution describes in detail how stroke width variation analysis can be applied to differentiate textual data from other objects. \cite{MathworksTextRecognition} Most importantly the function \code{bwdist(BW)} computes the Euclidean distance between each pixel and nearest nonzero pixel of binarized image BW(see figure \ref{fig:strokewidth}). To analyze the variation of the stroke width, the variation in the region is quantified into one metric. For each foreground region the metric is the standard deviation of the object's distance transform divided by the mean value of the object's distance transform. Objects are discarded from further processing if their stroke width metric exceeds chosen threshold value.
 
           \begin{figure}
             \centering
@@ -185,54 +191,62 @@
             \caption{Vizualization of stroke width transform with two different objects using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width. \label{fig:strokewidth} }
           \end{figure}
 
-        \subsubsection{Bounding Box Expansion Method}
+        \subsection{Bounding Box Expansion Method}
           One simple way to find different text bodies is to expand each connected components bounding box both vertically and horizontally and then combine possibly overlapping boxes. This method is not calculation heavy but it requires the user to define the distances of which each of the bounding boxes are expanded.
 
-        \subsubsection{Run Length Smearing Algorithm (RLSA)}
+        \subsection{Run Length Smearing Algorithm (RLSA)}
           Another simple solution for layout analysis is to apply run lenght smearing algorithm. This algorithm transforms the image by going through the binarized image pixels with zeroes representing background and ones representing foregournd. The length of consecutive zeroes is monitored and if the length is below a threshold value the value of all the contributing zeroes is flipped into ones. This algorithm can be applied both horizontally and vertically. The resulting image will have much larger objects which can then be used with the original image to encapsulate text lines or words depending on the used threshold value.
 
           \begin{figure}
             \centering
             \includegraphics[natwidth=1516,natheight=912,scale=0.3]{rlsademo.png}
-            \caption{The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual rows are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. Input image is aquired from IAM Handwriting database. \label{fig:workingrlsa} }
+            \caption{The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual rows are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. For this case the RLSA performs well expcet for the small object under the word ``Gaitskell''. \label{fig:workingrlsa} }
           \end{figure}
 
-        \subsubsection{Block Based Hough Transform Mapping}
-          Louloudis et.al. have proposed in their articles \cite{Louloudis1} and \cite{Louloudis2} an novel approach to detect text line from a binarized image. The core of the line detection is based on method to divide majority of the text into smaller slices and use the centroid values of these slices with Hough transform to detect where the text lines are located and which components are included into the text line. In these articles additional techniques on handling accents and large characters overlapping multiple lines are described.
+          Implementation itself was quite easy for this task. The algorithm loops through all pixels horizontally and finds and fills the gaps in method explained above. Prior to the pixel flipping process the individual rows were concatenated into one long row of pixels with one foreground pixel marking the row changes. For example see in figure \ref{fig:workingrlsa} how left side of text pixels are ``smeared'' into left edge. This assumption does not have major effect on the algorithms output making the box only slightly wider than assumed. To include also accents and other objects that are located under or over the major text objects the RLSA can be executed horizontally.
+
+
+        \subsection{Block Based Hough Transform Mapping}
+          Louloudis et.al. have proposed in their articles \cite{Louloudis1} and \cite{Louloudis2} an novel approach to detect text line from a binarized image. The core of the line detection is based on method to divide majority of the text into smaller slices and use the centroid values of these slices with Hough transform to detect where the text lines are located and which components are included into the text line. In these articles additional techniques on handling small objects such as accents and large characters overlapping multiple lines are described. Small objects are assigned to nearest line and a splitting process in executed on objects which can consist of multiple overlappin characters spanning over multiple lines.
 
           This method was chosen for this research because the articles written by Louloudis et.al. have promising test results regarding the performance of the proposed methods with large dataset. The method has performed well in comparison with multiple line extraction techniques.\cite{Razak} The proposed methods for handling overlapping text lines have a sophisticated approach to handle these problematic cases.
 
-        \subsection{Layout Analysis Implementation}
-          \begin{description}
-            \item [Object removal based on component properties] The MATLABs image processing toolbox  provides function \code{regionprops(BW,properties)} which has many useful methods to find numerical data of objects in binarized image. \code{BW} is in this case the binarized image and \code{properties} is used to define the wanted property. Properties that were used were object area and Euler number. Euler number is in this case the difference between the number of objects and holes in the selected area. For example one object with two holes has the Euler number of -1.
-            \item [Object removal based on stroke width variation] The Mathworks documentation about one text recognition solution describes in detail how stroke width variation analysis can be applied to differentiate textual data from other objects. \cite{MathworksTextRecognition} Most importantly the function \code{bwdist(BW)} computes the Euclidean distance between each pixel and nearest nonzero pixel of binarized image BW(see figure \ref{fig:strokewidth}). To analyze the variation of the stroke width, the variation in the region is quantified into one metric. For each foreground region the metric is the standard deviation of the object's distance transform divided by the mean value of the object's distance transform. Objects are discarded from further processing if their stroke width metric exceeds chosen threshold value.
-            \item [Block Based Hough Transform Mapping] The most challenging and time consumig implementation task was to implement the method to detect individual text lines from binarized image. At the moment of this research publicly available implementations were not available so the programming work had to be done from the ground up using the papers \cite{Louloudis1} and \cite{Louloudis2} as reference.
-          \end{description}
+          The most challenging and time consumig implementation task was to implement the method to detect individual text lines from binarized image. At the moment of this research publicly available implementations were not available so the programming work had to be done from the ground up using the papers \cite{Louloudis1} and \cite{Louloudis2} as reference. The implementation process followed closely the guidelines provided in the articles yet some assumptions had to be made because of the articles ambiquity.
+
+          [images of subsets, hough accarr, all that]
+
 
   \newpage
   \section{Evaluation}
-    evltn [lots of graphs and tables, por favor]
+    To gain insight on the chosen methods and their effect on output several experiments were conducted mainly focusing on the goal of choosing the appropriate parameters for each method. The following chapter describes in detail the evaluation methods and the produced results.
 
   \subsection{Dataset}
     Evaluation process needs suitable data containing various styles of handwriting in image format. For comparable test results and performance evaluation the dataset should provide constant image quality and sufficient metadata for the tests. The IAM handwriting database meets all these conditions.
 
-    IAM handwriting database was constructed to meet the needs for training handwriting recognition systems but it also is useful on testin the image processing aspects of the process. The database consists of 1539 pages of handwritten English language text by 657 different writers. All of the images were scanned with resolution of 300dpi with 256 gray levels. The database also includes comprehensive metadata about each page including the actual text. \cite{IAM}
+    IAM handwriting database was constructed to meet the needs for training handwriting recognition systems but it also is useful on testin the image processing aspects of the process. The database consists of 1539 pages of handwritten English language text by 657 different writers. All of the images were scanned with resolution of 300dpi with 256 gray levels. The database also includes comprehensive metadata about each page including number of rows and words and the actual text. \cite{IAM}
 
     \begin{figure}
       \centering
       \includegraphics[natwidth=1530,natheight=660,scale=0.3]{iamsample.png}
-      \caption{Three samples from IAM handwriting database of the same text having different writing styles. \label{fig:iamsample} }
+      \caption{Three small samples from IAM handwriting database of the same text having different writing styles. \label{fig:iamsample} }
     \end{figure}
 
-  \subsection{Binarization}
+  \subsection{Experiments}
+    The quality of software code was evaluated using the chosen dataset and provided metadata. The main goal was to find which parameter values would perform best regarding both accuracy and execution time.
 
+    100 random images were chosen from the handwriting database and the recognition process was executed for each of these images with multiple parameter values. In many cases 20 different parameter values provided sufficient information on their effect on the output.
+
+    For experiments most important meter for functionality was the number of detected rows. The handwriting database provided reliable metadata regarding this information so the test results can be easily compared with ground truth data.
+
+  \subsection{Binarization}
     \begin{figure}
       \centering
       \includegraphics[natwidth=2140,natheight=546,scale=0.24]{binarization.png}
       \caption{Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate thresholds resulting in noticeably better performance than with one threshold value. \label{fig:binarization} }
     \end{figure}
 
-
+    \subsection{Evaluation of Block Based Hough Transform Mapping}
+    During the implementation process some constraints were found.
 
 
   \newpage

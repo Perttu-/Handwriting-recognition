@@ -211,6 +211,10 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         occurences = histcounts(voterNumbers,'BinMethod','Integers');
         occurences(occurences==0)=[];
         objsInLine = uniqueVoters(occurences >= 0.5*pieceAmounts);
+        if isempty(objsInLine)
+            break
+        end
+        
         tempImg = ismember(labels,objsInLine);
         prop = regionprops(double(tempImg),'Centroid','Orientation');
         centroid = prop.Centroid;
@@ -227,20 +231,28 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         lineStruct(lineIndex).CentroidX = prop.Centroid(1);
         lineStruct(lineIndex).Theta = thetas(maxICol);
         lineStruct(lineIndex).Rho = rhos(maxIRow);
-        
+
         lineIndex = lineIndex+1;
-        
+
         for obj = objsInLine
             toRemoval  = voterArray==obj;
             voterArray = voterArray.*double(~toRemoval);
             accumulatorArray = accumulatorArray-sum(toRemoval,3);
         end
+        
+
     end
     
     if verbose
         disp(['hough cell processing time ',num2str(toc(cellTic))]);
     end
     
+    if isempty(lineStruct)
+        disp('No lines found!');
+        newLineLabels = -1;
+        finalLineAmount = 0;
+        return
+    end
     %Additional constraint is applied to remove lines with excessive skew.
     domSkewAngle = abs(mean([lineStruct.SkewAngle]));
     lineStruct([lineStruct.Contribution]<n2 &...

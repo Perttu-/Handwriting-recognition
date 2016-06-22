@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  21 JUN 2016 17:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  22 JUN 2016 17:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -154,14 +154,14 @@ File: flowgraph.png Graphic file (type eps)
 File: feature_extraction.png Graphic file (type eps)
 
 <feature_extraction.png> [6]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 123.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 126.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 123.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 126.
 File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/knn.p
 ng Graphic file (type eps)
 
@@ -171,15 +171,15 @@ Missing character: There is no ¼ in font cmr10!
 
 [7] [8]
 File: strokecomparison.png Graphic file (type eps)
- <strokecomparison.png>
+ <strokecomparison.png> [9]
 File: rlsademo.png Graphic file (type eps)
- <rlsademo.png> [9] [10] [11]
+ <rlsademo.png> [10] [11]
 File: iamsample.png Graphic file (type eps)
  <iamsample.png>
 File: binarization.png Graphic file (type eps)
 
 <binarization.png>
-Overfull \hbox (15.0538pt too wide) in paragraph at lines 231--232
+Overfull \hbox (15.0538pt too wide) in paragraph at lines 242--243
  [][] 
  []
 
@@ -203,12 +203,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 105--109
 
 ) [14] (./texreport.aux) ) 
 Here is how much of TeX's memory you used:
- 1471 strings out of 493030
- 20640 string characters out of 6136260
+ 1468 strings out of 493030
+ 20578 string characters out of 6136260
  87252 words of memory out of 5000000
- 5028 multiletter control sequences out of 15000+600000
+ 5025 multiletter control sequences out of 15000+600000
  6278 words of font info for 23 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 25i,4n,32p,1300b,254s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 25i,5n,32p,1300b,254s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on texreport.dvi (15 pages, 45080 bytes).
+Output written on texreport.dvi (15 pages, 47364 bytes).
