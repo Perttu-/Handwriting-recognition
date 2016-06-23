@@ -52,6 +52,12 @@ N.~Dalal and B.~Triggs.
 \newblock {Ocrad - The GNU OCR}.
 \newblock \url{https://www.gnu.org/software/ocrad/}, 2016.
 
+\bibitem{SAS}
+S.~Institute.
+\newblock Machine learning: What it is and why it matters.
+\newblock
+  \url{http://www.sas.com/it_it/insights/analytics/machine-learning.html}.
+
 \bibitem{Kelly}
 B.~Kelly.
 \newblock {How Evernote's Image Recognition Works}.

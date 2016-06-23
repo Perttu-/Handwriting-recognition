@@ -19,11 +19,11 @@ function hwrTest(folderPath)
 %     testName = 'n2Test';
 %     testValues = 0:20;
 
-    testName = 'voterMarginTest';
-    testValues = 0:20;
-
-%     testName = 'skewDevLimTest';
+%     testName = 'voterMarginTest';
 %     testValues = 0:20;
+
+    testName = 'skewDevLimTest';
+    testValues = 0:20;
 
 %     testName = 'aroundAvgDistMarginTest';
 %     testValues = 0:0.1:1;

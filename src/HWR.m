@@ -21,9 +21,13 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     %Row detection
     n1 = 6;
     n2 = 9;
+    
     %voterMargin = 6;
-    voterMargin = testedValue;
-    skewDevLim = 5;
+    voterMargin = 7;
+    
+    %skewDevLim = 5;
+    skewDevLim = testedValue;
+    
     aroundAvgDistMargin = 0.7;
     sameLineMargin = 0.5;
 

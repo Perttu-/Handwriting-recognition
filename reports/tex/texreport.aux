@@ -6,7 +6,7 @@
 \citation{Cheriet2007}
 \citation{Pesch2012}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Background}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Optical Character Recognition}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Handwriting Recognition}{5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Pre-processing}{5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{5}}
 \citation{Dalal2005}
@@ -17,6 +17,7 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Classification}{6}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces For example horizontal and vertical projection histograms can be used as features to describe the shape of an object.}}{6}}
 \newlabel{fig:feature}{{2}{6}}
+\citation{SAS}
 \citation{Beyer}
 \citation{Kelly}
 \citation{ABBYY}
@@ -31,38 +32,43 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}State of the Art}{7}}
 \citation{TheMathWorksWiener}
 \citation{Sauvola2000}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Pre-Processing}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Noise Removal}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Contrast Enhancement}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Binarization}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Pre-Processing Methods}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Noise Removal}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Contrast Enhancement}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Binarization}{9}}
 \citation{Li}
 \citation{MathworksTextRecognition}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Vizualization of stroke width transform with two different objects using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width.  }}{9}}
-\newlabel{fig:strokewidth}{{4}{9}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Layout Analysis}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Component Property Analysis}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Stroke Thickness Variation Analysis}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Bounding Box Expansion Method}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Vizualization of stroke width transform with two different objects using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width.  }}{10}}
+\newlabel{fig:strokewidth}{{4}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Layout Analysis Methods}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Component Property Analysis}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Stroke Thickness Variation Analysis}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Bounding Box Expansion Method}{10}}
 \citation{Louloudis1}
 \citation{Louloudis2}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual rows are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. For this case the RLSA performs well expcet for the small object under the word ``Gaitskell''.  }}{11}}
+\newlabel{fig:workingrlsa}{{5}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Run Length Smearing Algorithm (RLSA)}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Block Based Hough Transform Mapping}{11}}
 \citation{Razak}
 \citation{Louloudis1}
 \citation{Louloudis2}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual rows are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. For this case the RLSA performs well expcet for the small object under the word ``Gaitskell''.  }}{10}}
-\newlabel{fig:workingrlsa}{{5}{10}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Run Length Smearing Algorithm (RLSA)}{10}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Block Based Hough Transform Mapping}{10}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Subgroups}{12}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.2}Hough Transform Mapping}{12}}
 \citation{IAM}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Three small samples from IAM handwriting database of the same text having different writing styles.  }}{12}}
-\newlabel{fig:iamsample}{{6}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Dataset}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Experiments}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Binarization}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Evaluation of Block Based Hough Transform Mapping}{12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate thresholds resulting in noticeably better performance than with one threshold value.  }}{13}}
-\newlabel{fig:binarization}{{7}{13}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Three small samples from IAM handwriting database of the same text having different writing styles.  }}{13}}
+\newlabel{fig:iamsample}{{6}{13}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Dataset}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Experiments}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Contrast Enhancement}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate arguments resulting in noticeably better performance. }}{14}}
+\newlabel{fig:binarization}{{7}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Binarization}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}RLSA}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{16}}
 \bibstyle{abbrv}
 \bibdata{hwr_bibliography}
 \bibcite{ABBYY}{1}
@@ -74,14 +80,15 @@
 \bibcite{Dalal}{7}
 \bibcite{Dalal2005}{8}
 \bibcite{FreeSoftwareFoundation2016}{9}
-\bibcite{Kelly}{10}
-\bibcite{Li}{11}
-\bibcite{Louloudis1}{12}
-\bibcite{Louloudis2}{13}
-\bibcite{IAM}{14}
-\bibcite{Pesch2012}{15}
-\bibcite{Sauvola2000}{16}
-\bibcite{Smith2007a}{17}
-\bibcite{MathworksTextRecognition}{18}
-\bibcite{TheMathWorksWiener}{19}
-\bibcite{Razak}{20}
+\bibcite{SAS}{10}
+\bibcite{Kelly}{11}
+\bibcite{Li}{12}
+\bibcite{Louloudis1}{13}
+\bibcite{Louloudis2}{14}
+\bibcite{IAM}{15}
+\bibcite{Pesch2012}{16}
+\bibcite{Sauvola2000}{17}
+\bibcite{Smith2007a}{18}
+\bibcite{MathworksTextRecognition}{19}
+\bibcite{TheMathWorksWiener}{20}
+\bibcite{Razak}{21}

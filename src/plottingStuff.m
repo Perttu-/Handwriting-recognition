@@ -4,7 +4,8 @@ set(p1,'linewidth',2);
 ax=gca;
 ax.XTick = [1:21];
 ax.YTick = [0.4:0.05:1];
-title('Test results of n2 parameter test')
+axis([1 21 0 15])
+title('Test results of skew deviation limit test')
 xlabel('Tested value')
 ylabel('Detection accuracy')
 

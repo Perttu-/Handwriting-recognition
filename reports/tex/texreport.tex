@@ -4,6 +4,9 @@
 \usepackage{url}
 \usepackage{graphicx}
 
+%remove if not actually needed
+\usepackage{color}
+
 \def\code#1{\texttt{#1}}
 
 \newlist{abbrv}{itemize}{1}
@@ -16,7 +19,7 @@
        \vspace*{1cm}
 
         \huge
-        \textbf{Pre-processing and Layout Analysis for Handwriting Recognition}
+        \textbf{Pre-Processing and Layout Analysis for Offline Handwriting Recognition}
 
         \vspace{2cm}
 
@@ -38,7 +41,7 @@
 
     The experimented methods for pre-processing include noise reducing and binarization. For layout analysis the stroke width variation is used to distinquish textual and non-textual elements and a block-based Hough transform approach is used to find individual lines of text. Overlapping lines and accents are also grouped into corresponding text lines. All implementation for these methods and their experiments were done with MATLAB with image processing toolbox. Several parameter values were applied to these algorithms and the results were studied to find appropriate values for tested dataset.
 
-    [summary of results here]
+    {\color{red}[summary of results here]}
 
    \newpage
    \addcontentsline{toc}{section}{Table of Contents}
@@ -55,6 +58,9 @@
     \item[k] Number of selected neighbouring elements in k-nearest neighbors algorithm
     \item[I] RGB image used as parameter for MATLABs image processing functions
     \item[BW] Binarized image used as parameter for MATLABs image processing functions
+    \item[MATLAB] (Matrix laboratory) A numerical computing environment and programming language.
+
+    {\color{red}Needs more }
    \end{abbrv}
 
    \newpage
@@ -77,9 +83,9 @@
 
 
 
-  \subsection{Optical Character Recognition}
+  \subsection{Handwriting Recognition}
 
-    Typical OCR systems consist of four phases:
+    Typical optical character recognition and handwriting recognition systems consist of four phases:
 
     \begin{enumerate}
       \item{Pre-processing}
@@ -97,14 +103,14 @@
     \end{figure}
 
       \subsubsection{Pre-processing}
-        At pre-processing stage the image is enhanced by applying varying filters, transforms and segmentation to it. For text recognition it is important to reduce noise from the image. This can be done with appropriate filter e.g. Wiener filter.
+        At pre-processing stage the image is enhanced by applying varying filters, transforms and binarization. For text recognition it is important to reduce noise from the image. This can be done with appropriate filter e.g. Wiener filter.
 
-        Most image processing methods require the image to be binarized before processing. It is important for later stages of recognition process that the binarized image contains as little noise and irrelevant objects as possible.  These irrelevant objects can be caused by for example uneven lighting, paper texture or other non-textual objects such as drawings. Binarization method should be chosen carefully as the input image's paper texture or lightning can vary a lot making the binarization challenging.
+        Most  importantly later processing methods require the image to be binarized before processing. It is important for later stages of recognition process that the binarized image contains as little noise and irrelevant objects as possible.  These irrelevant objects can be caused by for example uneven lighting, paper texture or other non-textual objects such as drawings. Binarization method should be chosen carefully as the input image's paper texture or lightning can vary a lot making the binarization challenging.
 
         Additionally, other ways to enhance the image before analysis have been experimented. Pesch et.al. discussed how contrast normalization, slant correction and size normalization can be applied to improve the handwriting recognition results. \cite{Pesch2012}
 
       \subsubsection{Layout Analysis}
-        Layout analysis is the process to find where the actual text is located and what kind of textual blocks the image contains. These textual elements can contain titles, columns and captions consisting of text lines and words. Handwritten text is more likely to contain full page width single column text compared to printed text where more complex layouts are found more often. However handwritten text is more unpredictable compared to printed characters as the handwritten words can often overlap the size may vary or the text may have varying lineskews amongst lines.
+        Layout analysis (also called ``page analysis'') is the process to find where the actual text is located and what kind of textual blocks the image contains. These textual elements can contain titles, columns and captions consisting of text lines and words. In this phase all non-textual elements are discarded from the recognition process. Handwritten text is more likely to contain full page width single column text compared to printed text where more complex layouts are found more often. However handwritten text is more unpredictable compared to printed characters as the handwritten words can often overlap the size may vary or the text may have varying lineskews amongst lines.
 
       \subsubsection{Feature Extraction}
         To differentiate between words or individual characters some features must be extracted. These features can then be later used with classification stage utilizing machine learning approaches to construct feature vectors which are then used classify a new unknown input image into text.
@@ -118,9 +124,9 @@
         \end{figure}
 
       \subsubsection{Classification}
-        Lastly in the recognition process is the classification phase. The goal of classfication is to find the class in which the new input will be assigned, and by doing that finding which is the most likely textual meaning of each particular component. In the case of hand writing recognition inputs are features extracted from word or character and classes are the corresponding words or characters respectively.
+        Lastly in the recognition process remains the classification phase. The goal of classfication is to find the class in which the new input will be assigned, and by doing that finding which is the most likely textual meaning of each particular component. In the case of hand writing recognition inputs are features extracted from word or character and classes are the corresponding words or characters respectively.
 
-        Often during classification machine learning approaches are used. Machine learning algorithms look for repeating patterns in feature space and makes decisions and predictions according to those patterns. Common for machine learning algorithms is that they require some preliminary data to be processed in order to make later classification more robust. Machine learning algorithms that can be applied to text recognition include:
+        Often during classification machine learning, more specifically neural network approaches are used. Machine learning algorithms look for repeating patterns in feature space and makes decisions and predictions according to those patterns. Common for machine learning algorithms is that they require some preliminary data to be processed in order to make later classification more robust. Machine learning algorithms that can be applied to many uses including text recognition are for example:
 
         \begin{itemize}
           \item Artificial neural networks
@@ -130,7 +136,7 @@
           \item Recurrent neural networks
           \item Deep feedforward neural networks
           \item Decision tree learning
-          \item Random forests
+          \item Random forests  \cite{SAS}
         \end{itemize}
 
           Simple example for machine learning is the k-Nearest Neighbor algorithm. The algorithm searches for the closest match of test data in the feature space. The previous training data is distributed in the feature space and classified accordingly. Specified amount of the nearest neighbors of the new node are counted and compared. The class has the most representation within these points is the class of the new node. The k stands for the amount of neighboring data points that are compared to the test data, and it should be declared as an odd number to prevent a tie from happening between two classes. The feature space can be constructed from feature vectors aquired in the previous phase. A simple case k-Nearest Neighbor classification is visualized in figure \ref{fig:knn}. In general all machine learning algorithms work better when there are more feature dimensions, but this will result in a slower execution time i.e. the curse of dimensionality.\cite{Beyer}
@@ -145,11 +151,11 @@
           \end{figure}
 
     \subsection{State of the Art}
-      The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning and neural networks to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad\cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are designed to process printed text and are not capable of handwriting recognition by default. Although for example Tesseract can be trained to detect any kind of text.\cite{Smith2007a} Additionally, handwriting recognition algorithms developed by Jürgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
+      The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad\cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are designed to process printed text and are not capable of handwriting recognition by default. Although for example Tesseract can be trained to detect any kind of text.\cite{Smith2007a} Additionally, handwriting recognition algorithms developed by J{\"u}rgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
 
 
   \newpage
-  \section{Pre-Processing}
+  \section{Pre-Processing Methods}
   As mentioned before pre-processing requires various filters and transforms to enhance image quality. Optimally the goal is that the resulting image contains only textual elements and as little noise as possible. This chapter describes the used methods and their implementations using MATLAB.
 
 
@@ -170,8 +176,8 @@
 
 
     \newpage
-    \section{Layout Analysis}
-      To find information about text location within the image layout analysis methods should be applied. The goal is to exclude irrelevant components that might remain after pre-proessing and extract only the textual objects from the input image with information about the relative location within the document. Following methods were implemented for experiments:
+    \section{Layout Analysis Methods}
+      To find information about text location within the image layout analysis methods should be applied. The goal is to exclude irrelevant components that might remain after pre-proessing and extract only the textual objects from the input image with information about the relative location within the document. Following methods were implemented with MALAB for experiments:
 
 
 
@@ -192,7 +198,9 @@
           \end{figure}
 
         \subsection{Bounding Box Expansion Method}
-          One simple way to find different text bodies is to expand each connected components bounding box both vertically and horizontally and then combine possibly overlapping boxes. This method is not calculation heavy but it requires the user to define the distances of which each of the bounding boxes are expanded.
+          One simple way to find different text bodies is to expand each connected components bounding box both vertically and horizontally and then combine possibly overlapping boxes. For two dimensional image the bounding box is the smallest rectangle that can be drawn around a region. This method is not calculation heavy but it requires the user to define the amounts of which each of the bounding boxes are expanded vertically and horizontally. This approach is considered to be quite prone to errors especially if the text size varys in the document.
+
+          For the implementation MATLAB image processing toolbox provides the function \code{regionprops(BW,properties)} where parameter \code{properties} gets argument \code{'boundingbox'}. The resulting boxes can then be expanded by pre-defined amount such as number of pixels added to width or height or how large percentage of the regions area is used to expand the box.
 
         \subsection{Run Length Smearing Algorithm (RLSA)}
           Another simple solution for layout analysis is to apply run lenght smearing algorithm. This algorithm transforms the image by going through the binarized image pixels with zeroes representing background and ones representing foregournd. The length of consecutive zeroes is monitored and if the length is below a threshold value the value of all the contributing zeroes is flipped into ones. This algorithm can be applied both horizontally and vertically. The resulting image will have much larger objects which can then be used with the original image to encapsulate text lines or words depending on the used threshold value.
@@ -207,13 +215,23 @@
 
 
         \subsection{Block Based Hough Transform Mapping}
-          Louloudis et.al. have proposed in their articles \cite{Louloudis1} and \cite{Louloudis2} an novel approach to detect text line from a binarized image. The core of the line detection is based on method to divide majority of the text into smaller slices and use the centroid values of these slices with Hough transform to detect where the text lines are located and which components are included into the text line. In these articles additional techniques on handling small objects such as accents and large characters overlapping multiple lines are described. Small objects are assigned to nearest line and a splitting process in executed on objects which can consist of multiple overlappin characters spanning over multiple lines.
+          Louloudis et.al. have proposed in their articles \cite{Louloudis1} and \cite{Louloudis2} an novel approach to detect text line from a binarized image. The core of the line detection is based on method to divide majority of the text into smaller slices and use the centroid values of these slices with Hough transform to detect where the text lines are located and which components are included into the text line. In these articles additional techniques on handling small objects such as accents and large characters overlapping multiple lines are described. Small objects are assigned to nearest line and a splitting process in executed on objects which can consist of multiple overlapping characters spanning over multiple lines.
 
           This method was chosen for this research because the articles written by Louloudis et.al. have promising test results regarding the performance of the proposed methods with large dataset. The method has performed well in comparison with multiple line extraction techniques.\cite{Razak} The proposed methods for handling overlapping text lines have a sophisticated approach to handle these problematic cases.
 
           The most challenging and time consumig implementation task was to implement the method to detect individual text lines from binarized image. At the moment of this research publicly available implementations were not available so the programming work had to be done from the ground up using the papers \cite{Louloudis1} and \cite{Louloudis2} as reference. The implementation process followed closely the guidelines provided in the articles yet some assumptions had to be made because of the articles ambiquity.
 
-          [images of subsets, hough accarr, all that]
+          \subsubsection{Subgroups}
+            First the algorithm divides all objects into three subgroups. Subgroup 1. Contains majority of the elements being around the average size. Larger objects and objects having large height are categorized into subgroup 2. All small or very wide objects such as accents are included into subgroup 3. All objects of the binarized image are categorized into some of the subgroups.
+
+            During the process subgroup 2. needed most advanced processing to provide best results. Subgroup 2. components have relationally large size and/or height. These objects are caused often when two adjacent lines have touching characters. One subgroup 2. component has two or more lines crossing it, it must be splitted into corresponding lines after initial lines are found with Hough transform mapping. Subgroup 3. objects are usually diacritics, punctuation or broken characters. These characters are simply assigned to nearest found line if they are closer than average distance to them.
+
+          \subsubsection{Hough Transform Mapping}
+            The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block making the Hough transform easier with more centrod pixels to use in the transform.
+
+
+          {\color{red}[images of subsets, hough accarr, all that]}
+
 
 
   \newpage
@@ -238,15 +256,44 @@
 
     For experiments most important meter for functionality was the number of detected rows. The handwriting database provided reliable metadata regarding this information so the test results can be easily compared with ground truth data.
 
+
+  \subsection{Contrast Enhancement}
+    Intuitively the contrast enhancement would enhance the image quality making the further processing better. However during the evaluation it was noted how contrast enhancement actually made small particles such as paper texture or noise more prominent and made the further process counterintuitively worse. The contrast could be manually adjusted in each case separately but this process would be time consuming an unconventional when the desired automatic pre-processing execution would involve as little manual user input as possible.
+
   \subsection{Binarization}
+    The binarization results were mostly evaluated by visually inspecting the output of Sauvola algorithm and other binarization algorithms such as using constant threshold for whole image or. Several images were inputted with varying shadows and the output was monitored. As for IAM Handwriting database the scan quality is high and does not include any noticeable shadows that could affect the recognition process. For that reason the using IAM database images no insight on shadows effect could be gained. Using IAM database the effect on detected text line numbers with different constant parameter values could be monitored without shadows impact. More extensive experiments are required where simulated uneven lightning is applied to shadowless handwriting database images and the results are compared.
+
+     The tested parameters for Sauvola algorithm were the window size \textit{W} and user defined parameter i.e. sensitivity \textit{k}.
+
+     {\color{red}[The tested values were what and what did they result in??]}
+
     \begin{figure}
       \centering
       \includegraphics[natwidth=2140,natheight=546,scale=0.24]{binarization.png}
-      \caption{Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate thresholds resulting in noticeably better performance than with one threshold value. \label{fig:binarization} }
+      \caption{Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate arguments resulting in noticeably better performance. \label{fig:binarization}}
     \end{figure}
 
-    \subsection{Evaluation of Block Based Hough Transform Mapping}
-    During the implementation process some constraints were found.
+    \subsection{RLSA}
+
+    \subsection{Stroke Thickness Variation Analysis}
+
+
+    \subsection{Block Based Hough Transform Mapping}
+      Louloudis et.al. provided extensive experimental results with their chosen dataset being the test set of ICDAR2007 handwriting segmentation competition. However the parameters chosen with this dataset may not be applicable to other dataset such as the IAM handwriting database used in this reasearch. For this reason extensive tests regardin constant parameters and threshold values were conducted. Following parameters were chosen for tests:
+      \begin{itemize}
+        \item \code{n1} Minimum contribution of block centroids used in Hough transform to detect a new line.
+        \item \code{n2} Excessive skew constraint is applied if the contribution is lower than this threshold.
+        \item \code{voterMargin} Defines number of neighbouring cells selected from accumulator array to vote for the contribution.
+        \item \code{skewDevLim} Skew deviation limit applied if contribution is lower than n2.
+        \item \code{aroundAvgDistMargin} Previously undetected line shouldn't be too close already existing lines to be detected correctly. Approximately average distance can be used to determine whether the line is valid or not.
+        \item \code{sameLineMargin} Margin to define whether a object not assigned to any line is used to create new line or is assigned to be part of old existing one.
+      \end{itemize}
+
+
+      {\color{red}[Well explained?]}
+
+
+    The variables n1 and n2 were described in the articles by Louloudis et.al.. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis. Also at this phase the word segmentation functionality were not implemented due to lack of time for this research.
 
 
   \newpage

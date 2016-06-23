@@ -259,6 +259,13 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
                (abs([lineStruct.SkewAngle])-domSkewAngle)>skewDevLim)=[];
     lineLabels(~ismember(labels, objsAssignedToLine))=0;
     
+    if isempty(lineStruct)
+        disp('No lines found!');
+        newLineLabels = -1;
+        finalLineAmount = 0;
+        return
+    end
+    
     if verbose
         disp(['Initial line detection done in ', num2str(toc), ' seconds']);
     end
