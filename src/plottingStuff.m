@@ -2,9 +2,10 @@
 p1 = plot([resultStruct.AvgAccuracy]);
 set(p1,'linewidth',2);
 ax=gca;
-ax.XTick = [1:21];
-ax.YTick = [0.4:0.05:1];
-axis([1 21 0 15])
+
+axis([0 11 0 1])
+ax.XTick = [0:20];
+ax.YTick = [0:0.1:1];
 title('Test results of skew deviation limit test')
 xlabel('Tested value')
 ylabel('Detection accuracy')
@@ -18,8 +19,8 @@ ylabel('Pre-processing time in seconds')
 
 
 p3 = plot([resultStruct.AvgLineDetectionTime]);
-ax.XTick = [1:21];
-title('Line detection time of n1 parameter test')
+ax.XTick = [0:20];
+title('Line detection time of average distance margin test')
 xlabel('Tested value')
 ylabel('Pre-processing time in seconds')
 ylabel('Line detection time in seconds')

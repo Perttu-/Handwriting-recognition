@@ -7,6 +7,8 @@
 %remove if not actually needed
 \usepackage{color}
 
+\usepackage{mathtools}
+
 \def\code#1{\texttt{#1}}
 
 \newlist{abbrv}{itemize}{1}
@@ -170,9 +172,13 @@
           MATLABs image processing toolbox provided the function \code{histeq(I)} for histogram equalization. Alternatively the function can be used with parameters \code{I} and \code{hgram} to approximately match the provided histogram \code{hgram}. Although no prior information about desired histogram exists before the processing so a flat histogram is applied to the equalization process.
 
         \subsection{Binarization}
-          For further processing it is important to binarize the image as well as possible. Several image processing methods require the image to be in a binarized format to work. The binarization provides the system to differentiate between foreground and background pixels in this case the foreground is the written text and background is the writing surface.
+          For further processing it is important to binarize the image as well as possible. Several image processing methods require the image to be in a binarized format to work. The binarization provides the system to differentiate between foreground and background pixels in this case the foreground is the written text and background is the writing surface. The threshold value for each pixel is calculated with following formula:
+          \begin{equation}
+            T(x,y) = m(x,y)*\left[1+k*\left(\frac{s(x,y)}{R}-1\right)\right]
+          \end{equation}
+          Where $T(x,y)$ is the new threshold for pixel $(x,y)$. $m(x,y)$ is mean intensity value of pixels in window size $W$ and $s(x,y)$ is the standard deviation in same window, these two values are as in Nilback formula. $k$ is user defined parameter i.e.``sensitivity'' and  $R$ is the dynamic range of standard deviation e.g. 128 with 8-bit gray level images.
 
-          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The dimensions of MxN neighborhood used to determine the adaptive threshold for that area. Threshold k ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of k remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
+          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The window size $W$ that define the $M*N$ neighborhood used to determine the adaptive threshold for that area. Threshold $k$ ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of $k$ remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
 
 
     \newpage
@@ -194,7 +200,7 @@
           \begin{figure}
             \centering
             \includegraphics[natwidth=863,natheight=239,scale=0.5]{strokecomparison.png}
-            \caption{Vizualization of stroke width transform with two different objects using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width. \label{fig:strokewidth} }
+            \caption{Vizualization of distance transform with two different components using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width. \label{fig:strokewidth} }
           \end{figure}
 
         \subsection{Bounding Box Expansion Method}
@@ -223,14 +229,43 @@
 
           \subsubsection{Subgroups}
             First the algorithm divides all objects into three subgroups. Subgroup 1. Contains majority of the elements being around the average size. Larger objects and objects having large height are categorized into subgroup 2. All small or very wide objects such as accents are included into subgroup 3. All objects of the binarized image are categorized into some of the subgroups.
+            \begin{figure}
+              \centering
+              \includegraphics[natwidth=649, natheight=416, scale = 0.4]{subgroups.png}
+              \caption{Component space partioned to 3 subsets. Here AH and AW are average height and average width of components respectively. \label{fig:subgroupspace}}
 
-            During the process subgroup 2. needed most advanced processing to provide best results. Subgroup 2. components have relationally large size and/or height. These objects are caused often when two adjacent lines have touching characters. One subgroup 2. component has two or more lines crossing it, it must be splitted into corresponding lines after initial lines are found with Hough transform mapping. Subgroup 3. objects are usually diacritics, punctuation or broken characters. These characters are simply assigned to nearest found line if they are closer than average distance to them.
+            \end{figure}
+            During the process subgroup 2. needed most advanced processing of the three to provide best results. Subgroup 2. components have relationally large size and/or height. These objects are caused often when two adjacent lines have touching characters. One subgroup 2. component has two or more lines crossing it, it must be splitted into corresponding lines after initial lines are found with Hough transform mapping. Subgroup 3. objects are usually diacritics, punctuation or broken characters. These characters are simply assigned to nearest found line if they are closer than average distance to them.
 
           \subsubsection{Hough Transform Mapping}
-            The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block making the Hough transform easier with more centrod pixels to use in the transform.
+            The Hough transform is an feature extraction technique used to often find lines in images. The theory is that location of each processed pixel can be described in Hessian normal form:
+            \begin{equation}
+              \rho = x \cos (\theta) - y \sin (\theta)
+            \end{equation}
+            Where $\rho$ is current datapoints distance from origin, $x$ and $y$ are point coordinates in cartesan space and $\theta$ is the angle between horizontal axis and line drawn from origin to point $(x,y)$.
+
+            The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block. These block-centroids are then used as data points in Hough transform. The splitting process makes the Hough transform easier with more data points to use in the transform compared to using each objects centroid.
+            \begin{figure}
+              \centering
+              \includegraphics[natwidth=1334, natheight=495,scale=0.38]{blockCentroids_and_accarr.png}
+              \caption{Left image: Subgroup 1. Block centroids hilighted. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM database entry a01-000u. \label{fig:blockandacc} }
+            \end{figure}
 
 
-          {\color{red}[images of subsets, hough accarr, all that]}
+          \subsubsection{Additional Constraints and Techniques}
+          The proposed line detection method requires additional constraints and techniques to work with objects that are not classified to lines with Hough transform mapping or if two or more lines overlap.
+
+          In the case if some objects are not categorized into any of the lines an additional technique is applied. In this technique the subgroup 1. components distance is monitored. If half of one subgroup 1. components block centroids are around the average distance of two adjacent lines, it can be considered to belong in a new line. The distance is around average distance if it satisfies following constraint:
+          \begin{equation}
+            d >  m_{ad}*d_a
+          \end{equation}
+          Where $d$ is the distance between processed component and nearest line, $m_{ad}$ is the margin value that defines how near the line can be to previously detected lines and $d_a$ is average distance of adjacent lines. The effect of margin value $m_{ad}$ is explained further in chapter \ref{sec:houghtransformevaluation}.
+
+          \begin{figure}
+            \centering
+            \includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
+            \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subgroup 2. objects intersecting multiple lines are splitted, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x \label{fig:finallines} }
+          \end{figure}
 
 
 
@@ -279,6 +314,7 @@
 
 
     \subsection{Block Based Hough Transform Mapping}
+    \label{sec:houghtransformevaluation}
       Louloudis et.al. provided extensive experimental results with their chosen dataset being the test set of ICDAR2007 handwriting segmentation competition. However the parameters chosen with this dataset may not be applicable to other dataset such as the IAM handwriting database used in this reasearch. For this reason extensive tests regardin constant parameters and threshold values were conducted. Following parameters were chosen for tests:
       \begin{itemize}
         \item \code{n1} Minimum contribution of block centroids used in Hough transform to detect a new line.

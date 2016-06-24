@@ -21,12 +21,13 @@
 \contentsline {subsection}{\numberline {4.5}Block Based Hough Transform Mapping}{11}
 \contentsline {subsubsection}{\numberline {4.5.1}Subgroups}{12}
 \contentsline {subsubsection}{\numberline {4.5.2}Hough Transform Mapping}{12}
-\contentsline {section}{\numberline {5}Evaluation}{13}
-\contentsline {subsection}{\numberline {5.1}Dataset}{13}
-\contentsline {subsection}{\numberline {5.2}Experiments}{13}
-\contentsline {subsection}{\numberline {5.3}Contrast Enhancement}{13}
-\contentsline {subsection}{\numberline {5.4}Binarization}{14}
-\contentsline {subsection}{\numberline {5.5}RLSA}{14}
-\contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{14}
-\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{14}
-\contentsline {section}{\numberline {6}Conclusions}{16}
+\contentsline {subsubsection}{\numberline {4.5.3}Additional Constraints and Techniques}{13}
+\contentsline {section}{\numberline {5}Evaluation}{14}
+\contentsline {subsection}{\numberline {5.1}Dataset}{14}
+\contentsline {subsection}{\numberline {5.2}Experiments}{15}
+\contentsline {subsection}{\numberline {5.3}Contrast Enhancement}{15}
+\contentsline {subsection}{\numberline {5.4}Binarization}{15}
+\contentsline {subsection}{\numberline {5.5}RLSA}{16}
+\contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{16}
+\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{16}
+\contentsline {section}{\numberline {6}Conclusions}{17}

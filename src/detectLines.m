@@ -186,16 +186,17 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
     %This loop detects peaks from Hough accumulator array, assigns lines
     %and removes values assigned to line until no peaks high enough remain.
     %Additionally skew is monitored.
-    objsAssignedToLine = zeros(1,max(max(accumulatorArray)));
+    tmpAccArr = accumulatorArray;
+    objsAssignedToLine = zeros(1,max(max(tmpAccArr)));
     cellTic = tic;
     
     while 1
-        maxValue = max(max(accumulatorArray));
+        maxValue = max(max(tmpAccArr));
         if maxValue < n1
             break
         end
         
-        [maxIRow, maxICol] = find(accumulatorArray==maxValue,1);
+        [maxIRow, maxICol] = find(tmpAccArr==maxValue,1);
 
         voterNumbers = [];
         %maxValue
@@ -237,7 +238,7 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         for obj = objsInLine
             toRemoval  = voterArray==obj;
             voterArray = voterArray.*double(~toRemoval);
-            accumulatorArray = accumulatorArray-sum(toRemoval,3);
+            tmpAccArr = tmpAccArr-sum(toRemoval,3);
         end
         
 
@@ -643,14 +644,16 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
         drawnow;
         
         %Hough accumulator array
-%         figure(),
-%         imshow(imadjust(mat2gray(accArr)),'XData',thetas,'YData',rhos,...
-%            'InitialMagnification','fit');
-%         title('Hough Transform Accumulator Array');
-%         xlabel('\theta'), ylabel('\rho');
-%         axis on, axis normal;
-%         colormap(hot);
-%         drawnow;
+        figure(),
+        imshow(imadjust(mat2gray(accumulatorArray)),'XData',thetas,'YData',rhos,...
+           'InitialMagnification','fit');
+        ax = gca;
+        ax.XTick = [85:95];
+        title('Hough Transform Accumulator Array');
+        xlabel('\theta'), ylabel('\rho');
+        axis on, axis normal;
+        colormap(hot);
+        drawnow;
         
         %Components assigned to line
         %figure(), imshow(ismember(labels,ccsNotInLine).*labels);

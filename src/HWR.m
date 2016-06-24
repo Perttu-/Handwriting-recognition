@@ -26,9 +26,12 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     voterMargin = 7;
     
     %skewDevLim = 5;
-    skewDevLim = testedValue;
+    skewDevLim = 7;
     
     aroundAvgDistMargin = 0.7;
+    
+    
+    %test this next
     sameLineMargin = 0.5;
 
 %     wiener filter can cause some disortion

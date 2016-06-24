@@ -22,14 +22,15 @@ function hwrTest(folderPath)
 %     testName = 'voterMarginTest';
 %     testValues = 0:20;
 
-    testName = 'skewDevLimTest';
-    testValues = 0:20;
+%     testName = 'skewDevLimTest';
+%     testValues = 0:20;
 
 %     testName = 'aroundAvgDistMarginTest';
 %     testValues = 0:0.1:1;
 
-%     testName = 'sameLineMarginTest';
-%     testValues = 0:0.1:1;
+    %this is next
+    testName = 'sameLineMarginTest';
+    testValues = 0:0.1:1;
     
     %% Testing process
     testTic = tic;
