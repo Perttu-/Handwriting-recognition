@@ -28,9 +28,12 @@ function hwrTest(folderPath)
 %     testName = 'aroundAvgDistMarginTest';
 %     testValues = 0:0.1:1;
 
-    %this is next
-    testName = 'sameLineMarginTest';
-    testValues = 0:0.1:1;
+
+%     testName = 'sameLineMarginTest';
+%     testValues = 0:0.1:1;
+
+      testName = 'wienerTest';
+      testValues = 0:20;
     
     %% Testing process
     testTic = tic;

@@ -24,4 +24,4 @@ title('Line detection time of average distance margin test')
 xlabel('Tested value')
 ylabel('Pre-processing time in seconds')
 ylabel('Line detection time in seconds')
-set(p3,'linewidth',2)
+set(p3,'linewidth',2)ax.YTick = [0:0.1:1];

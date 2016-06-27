@@ -57,25 +57,44 @@
     \item[OCR] Optical Character Recognition
     \item[HWR] Handwriting Recognition
     \item[HOG] Histogram of Ordered Gradients
-    \item[k] Number of selected neighbouring elements in k-nearest neighbors algorithm
-    \item[I] RGB image used as parameter for MATLABs image processing functions
-    \item[BW] Binarized image used as parameter for MATLABs image processing functions
-    \item[MATLAB] (Matrix laboratory) A numerical computing environment and programming language.
+    \item[$k$] Number of selected neighbouring elements in k-nearest neighbors algorithm
+    \item[$I$] RGB image used as parameter for MATLABs image processing functions
+    \item[$BW$] Binarized image used as parameter for MATLABs image processing functions
+    \item[MATLAB] Matrix laboratory. A numerical computing environment and programming language.
+    \item[$W$] Window. Rectangular region selected from image or signal. Used to do calculations or apply function.
+    \item[$N * M$] Dimensions of the window. N rows and M columns.
+    \item[$R$] Dynamic range of grayscale image. Used in Sauvola algorithm.
+    \item[$\rho$] Distance from origin to line in Hough space.
+    \item[$\theta$] Angle of a line in Hough space.
+    \item[$n_1$] Minimum contribution for a new line to be detected.
+    \item[$n_2$] Constraint to determine if excessive skew constraint is applied.
+    \item[$N_m$] Neighbor margin. Determines how many neighboring cells are used with line detection from Hough accumulator array.
+    \item[$S_l$] Skew deviation limit. Used with constraint $n_2$
+    \item[$d$] Distance.
+    \item[$m_{ad}$] Average distance margin to define whether a undetected object is assigned to a new line.
+    \item[$d_a$] Average distance of adjacent lines.
+    \item[$m_{sl}$] Margin to define whether a undetected object is assined to be part of existing line.
+
+    \item[$A$] Accuracy percentage.
+    \item[$L_r$] True number of lines in IAM handwriting database entry image.
+    \item[$L_d$] Number of found lines with implemented algorithm.
 
     {\color{red}Needs more }
    \end{abbrv}
 
    \newpage
    \section{Introduction}
-    Optical Character Recognition (OCR) is the process of analyzing a image input of  text and recognizing and extracting the characters to digital from. More specific case of optical character recognition process is the task of handwriting recognition (HWR) which concentrates on analyzing human hand written characters instead of printed characters. The unpredictable nature of human handwriting can make the task more challenging compared to printed text which is often uniform. Most HWR systems can be divided into two recognition approaches: \textit{online handwriting recognition} and \textit{offline handwriting recognition}. Offline handwriting recognition means analyzing an existing static image for handwritten text. Online handwriting recognition, on the other hand, is about analyzing the handwritten text on input including strokes and their order for example in touch screen appliances such as smartphones and tablet PCs.
+    Optical Character Recognition (OCR) is the process of analyzing a image input of  text and recognizing and extracting the characters to digital from. More specific case of optical character recognition process is the task of handwriting recognition (HWR) which concentrates on analyzing human hand written characters instead of printed characters. The unpredictable nature of human handwriting can make the task more challenging compared to printed text which is often uniform.
 
-    For reliable results the handwritten input image must be processed appropriately. This includes pre-processing and layout analysis of which aim to enhance the image quality for later processing and find the different bodies of text. There is no general consensus of which methods or algorithms give the best results for each of the phases. This research will experiment with different methods to gain insight on each method or algorithms strengths and weaknesses. These methods are often dependant on defined parameters so the effect of these parameters will be throroughly studied.
+    For reliable results the handwritten input image must be processed appropriately. This includes pre-processing and layout analysis of which aim to enhance the image quality for later processing and find the different bodies of text. There is no general consensus of which methods or algorithms give the best results for each of the phases. This research will experiment with several methods suitable for pre-processing and layout analysis.
 
     The process of handwriting recognition is still undergoing development. Many of the state of the art systems apply neural networks and machine learning approaches. This research will focus on the image processing aspects of the process e.g. pre-processing and layout analysis.
 
   \newpage
   \section{Background}
     Advacements with personal computers has diversified the methods to store and display textual information which has brought up new challenges and problems considering the transformation between traditional information and digital data. One of these challenges is the process of digitizing written text to computer readable and editable form.
+
+     Most HWR systems can be divided into two recognition approaches: online handwriting recognition and offline handwriting recognition. Offline handwriting recognition means analyzing an existing static image for handwritten text. Online handwriting recognition, on the other hand, is about analyzing the handwritten text on input including strokes and their order for example in touch screen appliances such as smartphones and tablet PCs.
 
     Textual information can be in diverse forms and styles. These styles include machine printed text and handwritten text. Both machine printed text and handwritten text can have complex typography or the handwriting can han unconventional layout. Different approaches must be used when digitizing aforementioned styles of text.
 
@@ -84,9 +103,7 @@
     Plenty of research has been conducted and several systems have been implemented for the purpose of optical character recognition and handwriting recognition. These systems can have drastically different approaches for processing the data, even if the data is similar. However certain similarities occur regarding the general process of text recognition process. Machine learning approaches are also common in regard of classification.
 
 
-
   \subsection{Handwriting Recognition}
-
     Typical optical character recognition and handwriting recognition systems consist of four phases:
 
     \begin{enumerate}
@@ -155,16 +172,14 @@
     \subsection{State of the Art}
       The subject of optical character recognition and handwriting recognition are widely researched subjects and well-functioning as well as feature rich software already exist. Many of these softwares utilize machine learning to get satisfactory results especially with handwriting recognition. Many of the best OCR softwares are proprietary, thus making them unable for free research and analysis. Such software are for example Evernote which has an inbuilt OCR engine for searching text from pictures \cite{Kelly} and Abbyy FineReader software made especially for OCR \cite{ABBYY}. Examples of open-source OCR software are Tesseract\cite{Smith2007a}, OCRopus\cite{Breuel2007}, Ocrad\cite{FreeSoftwareFoundation2016} and CuneinForm\cite{CognitiveTechnologies2016}. These pieces OCR software are designed to process printed text and are not capable of handwriting recognition by default. Although for example Tesseract can be trained to detect any kind of text.\cite{Smith2007a} Additionally, handwriting recognition algorithms developed by J{\"u}rgen Schmidhuber's research group at the Swiss AI Lab IDSIA have won several international handwriting competitions. These algorithms utilize neural networks and deep learning. \cite{Angelica}.
 
-
   \newpage
   \section{Pre-Processing Methods}
   As mentioned before pre-processing requires various filters and transforms to enhance image quality. Optimally the goal is that the resulting image contains only textual elements and as little noise as possible. This chapter describes the used methods and their implementations using MATLAB.
 
-
         \subsection{Noise Removal}
           Noise in image can affect negatively to the rest of the recognition process. For that reason it is important to remove as much noise as possible without losing any textual information. For this purpose adaptive Wiener filter was chosen. Prior to using this filter image is converted to grayscale. Adaptive Wieners main advantage is that it can apply varying amounts of filtering to areas having different variations thus preserving textual information better than linear filtering.\cite{TheMathWorksWiener}
 
-          Noise reduction can be done with n x m adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighbourhood size \code{[m n]} as arguments. In this case the neighbourhoodsize will be adjusted according to input data and experiment results.
+          Noise reduction can be done with $N * M$ adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighbourhood size \code{[m n]} as arguments. In this case the neighbourhoodsize will be adjusted according to input data and experiment results.
 
         \subsection{Contrast Enhancement}
           To make the text more prominent the contrast of the image can be enhanced. A simple histogram equalization function can be utilizied for this purpose.
@@ -178,14 +193,11 @@
           \end{equation}
           Where $T(x,y)$ is the new threshold for pixel $(x,y)$. $m(x,y)$ is mean intensity value of pixels in window size $W$ and $s(x,y)$ is the standard deviation in same window, these two values are as in Nilback formula. $k$ is user defined parameter i.e.``sensitivity'' and  $R$ is the dynamic range of standard deviation e.g. 128 with 8-bit gray level images.
 
-          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The window size $W$ that define the $M*N$ neighborhood used to determine the adaptive threshold for that area. Threshold $k$ ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of $k$ remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
-
+          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm. \cite{Sauvola2000} Following constraints must be defined prior to binarization procedure: The window size $W$ that define the $M * N$ neighborhood used to determine the adaptive threshold for that area. Threshold $k$ ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of $k$ remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and according to tests. In this implementation the input image is assumed to have dark text on light background.
 
     \newpage
     \section{Layout Analysis Methods}
       To find information about text location within the image layout analysis methods should be applied. The goal is to exclude irrelevant components that might remain after pre-proessing and extract only the textual objects from the input image with information about the relative location within the document. Following methods were implemented with MALAB for experiments:
-
-
 
         \subsection{Component Property Analysis}
           After binarization the image may still have irrelevant objects such images amongst the text or other irrelevant objects. One method to exclude these objects is to compare several properties of found components with pre-defined parameters. These properties can be for example object area, number of holes in the object and its major and minor axis lengths.
@@ -232,42 +244,47 @@
             \begin{figure}
               \centering
               \includegraphics[natwidth=649, natheight=416, scale = 0.4]{subgroups.png}
-              \caption{Component space partioned to 3 subsets. Here AH and AW are average height and average width of components respectively. \label{fig:subgroupspace}}
+              \caption{Component space partioned to 3 subsets. Here AH and AW are average height and average width of components respectively.\ref{Louloudis1} \label{fig:subgroupspace}}
 
             \end{figure}
             During the process subgroup 2. needed most advanced processing of the three to provide best results. Subgroup 2. components have relationally large size and/or height. These objects are caused often when two adjacent lines have touching characters. One subgroup 2. component has two or more lines crossing it, it must be splitted into corresponding lines after initial lines are found with Hough transform mapping. Subgroup 3. objects are usually diacritics, punctuation or broken characters. These characters are simply assigned to nearest found line if they are closer than average distance to them.
 
           \subsubsection{Hough Transform Mapping}
-            The Hough transform is an feature extraction technique used to often find lines in images. The theory is that location of each processed pixel can be described in Hessian normal form:
+          \label{sec:houghtransformmapping}
+            The Hough transform is an feature extraction technique used to often find lines in images. The location of each processed pixel can be described in Hessian normal form:
             \begin{equation}
               \rho = x \cos (\theta) - y \sin (\theta)
             \end{equation}
             Where $\rho$ is current datapoints distance from origin, $x$ and $y$ are point coordinates in cartesan space and $\theta$ is the angle between horizontal axis and line drawn from origin to point $(x,y)$.
 
             The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block. These block-centroids are then used as data points in Hough transform. The splitting process makes the Hough transform easier with more data points to use in the transform compared to using each objects centroid.
+
+            A new line is detected by acquiring the accumulator array and checking its highest value. The cell having highest contribution and its neighbors contribute as voters to define a new line. The neighbors are selected with threshold value $N_m$ (neighbor margin), which defines how large area can be considered to be one line. The area is selected in the $\rho$ dimension i.e. having near vertical distance from the highest contributor line. Components of which centroids are part of this neighbourhood can be assigned to a line if at least half of the blocks are in this area. The assigned components are removed from accumulator array and a new highest value is found. The procedure is continued in similar manner until the highest contribution value is less than threshold defined with parameter $n_1$.
+
             \begin{figure}
               \centering
               \includegraphics[natwidth=1334, natheight=495,scale=0.38]{blockCentroids_and_accarr.png}
               \caption{Left image: Subgroup 1. Block centroids hilighted. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM database entry a01-000u. \label{fig:blockandacc} }
             \end{figure}
 
-
           \subsubsection{Additional Constraints and Techniques}
-          The proposed line detection method requires additional constraints and techniques to work with objects that are not classified to lines with Hough transform mapping or if two or more lines overlap.
+            The proposed line detection method requires additional constraints and techniques to work with lines with excessive skew, objects that are not classified to lines with Hough transform mapping, or with two overlapping lines.
 
-          In the case if some objects are not categorized into any of the lines an additional technique is applied. In this technique the subgroup 1. components distance is monitored. If half of one subgroup 1. components block centroids are around the average distance of two adjacent lines, it can be considered to belong in a new line. The distance is around average distance if it satisfies following constraint:
-          \begin{equation}
-            d >  m_{ad}*d_a
-          \end{equation}
-          Where $d$ is the distance between processed component and nearest line, $m_{ad}$ is the margin value that defines how near the line can be to previously detected lines and $d_a$ is average distance of adjacent lines. The effect of margin value $m_{ad}$ is explained further in chapter \ref{sec:houghtransformevaluation}.
+            During the Hough transform the dominant skew is also calculated. If a new line has maximum contribution of less than $n_2 (n_2 > n_1)$ and its skew differs more than $S_l$ from the dominant skew angle, the line is discarded. Proposed values for these parameter were tested during the evaluation phase in chapter \ref{sec:houghtransformevaluation}.
 
-          \begin{figure}
-            \centering
-            \includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
-            \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subgroup 2. objects intersecting multiple lines are splitted, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x \label{fig:finallines} }
-          \end{figure}
+            In the case if some objects are not categorized into any of the lines an additional technique is applied. In this technique the subgroup 1. components distance is monitored. If half of one subgroup 1. components block centroids are around the average distance of two adjacent lines, it can be considered to belong in a new line. The distance is around average distance if it satisfies following constraint:
 
+            \begin{equation}
+              d >  m_{ad}*d_a
+            \end{equation}
 
+            Where $d$ is the distance between processed component and nearest line, $m_{ad}$ is the margin value that defines how near the line can be to previously detected lines and $d_a$ is average distance of adjacent lines. On the other hand, to define if the new object is assigned to already existing line it must distance smaller than $m_{sl}$ from the nearest line. The effect of margin values $m_{ad}$ and $m_{sl}$ is explained further in chapter \ref{sec:houghtransformevaluation}. The article \cite{Louloudis2} also describes word sementation procedure. Unfortunately it was not implemented for this research because of lack of time.
+
+            \begin{figure}
+              \centering
+              \includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
+              \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subgroup 2. objects intersecting multiple lines are splitted, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x \label{fig:finallines} }
+            \end{figure}
 
   \newpage
   \section{Evaluation}
@@ -287,9 +304,15 @@
   \subsection{Experiments}
     The quality of software code was evaluated using the chosen dataset and provided metadata. The main goal was to find which parameter values would perform best regarding both accuracy and execution time.
 
-    100 random images were chosen from the handwriting database and the recognition process was executed for each of these images with multiple parameter values. In many cases 20 different parameter values provided sufficient information on their effect on the output.
+    100 random images were chosen from the handwriting database and the recognition process was executed for each of these images with multiple parameter values. In many cases 10--20 different parameter values provided sufficient information on their effect on the output.
 
-    For experiments most important meter for functionality was the number of detected rows. The handwriting database provided reliable metadata regarding this information so the test results can be easily compared with ground truth data.
+    For experiments most important meter for functionality was the number of detected rows. The handwriting database provided reliable metadata regarding this information so the test results can be easily compared with ground truth data. For each of the 100 images used in evaluation, accuracy of the row detection was measured with equation:
+
+    \begin{equation}
+      A = 1-\frac{|L_r-L_d|}{L_r}
+    \end{equation}
+
+    Where $A$ is the accuracy, $L_r$ is the true amount of lines acquired from IAM database metadata, and $L_d$ is the number of lines detected by algorithm.
 
 
   \subsection{Contrast Enhancement}
@@ -298,9 +321,9 @@
   \subsection{Binarization}
     The binarization results were mostly evaluated by visually inspecting the output of Sauvola algorithm and other binarization algorithms such as using constant threshold for whole image or. Several images were inputted with varying shadows and the output was monitored. As for IAM Handwriting database the scan quality is high and does not include any noticeable shadows that could affect the recognition process. For that reason the using IAM database images no insight on shadows effect could be gained. Using IAM database the effect on detected text line numbers with different constant parameter values could be monitored without shadows impact. More extensive experiments are required where simulated uneven lightning is applied to shadowless handwriting database images and the results are compared.
 
-     The tested parameters for Sauvola algorithm were the window size \textit{W} and user defined parameter i.e. sensitivity \textit{k}.
+    The tested parameters for Sauvola algorithm were the window size $W$ and user defined parameter i.e. sensitivity $k$.
 
-     {\color{red}[The tested values were what and what did they result in??]}
+    {\color{red}[The tested values were what and what did they result in??]}
 
     \begin{figure}
       \centering
@@ -310,35 +333,51 @@
 
     \subsection{RLSA}
 
+
     \subsection{Stroke Thickness Variation Analysis}
 
 
     \subsection{Block Based Hough Transform Mapping}
-    \label{sec:houghtransformevaluation}
-      Louloudis et.al. provided extensive experimental results with their chosen dataset being the test set of ICDAR2007 handwriting segmentation competition. However the parameters chosen with this dataset may not be applicable to other dataset such as the IAM handwriting database used in this reasearch. For this reason extensive tests regardin constant parameters and threshold values were conducted. Following parameters were chosen for tests:
+      \label{sec:houghtransformevaluation}
+      Louloudis et.al. provided extensive experimental results with their chosen dataset being the test set of ICDAR2007 handwriting segmentation competition. However the parameters chosen with this dataset may not be applicable to other dataset such as the IAM handwriting database used in this reasearch. For this reason extensive tests regardin constant parameters and threshold values were conducted. Following parameters (introduced in chapter \ref{sec:houghtransformmapping}) were chosen for tests:
+
       \begin{itemize}
-        \item \code{n1} Minimum contribution of block centroids used in Hough transform to detect a new line.
-        \item \code{n2} Excessive skew constraint is applied if the contribution is lower than this threshold.
-        \item \code{voterMargin} Defines number of neighbouring cells selected from accumulator array to vote for the contribution.
-        \item \code{skewDevLim} Skew deviation limit applied if contribution is lower than n2.
-        \item \code{aroundAvgDistMargin} Previously undetected line shouldn't be too close already existing lines to be detected correctly. Approximately average distance can be used to determine whether the line is valid or not.
-        \item \code{sameLineMargin} Margin to define whether a object not assigned to any line is used to create new line or is assigned to be part of old existing one.
+        \item $n_1$ Minimum contribution of block centroids used in Hough transform to detect a new line. This parameter is explained further in chapter
+        \item $n_2$ Excessive skew constraint is applied if the contribution is lower than this threshold.
+        \item $N_m$  Defines number of neighbouring cells selected from accumulator array to vote for the contribution.
+        \item $S_l$ Skew deviation limit applied if contribution is lower than $n2$.
+        \item $m_{ad}$ Previously undetected line shouldn't be too close already existing lines to be detected correctly. Approximately average distance can be used to determine whether the line is valid or not.
+        \item $m_{sl}$ Margin used with distance $d$ to the nearest line to define whether a object, not yet assigned to any line, is used to create new line $(d > m_{sl})$ or is assigned to be part of old existing one $(d \leq m_{sl})$.
       \end{itemize}
 
+    The variables $n_1$ and $n_2$ were described in the articles by Louloudis et.al.. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis.
 
-      {\color{red}[Well explained?]}
+    \subsubsection{Optimal Values for Block Based Hough Transform Mapping}
+    \begin{figure}
+      \centering
+      \includegraphics[natwidth=1051,natheight=435,scale=0.5]{n1n2_acc.png}
+      \caption{Both parameters $n_1$ and $n_2$ were tested with values ranging from 1 to 20. Best value for $n_1$ can be seen to be 6 but no noticeably best value can be found for $n_2$.
+      \label{fig:n1n2}}
+    \end{figure}
 
+    Figure \ref{fig:n1n2} shows the tesults for the tests with $n_1$ and $n_2$. For $n_1$ the value 6 produces highest accuracy. Louloudis et.al. in article \cite{Louloudis2} proposed this value to be 5, so the tests resulted quite similar results. No noticeably best value can be seen from the graph resulted from $n_2$ test. The values 1--7 have marginally better (0.07\%) accuracy compared to the next best accuracy. This differnce can be considered insignificant and the value for $n_2$ is chosen to be 9 as proposed in the article \cite{Louloudis2}.
 
-    The variables n1 and n2 were described in the articles by Louloudis et.al.. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis. Also at this phase the word segmentation functionality were not implemented due to lack of time for this research.
+    Tests with different values for the parameter $N_m$ also had a noticeable effect on line detection accuracy. The chosen value for this parameter was 7.
 
+    \begin{figure}
+      \centering
+      \includegraphics[natwidth=560,natheight=420,scale=0.5]{votermargin_graph.png}
+      \caption{$N_m$ performed best with value 7.
+      \label{fig:votermargin}}
+    \end{figure}
+
+    The tests for $S_l$ didn't produce any significant results. CONTINUE HERES
 
   \newpage
-  \section{Conclusions}
+  \section{Conclusions and Future Work}
 
   \newpage
   \bibliographystyle{abbrv}
   \bibliography{hwr_bibliography}
-
-
 
 \end{document}

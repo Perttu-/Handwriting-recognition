@@ -11,7 +11,8 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     %IAM database
     
     %pre-processing
-    wienerFilterSize = 5;
+    %wienerFilterSize = 5;
+    wienerFilterSize = testedValue;
     sauvolaNeighbourhoodSize = 180;
     sauvolaThreshold = 0.6;
     morphClosingDiscSize = -1;
@@ -30,8 +31,7 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     
     aroundAvgDistMargin = 0.7;
     
-    
-    %test this next
+    %sameLineMargin = 0.5;
     sameLineMargin = 0.5;
 
 %     wiener filter can cause some disortion

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  24 JUN 2016 17:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  27 JUN 2016 17:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -250,15 +250,16 @@ File: flowgraph.png Graphic file (type eps)
  <flowgraph.png> [5]
 File: feature_extraction.png Graphic file (type eps)
 
-<feature_extraction.png> [6]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 134.
+<feature_extraction.png>
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 151.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 151.
+ [6]
 File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/knn.p
 ng Graphic file (type eps)
 
@@ -266,7 +267,7 @@ ng Graphic file (type eps)
 [7] [8] [9]
 File: strokecomparison.png Graphic file (type eps)
  <strokecomparison.png> [10]
-Overfull \hbox (2.79219pt too wide) in paragraph at lines 209--210
+Overfull \hbox (2.79219pt too wide) in paragraph at lines 221--222
 []\OT1/cmr/m/n/10 For the im-ple-men-ta-tion MAT-LAB im-age pro-cess-ing tool-b
 ox pro-vides the func-tion \OT1/cmtt/m/n/10 regionprops(BW,properties)
  []
@@ -275,24 +276,39 @@ File: rlsademo.png Graphic file (type eps)
 <rlsademo.png> [11]
 File: subgroups.png Graphic file (type eps)
  <subgroups.png>
+
+LaTeX Warning: Reference `Louloudis1' on page 12 undefined on input line 247.
+
+
+LaTeX Warning: Reference `Louloudis1' on page 12 undefined on input line 247.
+
+[12]
 File: blockCentroids_and_accarr.png Graphic file (type eps)
  <blockCentroids_and_accarr.png>
-Overfull \hbox (8.34348pt too wide) in paragraph at lines 250--251
+Overfull \hbox (8.34348pt too wide) in paragraph at lines 266--267
  [][] 
  []
 
-[12]
 File: 011_lines_detail.png Graphic file (type eps)
- <011_lines_detail.png> [13]
+<011_lines_detail.png> [13]
 File: iamsample.png Graphic file (type eps)
  <iamsample.png> [14]
 File: binarization.png Graphic file (type eps)
  <binarization.png>
-Overfull \hbox (15.0538pt too wide) in paragraph at lines 307--308
+Overfull \hbox (15.0538pt too wide) in paragraph at lines 330--331
  [][] 
  []
 
-[15] [16] [17] (./texreport.bbl
+[15]
+File: n1n2_acc.png Graphic file (type eps)
+ <n1n2_acc.png>
+Overfull \hbox (26.98662pt too wide) in paragraph at lines 358--360
+ [][] 
+ []
+
+[16]
+File: votermargin_graph.png Graphic file (type eps)
+ <votermargin_graph.png> [17] [18] (./texreport.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 19--24
 \OT1/cmtt/m/n/10 20150313051644 / http : / / googlecode . blogspot . com / 2007
  / 04 / announcing-[]ocropus-[]open-[]source-[]ocr .
@@ -310,14 +326,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 111--115
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
-) [18] (./texreport.aux) ) 
+) [19] (./texreport.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2815 strings out of 493030
- 40202 string characters out of 6136260
- 111450 words of memory out of 5000000
- 6333 multiletter control sequences out of 15000+600000
+ 2823 strings out of 493030
+ 40334 string characters out of 6136260
+ 111483 words of memory out of 5000000
+ 6339 multiletter control sequences out of 15000+600000
  6732 words of font info for 25 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  33i,6n,32p,1283b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on texreport.dvi (19 pages, 66820 bytes).
+Output written on texreport.dvi (20 pages, 73464 bytes).

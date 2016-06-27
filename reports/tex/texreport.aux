@@ -8,15 +8,13 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Background}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Handwriting Recognition}{5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Pre-processing}{5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{5}}
 \citation{Dalal2005}
 \citation{Dalal}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Flowgraph of typical optical character recognition system. The input is an image file with two rows of text and one irrelevant object in it. The goal of each phase is to reduce the amount of processed data for the next phase until after classification the textual data is acquired in computer readable form.  }}{6}}
 \newlabel{fig:flow}{{1}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Feature Extraction}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Classification}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces For example horizontal and vertical projection histograms can be used as features to describe the shape of an object.}}{6}}
-\newlabel{fig:feature}{{2}{6}}
 \citation{SAS}
 \citation{Beyer}
 \citation{Kelly}
@@ -27,6 +25,8 @@
 \citation{CognitiveTechnologies2016}
 \citation{Smith2007a}
 \citation{Angelica}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces For example horizontal and vertical projection histograms can be used as features to describe the shape of an object.}}{7}}
+\newlabel{fig:feature}{{2}{7}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Vizualization on how k-nearest neighbours algorithm works. Blue squares and red triangles represent two groups of data. Green circle is the new data entry. Depending whether k value is 3 or 5 the new entry is clasified to the class which has the most representation within the group. }}{7}}
 \newlabel{fig:knn}{{3}{7}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}State of the Art}{7}}
@@ -53,15 +53,17 @@
 \citation{Razak}
 \citation{Louloudis1}
 \citation{Louloudis2}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Component space partioned to 3 subsets. Here AH and AW are average height and average width of components respectively. }}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Component space partioned to 3 subsets. Here AH and AW are average height and average width of components respectively.\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `Louloudis1' on page 12 undefined} }}{12}}
 \newlabel{fig:subgroupspace}{{6}{12}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.1}Subgroups}{12}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.2}Hough Transform Mapping}{12}}
+\newlabel{sec:houghtransformmapping}{{4.5.2}{12}}
+\citation{Louloudis2}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Left image: Subgroup 1. Block centroids hilighted. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM database entry a01-000u.  }}{13}}
 \newlabel{fig:blockandacc}{{7}{13}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.5.3}Additional Constraints and Techniques}{13}}
 \citation{IAM}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Detail of one result after line detection. Final lines detected with current implementation. Some objects intersecting multiple lines are splitted, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x  }}{14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subgroup 2. objects intersecting multiple lines are splitted, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x  }}{14}}
 \newlabel{fig:finallines}{{8}{14}}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Three small samples from IAM handwriting database of the same text having different writing styles.  }}{14}}
 \newlabel{fig:iamsample}{{9}{14}}
@@ -72,11 +74,18 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Experiments}{15}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Contrast Enhancement}{15}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Binarization}{15}}
+\citation{Louloudis2}
+\citation{Louloudis2}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Both parameters $n_1$ and $n_2$ were tested with values ranging from 1 to 20. Best value for $n_1$ can be seen to be 6 but no noticeably best value can be found for $n_2$. }}{16}}
+\newlabel{fig:n1n2}{{11}{16}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}RLSA}{16}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{16}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{16}}
 \newlabel{sec:houghtransformevaluation}{{5.7}{16}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{17}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.7.1}Optimal Values for Block Based Hough Transform Mapping}{16}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces $N_m$ performed best with value 7. }}{17}}
+\newlabel{fig:votermargin}{{12}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions and Future Work}{18}}
 \bibstyle{abbrv}
 \bibdata{hwr_bibliography}
 \bibcite{ABBYY}{1}
