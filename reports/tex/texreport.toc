@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{\numberline {2.1.2}Layout Analysis}{6}
 \contentsline {subsubsection}{\numberline {2.1.3}Feature Extraction}{6}
 \contentsline {subsubsection}{\numberline {2.1.4}Classification}{6}
-\contentsline {subsection}{\numberline {2.2}State of the Art}{7}
+\contentsline {subsection}{\numberline {2.2}State of the Art}{8}
 \contentsline {section}{\numberline {3}Pre-Processing Methods}{9}
 \contentsline {subsection}{\numberline {3.1}Noise Removal}{9}
 \contentsline {subsection}{\numberline {3.2}Contrast Enhancement}{9}
@@ -17,18 +17,21 @@
 \contentsline {subsection}{\numberline {4.1}Component Property Analysis}{10}
 \contentsline {subsection}{\numberline {4.2}Stroke Thickness Variation Analysis}{10}
 \contentsline {subsection}{\numberline {4.3}Bounding Box Expansion Method}{10}
-\contentsline {subsection}{\numberline {4.4}Run Length Smearing Algorithm (RLSA)}{11}
+\contentsline {subsection}{\numberline {4.4}Run Length Smearing Algorithm}{11}
 \contentsline {subsection}{\numberline {4.5}Block Based Hough Transform Mapping}{11}
 \contentsline {subsubsection}{\numberline {4.5.1}Subgroups}{12}
 \contentsline {subsubsection}{\numberline {4.5.2}Hough Transform Mapping}{12}
 \contentsline {subsubsection}{\numberline {4.5.3}Additional Constraints and Techniques}{13}
 \contentsline {section}{\numberline {5}Evaluation}{14}
-\contentsline {subsection}{\numberline {5.1}Dataset}{14}
+\contentsline {subsection}{\numberline {5.1}Dataset}{15}
 \contentsline {subsection}{\numberline {5.2}Experiments}{15}
 \contentsline {subsection}{\numberline {5.3}Contrast Enhancement}{15}
-\contentsline {subsection}{\numberline {5.4}Binarization}{15}
-\contentsline {subsection}{\numberline {5.5}RLSA}{16}
+\contentsline {subsection}{\numberline {5.4}Adaptive Wiener Filtering}{16}
+\contentsline {subsection}{\numberline {5.5}Binarization}{16}
 \contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{16}
-\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{16}
-\contentsline {subsubsection}{\numberline {5.7.1}Optimal Values for Block Based Hough Transform Mapping}{16}
-\contentsline {section}{\numberline {6}Conclusions and Future Work}{18}
+\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{17}
+\contentsline {subsubsection}{\numberline {5.7.1}Optimal Values for Block Based Hough Transform Mapping}{17}
+\contentsline {section}{\numberline {6}Conclusions}{19}
+\contentsline {subsection}{\numberline {6.1}Findings About Hough Transform Mapping}{19}
+\contentsline {subsection}{\numberline {6.2}Remaining Problems}{19}
+\contentsline {subsection}{\numberline {6.3}Future Work}{19}

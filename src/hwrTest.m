@@ -32,8 +32,11 @@ function hwrTest(folderPath)
 %     testName = 'sameLineMarginTest';
 %     testValues = 0:0.1:1;
 
-      testName = 'wienerTest';
-      testValues = 0:20;
+%       testName = 'wienerTest';
+%       testValues = 0:20;
+
+    testName = 'sauvolaNeighbourhoodTest';
+    testValues = [10:10:300];
     
     %% Testing process
     testTic = tic;

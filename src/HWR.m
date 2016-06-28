@@ -12,8 +12,11 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     
     %pre-processing
     %wienerFilterSize = 5;
-    wienerFilterSize = testedValue;
-    sauvolaNeighbourhoodSize = 180;
+    wienerFilterSize = 3;
+    
+    %sauvolaNeighbourhoodSize = 180;
+    sauvolaNeighbourhoodSize = testedValue;
+    
     sauvolaThreshold = 0.6;
     morphClosingDiscSize = -1;
     strokeWidthThreshold = 0.8;
