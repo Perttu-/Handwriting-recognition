@@ -503,7 +503,11 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
 
                 below2ndLowLineSum = sum(sum(processedImage(roundedY2ndLowest:end,:)));
                 tenthHigherY = yLowest-((yLowest-y2ndLowest)/10);
-                belowTenthHigherLineSum = sum(sum(processedImage(round(tenthHigherY):end,:)));
+                roundedTHY = round(tenthHigherY);
+                if roundedTHY == 0
+                    roundedTHY = 1;
+                end
+                belowTenthHigherLineSum = sum(sum(processedImage(roundedTHY:end,:)));
 
                 if belowTenthHigherLineSum/below2ndLowLineSum <= 0.08;
                     relAvgYIntersect(relAvgYIntersect==yLowest)=[];
@@ -523,7 +527,11 @@ function [newLineLabels, finalLineAmount] = detectLines(binarizedImage,...
                         %selecting only area in the zone
                         zoneBranchPoints = branchPoints;
                         zoneBranchPoints(1:round(zoneHiLim),:)=0;
-                        zoneBranchPoints(round(yip1):end,:)=0;
+                        roundedYip1 = round(yip1);
+                        if roundedYip1 == 0
+                            roundedYip1 = 1;
+                        end
+                        zoneBranchPoints(roundedYip1:end,:)=0;
                         %remove also 3x3 neighbour of these junction pixels
                         zoneBranchPoints = imdilate(zoneBranchPoints,[1,1,1;1,1,1;1,1,1]);
                         flagSkeletonImg = binSkeletonImg~=(binSkeletonImg&zoneBranchPoints);

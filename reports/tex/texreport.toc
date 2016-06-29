@@ -29,9 +29,10 @@
 \contentsline {subsection}{\numberline {5.4}Adaptive Wiener Filtering}{16}
 \contentsline {subsection}{\numberline {5.5}Binarization}{16}
 \contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{16}
-\contentsline {subsection}{\numberline {5.7}Block Based Hough Transform Mapping}{17}
-\contentsline {subsubsection}{\numberline {5.7.1}Optimal Values for Block Based Hough Transform Mapping}{17}
-\contentsline {section}{\numberline {6}Conclusions}{19}
-\contentsline {subsection}{\numberline {6.1}Findings About Hough Transform Mapping}{19}
-\contentsline {subsection}{\numberline {6.2}Remaining Problems}{19}
-\contentsline {subsection}{\numberline {6.3}Future Work}{19}
+\contentsline {subsection}{\numberline {5.7}RLSA}{17}
+\contentsline {subsection}{\numberline {5.8}Block Based Hough Transform Mapping}{17}
+\contentsline {subsubsection}{\numberline {5.8.1}Optimal Values for Block Based Hough Transform Mapping}{18}
+\contentsline {section}{\numberline {6}Conclusions}{20}
+\contentsline {subsection}{\numberline {6.1}Findings About Hough Transform Mapping}{20}
+\contentsline {subsection}{\numberline {6.2}Remaining Problems}{20}
+\contentsline {subsection}{\numberline {6.3}Future Work}{20}

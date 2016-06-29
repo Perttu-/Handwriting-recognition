@@ -36,7 +36,7 @@ function hwrTest(folderPath)
 %       testValues = 0:20;
 
     testName = 'sauvolaNeighbourhoodTest';
-    testValues = [10:10:300];
+    testValues = [20:20:400];
     
     %% Testing process
     testTic = tic;

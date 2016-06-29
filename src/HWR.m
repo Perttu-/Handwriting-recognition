@@ -16,8 +16,11 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     
     %sauvolaNeighbourhoodSize = 180;
     sauvolaNeighbourhoodSize = testedValue;
+    %sauvolaNeighbourhoodSize = 260;
     
     sauvolaThreshold = 0.6;
+    
+    
     morphClosingDiscSize = -1;
     strokeWidthThreshold = 0.8;
     skewCorrection = 0;

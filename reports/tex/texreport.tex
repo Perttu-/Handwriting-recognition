@@ -3,10 +3,6 @@
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{graphicx}
-
-%remove if not actually needed
-\usepackage{color}
-
 \usepackage{mathtools}
 
 \def\code#1{\texttt{#1}}
@@ -23,9 +19,9 @@
         \huge
         \textbf{Pre-Processing and Layout Analysis for Offline Handwriting Recognition}
 
-        \vspace{2cm}
-
-        \textbf{Perttu Pitk{\"a}nen}
+        \vspace{1cm}
+        \LARGE
+        \textbf{Pitk{\"a}nen Perttu}
 
         \vfill
         \Large
@@ -39,12 +35,11 @@
    \newpage
    \addcontentsline{toc}{section}{Abstract}
    \section*{Abstract}
-    Handwriting recognition is a process to apply various image processing and classification methods to extract the textual information from image into computer readable form. The unpredictableness of handwritten text produces many challenges regarding robust recognition process. In this research experients are made with varying methods regarding preprocessing and layout analysis phases. The possible solutions for feature extraction and classification are also discussed, however this research concentrates on the image processing aspects of the subject.
+    Handwriting recognition is a process to apply various image processing and classification methods to extract the textual information from image containing handwritten characters, into computer readable form. The unpredictableness of handwritten text produces many challenges regarding the recognition process. In this research experients are made with varying methods regarding preprocessing and layout analysis phases. The possible solutions for feature extraction and classification are also discussed, however this research concentrates on the image processing aspects of the subject.
 
-    The experimented methods for pre-processing include noise reduction and binarization. For layout analysis the stroke width variation is used to distinquish textual and non-textual elements and a block-based Hough transform approach is used to find individual lines of text. Overlapping lines and accents are also grouped into corresponding text lines. All implementation for these methods and their experiments were done with MATLAB with image processing toolbox. Several parameter values were applied to these algorithms and the results were studied to find appropriate values for tested dataset and to find the accuracy of the system.
+    The experimented methods for pre-processing include noise reduction and binarization. For layout analysis the stroke width variation is used to distinquish textual and non-textual elements and a block-based Hough transform approach is used to find individual lines of text. Overlapping lines and accents are also grouped into corresponding text lines. Some other methods were also experimented with. All implementation for these methods and their experiments were done with MATLAB with image processing toolbox. Several parameter values were applied to these algorithms and the results were studied to find appropriate values for tested dataset and to find the accuracy of the system.
 
-    The proposed methods performed well when the results were evaluated using the number of detected text lines as the meter. The resulting amount of lines were compared with the true amount of lines to gain information about the accuracy. After the optimal values found by evaluation were applied, the system reached around 94\% accuracy regarding text line amounts. However more extensive tests are required.
-    {\color{red}[summary of results here]}
+    The proposed methods performed well when the results were evaluated using the number of detected text lines as the meter. The resulting amount of lines were compared with the true amount of lines to gain information about the accuracy. After the optimal values found by evaluation were applied, the system reached around 95\% accuracy regarding text line amounts. However the implementation of word detection and more extensive tests are required for more informative results.
 
    \newpage
    \addcontentsline{toc}{section}{Table of Contents}
@@ -324,7 +319,7 @@
 
 
   \subsection{Contrast Enhancement}
-    Intuitively the contrast enhancement would enhance the image quality making the further processing better. However during the evaluation it was noted how contrast enhancement actually made small particles such as paper texture or noise more prominent and made the further process counterintuitively worse. The contrast could be manually adjusted in each case separately but this process would be time consuming an unconventional when the desired automatic pre-processing execution would involve as little manual user input as possible.
+    Intuitively the contrast enhancement would enhance the image quality making the further processing better. However during the evaluation it was noted how contrast enhancement actually made small particles such as paper texture or noise more prominent and made the further process counterintuitively worse. The contrast could be manually adjusted in each case separately but this process would be time consuming an unconventional when the desired automatic pre-processing execution would involve as little manual user input as possible. For these reasons the contrast enhancement feature was not implemented as a part of the preprocessing.
 
   \subsection{Adaptive Wiener Filtering}
     The adaptive Wiener filter was also evaluated. The only parameter that could be evalueated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M * N$. For this test the dimensions were selected to be identical in size making the window square shaped.
@@ -341,9 +336,9 @@
   \subsection{Binarization}
     The binarization results were mostly evaluated by visually inspecting the output of Sauvola algorithm and other binarization algorithms such as using constant threshold for whole image or. Several images were inputted with varying shadows and the output was monitored. As for IAM Handwriting database the scan quality is high and does not include any noticeable shadows that could affect the recognition process. For that reason the using IAM database images no insight on shadows effect could be gained. Using IAM database the effect on detected text line numbers with different constant parameter values could be monitored without shadows impact. More extensive experiments are required where simulated uneven lightning is applied to shadowless handwriting database images and the results are compared.
 
-    The tested parameters for Sauvola algorithm were the window size $W$ and user defined parameter i.e. sensitivity $k$.
+    The tested parameters for Sauvola algorithm were the window size $W$ and the user defined parameter i.e. sensitivity $k$.
 
-    {\color{red}[The tested values were what and what did they result in??]}
+    -----------[The tested values were what and what did they result in??]----------
 
     \begin{figure}[!ht]
       \centering
@@ -353,6 +348,11 @@
 
     \subsection{Stroke Thickness Variation Analysis}
       The stroke thickness variation analysis requires one threshold value to separate textual and non-textual objects. The chosen dataset does not contain any intentional non-textual objects. Only thin horizontal lines separating paragraphs. The stroke width variation of these lines is similar to textual elements. However some irrelevant objects might remain in image after binarization process. These irrelevant objects may be caused by scan shadows or paper texture. More informatinve test results could be obtained with dataset that contains also images or figures amongst the text.
+
+      ----------[The tested values were what and what did they result in??]----------
+
+    \subsection{RLSA}
+      The simple approach for line and word detection was to utilize run length smearing algorithm. Even though the figure \ref{fig:workingrlsa} displays the algorithm performing well, the experiments proved that the algorithm perfoms poorly when the characters of two or more lines overlap. The RLSA assumes the lines and words to be completely separate from each other. The algorithm can be considered a quick and simple approach only for high quality images with orderly structure of rows and words.
 
     \subsection{Block Based Hough Transform Mapping}
       \label{sec:houghtransformevaluation}
@@ -404,7 +404,9 @@
 
       As seen in figure \ref{fig:finallines}, the detection is not perfect but can separate oveerlapping lines into multiple. Some characters might also be categorized incorrectly if the lines were too close to each other. This aspect may not show on the test as the number of lines can be correct even if some characters are a part of a wrong line. The chosen evaluation methods could not give insight on this subject without working word detection.
 
-      The program code is not very efficient at the moment. The processing including pre-processing and line detection takes around 14 seconds to complete with current implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz. For much faster execution time a completely new implementation could be done with faster programming language such as C++.
+      For the problem of the method handling only single column data, the Hough transform is only suitable finding infinitely long lines, not line segments. This makes the Hough transform only capable to find single column text lines. For this purpose the image should be split into smaller sections representing columns or other text bodies and the line detection process could be applied to these sections independently.
+
+      The program code is not very efficient at the moment. The processing including pre-processing and line detection takes around 14 seconds to complete with current implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz. For much faster execution time a completely new implementation could be done with faster programming language than MATLAB such as C++.
 
     \subsection{Future Work}
       To get a working handwriting recognition system the word detection methods should be implemented. Moreover feature extraction and classification phases should also be implemented to get the full recognition process complete. These phases were chosen to be out of scope for this research as this resarch consentrated on the image processing aspects of handwriting recognition. With the whole system implemented the evaluation and testing would also be more informative as the actual output could be examined. Also some performance enhancements would be appropriate.
