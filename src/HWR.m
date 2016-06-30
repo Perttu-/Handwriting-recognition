@@ -14,15 +14,23 @@ function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,t
     %wienerFilterSize = 5;
     wienerFilterSize = 3;
     
+    %old
     %sauvolaNeighbourhoodSize = 180;
-    sauvolaNeighbourhoodSize = testedValue;
-    %sauvolaNeighbourhoodSize = 260;
+   
+    sauvolaNeighbourhoodSize = 40;
+    %sauvolaNeighbourhoodSize = 5;
     
-    sauvolaThreshold = 0.6;
+    %sauvolaThreshold = 0.6;
+    sauvolaThreshold = 0.5;
     
     
     morphClosingDiscSize = -1;
-    strokeWidthThreshold = 0.8;
+    
+    
+    %strokeWidthThreshold = 0.8;
+    strokeWidthThreshold = testedValue;
+    
+    
     skewCorrection = 0;
     
     %Row detection

@@ -35,9 +35,15 @@ function hwrTest(folderPath)
 %       testName = 'wienerTest';
 %       testValues = 0:20;
 
-    testName = 'sauvolaNeighbourhoodTest';
-    testValues = [20:20:400];
+%     testName = 'sauvolaNeighbourhoodTest';
+%     testValues = [20:20:400];
     
+%     testName = 'sauvolaThresholdTest';
+%     testValues = [0.1:0.1:1];
+    
+    testName = 'strokeWidthThreshold';
+    testValues = [0:0.1:1];
+
     %% Testing process
     testTic = tic;
 
