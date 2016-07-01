@@ -44,8 +44,8 @@ function hwrTest(folderPath)
 %     testName = 'strokeWidthThreshold';
 %     testValues = [0:0.1:1];
 
-       testName = 'RLSAThreshold';
-       testValues = [5:5:300];
+       testName = 'RLSAThreshold'
+       testValues = [1]
 
     %% Testing process
     testTic = tic;

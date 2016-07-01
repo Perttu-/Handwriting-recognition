@@ -62,9 +62,9 @@
           Tests were conducted for the preprocessing methods Wiener filtering and Sauvola binarization algorithm. For layout analysis phase the stroke width variance threshold and several constant parameters for Hough transform mapping were evaluated. The tests used the number of detected lines as the metric to measure the accuracy of the system compared to the true amount of lines.
 
         \section*{Conclusions}
-          Aforementioned parameters were tested and their effect was studied. The binarization parameters had a significant effect on the recognition process. However the Hough transform mapping is only dependant on the paramters that affected the initial line detection from the accumulator array and the other parameters didn't have noticeable effect on the output. Some constraints regarding the line detection were found, such as the method can input only single column text.
+          Aforementioned parameters were tested and their effect was studied. The binarization parameters had a significant effect on the recognition process. However the Hough transform mapping is only dependant on the paramters that affected the initial line detection from the accumulator array and the other parameters didn't have noticeable effect on the output. Some constraints regarding the line detection were found, such as the method can detect lines from single column text.
 
-          As for future work the word detection should be implemented. At this point the system is only capable of recognizing individual rows of handwritten text. The feature extraction and classification phases should also be implemented for the whole recognition process to be complete. This would allow more accurate evaluation of the whole system.
+          As for future work the word detection should be implemented. At this point the system is only capable of recognizing individual lines of handwritten text. The feature extraction and classification phases should also be implemented for the whole recognition process to be complete. This would allow more accurate evaluation of the whole system.
 
    \end{multicols}
 \end{document}

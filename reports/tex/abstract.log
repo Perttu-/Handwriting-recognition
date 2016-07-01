@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.5.10)  29 JUN 2016 17:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.5.10)  1 JUL 2016 13:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -285,7 +285,7 @@ h_accArr_a01-000u.png (PNG copy)>]
 Here is how much of TeX's memory you used:
  2495 strings out of 493029
  35540 string characters out of 6136234
- 132990 words of memory out of 5000000
+ 133011 words of memory out of 5000000
  6021 multiletter control sequences out of 15000+600000
  5158 words of font info for 19 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -294,7 +294,7 @@ Here is how much of TeX's memory you used:
 /cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx1
 2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on abstract.pdf (1 page, 83696 bytes).
+Output written on abstract.pdf (1 page, 83703 bytes).
 PDF statistics:
  28 PDF objects out of 1000 (max. 8388607)
  17 compressed objects within 1 object stream

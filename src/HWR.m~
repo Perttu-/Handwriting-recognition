@@ -1,4 +1,4 @@
-function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,verbose)
+function [lineLabels,lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,verbose)
 %% Initialization
     close all;
     [image, map]=imread(path);
@@ -28,7 +28,7 @@ function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,
     
     
     %strokeWidthThreshold = 0.8;
-    strokeWidthThreshold = 0.4;
+    strokeWidthThreshold = testedValue;
     
     
     skewCorrection = 0;
@@ -114,8 +114,7 @@ function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,
 %                                           rowVerbose,...
 %                                           visualization);
                                       
-    rlsaImage = rlsa(preprocessedImage,testedValue,0);  
-    [~,lineAmount] = bwlabel(rlsaImage);
+    rlsa(preprocessedImage,testedValue,0);                        
                                       
     rowDetectionTime = toc(rowDetectionStartTime);
     if verbose
