@@ -114,7 +114,7 @@ function [lineAmount,preprocessingTime,rowDetectionTime] = HWR(path,testedValue,
 %                                           rowVerbose,...
 %                                           visualization);
                                       
-    rlsaImage = rlsa(preprocessedImage,testedValue,0);  
+    rlsaImage = rlsa(preprocessedImage,testedValue,1);  
     [~,lineAmount] = bwlabel(rlsaImage);
                                       
     rowDetectionTime = toc(rowDetectionStartTime);

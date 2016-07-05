@@ -30,7 +30,7 @@
 \contentsline {subsection}{\numberline {5.5}Binarization}{16}
 \contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{17}
 \contentsline {subsection}{\numberline {5.7}RLSA}{18}
-\contentsline {subsection}{\numberline {5.8}Block Based Hough Transform Mapping}{18}
+\contentsline {subsection}{\numberline {5.8}Block Based Hough Transform Mapping}{19}
 \contentsline {subsubsection}{\numberline {5.8.1}Optimal Values for Block Based Hough Transform Mapping}{19}
 \contentsline {section}{\numberline {6}Conclusions}{21}
 \contentsline {subsection}{\numberline {6.1}Findings About Hough Transform Mapping}{21}

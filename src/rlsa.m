@@ -1,7 +1,7 @@
-function rlsaImage = rlsa(image,rlsaThreshold,vertical)
+function rlsaImage = rlsa(image,rlsaThreshold,horizontal)
     %run length smearing/smoothing algorithm
     [xSize, ySize] = size(image);
-    if vertical==1
+    if horizontal==1
     temp = [ones(xSize,1), image, ones(xSize,1)];
     temp = reshape(temp',1,[]);
     else
@@ -16,7 +16,7 @@ function rlsaImage = rlsa(image,rlsaThreshold,vertical)
     differences(startPoints(marked)) = 0;
     differences(endPoints(marked)) = 0;
     yy = cumsum([1 differences]);
-    if vertical == 1
+    if horizontal == 1
         yy = reshape(yy, [], xSize)';
         rlsaImage = logical(yy(:,2:end-1));
     else

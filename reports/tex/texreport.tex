@@ -73,6 +73,7 @@
     \item[$R$] Dynamic range of grayscale image. Used in Sauvola algorithm.
     \item[$S_l$] Skew deviation limit. Used with constraint $n_2$.
     \item[$T_{swv}$] Stroke width variation trheshold. Determines which objects are considered text and which are not.
+    \item[$T_{RLSA}$] RLSA threshold. Defines the largest gap of zero pixels in between two one pixels that are ``smeared'' together.
     \item[$W$] Window. Rectangular region selected from image or signal. Used to do calculations or to apply function.
     \item[$\rho$] Distance from origin to line in Cartesian space. Used in Hough transform.
     \item[$\theta$] Angle of a line in Cartesian space. Used in Hough transform.
@@ -201,7 +202,7 @@
           The MATLABs image processing toolbox  provides function \code{regionprops(BW,properties)} which has many useful methods to find numerical data of objects in binarized image. \code{BW} is in this case the binarized image and \code{properties} is used to define the wanted property. Properties that were used were object area and Euler number. Euler number is in this case the difference between the number of objects and holes in the selected area. For example one object with two holes has the Euler number of -1.
 
         \subsection{Stroke Thickness Variation Analysis}
-          Characteristically handwriting consists of strokes. More sophisticated method to exclude irrelevant objects from text is to analyze the found objects' thickness variation. This method was proposed by Li et.al. \cite{Li} The concept of this method is that objects with little to none variation in thickness can be considered to be written characters, compared to other non-textual objects which can have significantly higher variation. Stroke width transform is visualized in figure \ref{fig:strokewidth}. The objects are then excluded if the scalar value describing the stroke width variation is higher than defined threshold value $T_swv$.
+          Characteristically handwriting consists of strokes. More sophisticated method to exclude irrelevant objects from text is to analyze the found objects' thickness variation. This method was proposed by Li et.al. \cite{Li} The concept of this method is that objects with little to none variation in thickness can be considered to be written characters, compared to other non-textual objects which can have significantly higher variation. Stroke width transform is visualized in figure \ref{fig:strokewidth}. The objects are then excluded if the scalar value describing the stroke width variation is higher than defined threshold value $T_{swv}$.
 
           The Mathworks documentation about one text recognition solution describes in detail how stroke width variation analysis can be applied to differentiate textual data from other objects. \cite{MathworksTextRecognition} Most importantly the function \code{bwdist(BW)} computes the Euclidean distance between each pixel and nearest nonzero pixel of binarized image BW(see figure \ref{fig:strokewidth}). To analyze the variation of the stroke width, the variation in the region is quantified into one metric. For each foreground region the metric is the standard deviation of the object's distance transform divided by the mean value of the object's distance transform. Objects are discarded from further processing if their stroke width metric exceeds chosen threshold value.
 
@@ -217,7 +218,7 @@
           For the implementation MATLAB image processing toolbox provides the function \code{regionprops(BW,properties)} where parameter \code{properties} gets argument \code{'boundingbox'}. The resulting boxes can then be expanded by pre-defined amount such as number of pixels added to width or height or how large percentage of the regions area is used to expand the box.
 
         \subsection{Run Length Smearing Algorithm}
-          Another simple solution for layout analysis is to apply run lenght smearing algorithm (RLSA). This algorithm transforms the image by going through the binarized image horizontally with zero pixels representing background and ones representing foregournd. The length of consecutive zeroes is monitored and if the length is below a threshold value the value of all the contributing zeroes is flipped into ones. This algorithm can be applied both horizontally and vertically. The resulting image will have much larger objects which can then be used with the original image to encapsulate text lines or words depending on the used threshold value.
+          Another simple solution for layout analysis is to apply run lenght smearing algorithm (RLSA). This algorithm transforms the image by going through the binarized image horizontally with zero pixels representing background and ones representing foregournd. The length of consecutive zeroes is monitored and if the length is below a threshold value $T_{RLSA}$ the value of all the contributing zeroes is flipped into ones. This algorithm can be applied both horizontally and vertically. The resulting image will have much larger objects which can then be used with the original image to encapsulate text lines or words depending on the used threshold value.
 
           \begin{figure}[!ht]
             \centering
@@ -257,11 +258,11 @@
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=555,natheight=555,scale=0.23]{hough_space.png}
-              \caption{ Red and blue lines show how $\theta$ and $\rho$ can be used to describe a line in Cartesian space. The Red line is the actual line and the blue line is used to visualize the distance $\rho$ from origin. In image processing the origin is often set in the upper-left corner. \label{fig:houghspace}}
+              \includegraphics[natwidth=1171,natheight=469,scale=0.33]{houghTransform.png}
+              \caption{ Left image: Cartesian space with two data points. Red and blue lines show how $\theta$ and $\rho$ can be used to describe any line in Cartesian space. The Red line is the actual line and the perpendicular blue line is used to visualize the distance $\rho$ from origin. Right image: The green lines represent all $\theta$ and $\rho$ pairs that can produce a line which crosses either of the two datapoints. A line is found with the $\theta$ and $\rho$ values of the intersection point of these two sinusoidal lines. \label{fig:houghtransform}}
             \end{figure}
 
-            The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block. These block-centroids are then used as data points in Hough transform. The splitting process makes the Hough transform easier with more data points to use in the transform compared to using each objects centroid.
+            The Hough transform mapping technique provides the core functionality of the whole line detection process. At first the elements in subgroup 1. are splitted into parts are the size of average width of each character. These blocks are used to find the centroid for each block. These block-centroids are then used as data points in Hough transform. The splitting process makes the Hough transform easier with more data points to use in the transform compared to using each objects centroid. The values of $\theta$ and $\rho$ are discretized and used to increment values in accumulator array. The accumulator array consists of bins of which value is incremented when given $\theta$ and $\rho$ values of that bin cross a point. Highest value bins are most likely to realize a line.
 
             A new line is detected by acquiring the accumulator array and checking its highest value. The cell having highest contribution and its neighbors contribute as voters to define a new line. The neighbors are selected with threshold value $N_m$ (neighbor margin), which defines how large area can be considered to be one line. The area is selected in the $\rho$ dimension i.e. having near vertical distance from the highest contributor line. Components of which centroids are part of this neighbourhood can be assigned to a line if at least half of the blocks are in this area. The assigned components are removed from accumulator array and a new highest value is found. The procedure is continued in similar manner until the highest contribution value is less than threshold defined with parameter $n_1$.
 
@@ -295,7 +296,7 @@
     To gain insight on the chosen methods and their effect on output several experiments were conducted mainly focusing on the goal of choosing the appropriate parameters for each method. The following chapter describes in detail the evaluation methods and the produced results.
 
   \subsection{Dataset}
-    Evaluation process needs suitable data containing various styles of handwriting in image format. For comparable test results and performance evaluation the dataset should provide constant image quality and sufficient metadata for the tests. The IAM handwriting database meets all these conditions.
+    To measure the performance evaluation process needs suitable data containing various styles of handwriting in image format. For comparable test results and performance evaluation the dataset should provide constant image quality and sufficient metadata for the tests. The IAM handwriting database meets all these conditions.
 
     IAM handwriting database was constructed to meet the needs for training handwriting recognition systems but it also is useful on testin the image processing aspects of the process. The database consists of 1539 pages of handwritten English language text by 657 different writers. All of the images were scanned with resolution of 300dpi with 256 gray levels. The database also includes comprehensive metadata about each page including number of lines and words and the actual text. \cite{IAM}
 
@@ -357,7 +358,7 @@
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=2178,natheight=1048,scale=0.18]{sauvola_5_40.png}
-      \caption{Three rows extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$  the lower image uses $W = 40$. Both images have same threshold value $k_s = 0.6$. \label{fig:sauvola540}}
+      \caption{Three rows extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$  the lower image uses $W = 40$. Used threshold value $k_s = 0.6$. \label{fig:sauvola540}}
     \end{figure}
 
 
@@ -373,7 +374,15 @@
       \end{figure}
 
     \subsection{RLSA}
-      The simple approach for line and word detection was to utilize run length smearing algorithm. Even though the figure \ref{fig:workingrlsa} displays the algorithm performing well, the experiments proved that the algorithm perfoms poorly when the characters of two or more lines overlap. The RLSA assumes the lines and words to be completely separate from each other. The algorithm can be considered a quick and simple approach only for high quality images with orderly structure of rows and words.
+      The simple approach for line and word detection was to utilize run length smearing algorithm. The RLSA assumes the lines and words to be vertically separate from each other. The algorithm can be considered a quick and simple approach only for high quality images with orderly structure of rows and words.
+
+      Even though the figure \ref{fig:workingrlsa} displays the algorithm performing well, the experiments proved that the algorithm perfomed poorly. The algorithm was tested with multiple values of threshold parameter $T_{RLSA}$. In many cases the RLSA detected much more lines than there actually were. The current implementation of RLSA counts each object that remains in the resulting smeared image as an individual line. The output image usually had some fragmented objects which couldn't be assigned into any line by executing the algorithm horizontally. This left the object to remain in the output as individual lines.
+
+      \begin{figure}[!ht]
+        \centering
+        \includegraphics[natwidth=2181,natheight=583,scale=0.23]{rlsafail_cropped.png}
+        \caption{Closer inspection of these three lines produced by RLSA shows that there are many small fractions around them. The current implementation counts all of the parts as individual lines. Used threshold value $T_{RLSA} = 300$.  \label{fig:strokewidthresults}}
+      \end{figure}
 
     \subsection{Block Based Hough Transform Mapping}
       \label{sec:houghtransformevaluation}
@@ -425,9 +434,11 @@
 
       As seen in figure \ref{fig:finallines}, the detection is not perfect but can separate oveerlapping lines into multiple. Some characters might also be categorized incorrectly if the lines were too close to each other. This aspect may not show on the test as the number of lines can be correct even if some characters are a part of a wrong line. The chosen evaluation methods could not give insight on this subject without working word detection.
 
-      For the problem of the method handling only single column data, the Hough transform is only suitable finding infinitely long lines, not line segments. This makes the Hough transform only capable to find single column text lines. For this purpose the image should be split into smaller sections representing columns or other text bodies and the line detection process could be applied to these sections independently.
+      One problem found regarding line detection is that the method is capable of handling only single column data. The Hough transform is only suitable finding infinitely long lines, not line segments. This makes the Hough transform unable to differentiate between one line and two lines with same height but different columns. For this purpose the image should be split into smaller sections representing columns or other text bodies and the line detection process could be applied to these sections independently.
 
-      The program code is not very efficient at the moment. The processing including pre-processing and line detection takes around 14 seconds to complete with current MATLAB implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz. For much faster execution time a completely new implementation could be done with faster programming language such as C++.
+      The program code is not very efficient at the moment. The processing including pre-processing and line detection takes around 14 seconds to complete with current MATLAB implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz. For much faster execution time a completely new implementation could be done with faster programming language such as C++ using OpenCV libraries.
+
+      The conducted tests could use the number of lines as the only metric of its accuracy. This metric can't give the whole picture about the quality of the output. The number of lines can be correct even if some of the characters or words are assigned to wrong rows or if the text lines have superfluous objects.
 
     \subsection{Future Work}
       To get a working handwriting recognition system the word detection methods should be implemented. Moreover feature extraction and classification phases should also be implemented to get the full recognition process complete. These phases were chosen to be out of scope for this research as this resarch consentrated on the image processing aspects of handwriting recognition. With the whole system implemented the evaluation and testing would also be more informative as the actual output could be examined. Also some performance enhancements would be appropriate.
