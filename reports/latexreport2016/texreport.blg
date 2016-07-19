@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: texreport.aux
+The style file: ieeetr.bst
+Database file #1: hwr_bibliography.bib
+Warning--I didn't find a database entry for "OpenCV"
+Warning--empty publisher in Cheriet2007
+Warning--empty journal in Dalal
+Warning--empty journal in Beyer
+Warning--empty journal in ABBYY
+Warning--empty year in ABBYY
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis1
+while executing---line 969 of file ieeetr.bst
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis2
+while executing---line 969 of file ieeetr.bst
+Too many commas in name 3 of "Zaidi, Razak and Khansa, Zulkiflee and Mohd, Yamani, Idna, Idris and Emran, Mohd, Tamil and Mohd, Noorzaily Mohamed, Noor and Rosli, Salleh and Mohd, Yaakob and Mashkuri, Yaacob" for entry Razak
+while executing---line 969 of file ieeetr.bst
+You've used 21 entries,
+            1876 wiz_defined-function locations,
+            592 strings with 6994 characters,
+and the built_in function-call counts, 3696 in all, are:
+= -- 330
+> -- 146
+< -- 0
++ -- 60
+- -- 39
+* -- 214
+:= -- 552
+add.period$ -- 21
+call.type$ -- 21
+change.case$ -- 20
+chr.to.int$ -- 0
+cite$ -- 26
+duplicate$ -- 181
+empty$ -- 420
+format.name$ -- 39
+if$ -- 894
+int.to.chr$ -- 0
+int.to.str$ -- 21
+missing$ -- 14
+newline$ -- 67
+num.names$ -- 21
+pop$ -- 98
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 112
+stack$ -- 0
+substring$ -- 128
+swap$ -- 42
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 5
+while$ -- 33
+width$ -- 23
+write$ -- 168
+(There were 3 error messages)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  5 JUL 2016 17:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  19 JUL 2016 13:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -239,152 +239,161 @@ LaTeX Font Info:    ... okay on input line 13.
 \openout3 = `texreport.toc'.
 
  [2] [3] [4]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/flowg
-raph.png Graphic file (type eps)
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/flowgraph2.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/flowgraph.
-png> [5]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/featu
-re_extraction.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/flowgraph2.png> [5]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/feature_extraction.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/feature_ex
-traction.png>
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/feature_extraction.png>
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 148.
 
- (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 148.
  [6]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/knn.p
-ng Graphic file (type eps)
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/knn.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/knn.png>
-[7] [8] [9]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/strok
-ecomparison.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/knn.png> [7] [8]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/sauvola_threshold_visualization.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/strokecomp
-arison.png> [10]
-Overfull \hbox (2.79219pt too wide) in paragraph at lines 218--219
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/sauvola_threshold_visualization.png> [9]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/strokecomparison.png Graphic file (type eps)
+
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/strokecomparison.png> [10]
+Overfull \hbox (2.79219pt too wide) in paragraph at lines 226--227
 []\OT1/cmr/m/n/10 For the im-ple-men-ta-tion MAT-LAB im-age pro-cess-ing tool-b
 ox pro-vides the func-tion \OT1/cmtt/m/n/10 regionprops(BW,properties)
  []
 
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/rlsad
-emo.png Graphic file (type eps)
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/rlsademo.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/rlsademo.p
-ng> [11]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/subgr
-oups.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/rlsademo.png> [11]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/subsetspace.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/subgroups.
-png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/hough
-Transform.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/subsetspace.png> [12]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/houghTransform.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/houghTrans
-form.png> [12]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/text_
-cents_accarr.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/houghTransform.png>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/houghfromcentroids.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/text_cents
-_accarr.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/011_l
-ines_detail.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/houghfromcentroids.png> [13]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/011_lines_detail.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/011_lines_
-detail.png> [13]
-Overfull \vbox (16.78712pt too high) has occurred while \output is active []
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/011_lines_detail.png> [14]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/iamsample.png Graphic file (type eps)
 
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/iamsample.png> [15]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/wiener_graph.png Graphic file (type eps)
 
-[14]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/iamsa
-mple.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/wiener_graph.png> [16]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/binarization.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/iamsample.
-png> [15]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/wiene
-r_graph.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/wiener_gra
-ph.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/binar
-ization.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/binarizati
-on.png>
-Overfull \hbox (15.0538pt too wide) in paragraph at lines 343--344
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/binarization.png>
+Overfull \hbox (15.0538pt too wide) in paragraph at lines 370--371
  [][] 
  []
 
-[16]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/sauvo
-lathreshold_test.png Graphic file (type eps)
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/sauvolathreshold_test.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/sauvolathr
-eshold_test.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/sauvo
-la_5_40.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/sauvolathreshold_test.png>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/sauvola_5_40.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/sauvola_5_
-40.png> [17]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/strok
-ewidth_graph.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/sauvola_5_40.png> [17]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/strokewidth_graph.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/strokewidt
-h_graph.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/rlsaf
-ail_cropped.png Graphic file (type eps)
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/strokewidth_graph.png> [18]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/rlsafail_zoom.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/rlsafail_c
-ropped.png>
-Overfull \hbox (3.01776pt too wide) in paragraph at lines 383--384
- [][] 
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/rlsafail_zoom.png>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/n1n2_acc.png Graphic file (type eps)
+
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/n1n2_acc.png> [19]
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/votermargin_graph.png Graphic file (type eps)
+
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/votermargin_graph.png> [20]
+
+LaTeX Warning: Citation `OpenCV' on page 21 undefined on input line 466.
+
+[21] (./texreport.bbl
+Underfull \hbox (badness 1072) in paragraph at lines 43--46
+[]\OT1/cmr/m/n/10 T. Breuel, ``An-nounc-ing the OCRo-pus Open Source OCR Sys-te
+m.'' $\OT1/cmtt/m/n/10 https : / / web . archive . org / web /
  []
 
-[18]
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/n1n2_
-acc.png Graphic file (type eps)
 
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/n1n2_acc.p
-ng>
-File: /home/perttu/Programming/Handwriting-recognition/reports/tex/images/voter
-margin_graph.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/tex/images/votermargi
-n_graph.png> [19] [20] [21] (./texreport.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 19--24
+Underfull \hbox (badness 10000) in paragraph at lines 43--46
 \OT1/cmtt/m/n/10 20150313051644 / http : / / googlecode . blogspot . com / 2007
  / 04 / announcing-[]ocropus-[]open-[]source-[]ocr .
  []
 
 
-Underfull \hbox (badness 2393) in paragraph at lines 32--36
-[]\OT1/cmr/m/n/10 Cognitive Tech-nolo-gies.  CuneiForm.  $\OT1/cmtt/m/n/10 http
- : / / cognitiveforms . com / products{\ _ }and{\ _ }services /
+Underfull \hbox (badness 10000) in paragraph at lines 52--54
+[]\OT1/cmr/m/n/10 Cognitive Tech-nolo-gies, ``CuneiForm.'' $\OT1/cmtt/m/n/10 ht
+tp : / / cognitiveforms . com / products{\ _ }and{\ _ }services /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--115
+Underfull \hbox (badness 10000) in paragraph at lines 74--77
 \OT1/cmtt/m/n/10 com / help / vision / examples / automatically-[]detect-[]and-
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
 ) [22] (./texreport.aux)
 
+LaTeX Warning: There were undefined references.
+
+
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2655 strings out of 493030
- 38771 string characters out of 6136260
- 110638 words of memory out of 5000000
- 6173 multiletter control sequences out of 15000+600000
+ 2659 strings out of 493030
+ 39182 string characters out of 6136260
+ 110660 words of memory out of 5000000
+ 6176 multiletter control sequences out of 15000+600000
  7338 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  33i,5n,32p,1283b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on texreport.dvi (23 pages, 87504 bytes).
+Output written on texreport.dvi (23 pages, 90052 bytes).
