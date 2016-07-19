@@ -13,10 +13,9 @@ function hwrTest2(folderPath)
     
 
      testName = 'n1_votermargin_Test';
-%      n1TestValues = 1:20;
-%      vmTestValues = 0:20;
-      n1TestValues = 1:2;
-      vmTestValues = 0:1;
+     n1TestValues = 1:20;
+     vmTestValues = 0:20;
+
 
     %% Testing process
     testTic = tic;
