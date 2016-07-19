@@ -95,4 +95,7 @@ U.~Marti and H.~Bunke, ``The iam-database: An english sentence database for
   off-line handwriting recognition.,'' {\em Int. Journal on Document Analysis
   and Recognition, Volume 5, pages 39 - 46}, 2002.
 
+\bibitem{OpenCV}
+Itseez, ``Opencv.'' \url{http://opencv.org/}.
+
 \end{thebibliography}

@@ -44,8 +44,12 @@ function hwrTest(folderPath)
 %     testName = 'strokeWidthThreshold';
 %     testValues = [0:0.1:1];
 
-       testName = 'RLSAThreshold';
-       testValues = [5:5:300];
+     testName = 'n1_votermargin_Test';
+     n1TestValues = 1:20;
+     vmTestValues = 0:20;
+
+%     testName = 'RLSAThreshold';
+%     testValues = [5:5:300];
 
     %% Testing process
     testTic = tic;
@@ -70,6 +74,8 @@ function hwrTest(folderPath)
                                    'Accuracy',[],...
                                    'PreProcessingTime',[],...
                                    'LineDetectionTime',[]);
+                               
+        accuracyArray = zeros(length(n1TestValues),length(vmTestValues));
                                
         for k = 1:numberOfImageFiles 
             disp(['Processing Image: ', num2str(k) ,'/',num2str(numberOfImageFiles)]);
