@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  19 JUL 2016 16:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  20 JUL 2016 11:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -270,16 +270,20 @@ x_imgs/sauvola_threshold_visualization.png Graphic file (type eps)
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
 s/sauvola_threshold_visualization.png> [10]
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/eulernumbercomparisonarrows.png Graphic file (type eps)
+
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/eulernumbercomparisonarrows.png>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/strokecomparison.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/strokecomparison.png>
-Overfull \hbox (2.79219pt too wide) in paragraph at lines 232--233
+s/strokecomparison.png> [11]
+Overfull \hbox (2.79219pt too wide) in paragraph at lines 238--239
 []\OT1/cmr/m/n/10 For the im-ple-men-ta-tion MAT-LAB im-age pro-cess-ing tool-b
 ox pro-vides the func-tion \OT1/cmtt/m/n/10 regionprops(BW,properties)
  []
 
-[11]
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/rlsademo.png Graphic file (type eps)
 
@@ -294,12 +298,12 @@ File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/houghTransform.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/houghTransform.png>
+s/houghTransform.png> [14]
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/houghfromcentroids.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/houghfromcentroids.png> [14]
+s/houghfromcentroids.png>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/011_lines_detail.png Graphic file (type eps)
 
@@ -325,7 +329,7 @@ x_imgs/binarization.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
 s/binarization.png>
-Overfull \hbox (15.0538pt too wide) in paragraph at lines 383--384
+Overfull \hbox (14.57199pt too wide) in paragraph at lines 389--390
  [][] 
  []
 
@@ -348,7 +352,7 @@ File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/rlsafail_zoom.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/rlsafail_zoom.png>
+s/rlsafail_zoom.png> [20]
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/n1n2_acc.png Graphic file (type eps)
 
@@ -358,7 +362,7 @@ File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
 x_imgs/votermargin_graph.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/votermargin_graph.png> [20] [21] [22] (./texreport.bbl
+s/votermargin_graph.png> [21] [22] [23] (./texreport.bbl
 Underfull \hbox (badness 1072) in paragraph at lines 43--46
 []\OT1/cmr/m/n/10 T. Breuel, ``An-nounc-ing the OCRo-pus Open Source OCR Sys-te
 m.'' $\OT1/cmtt/m/n/10 https : / / web . archive . org / web /
@@ -382,14 +386,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--77
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
-) [23] (./texreport.aux) ) 
+) [24] (./texreport.aux) ) 
 Here is how much of TeX's memory you used:
- 2668 strings out of 493030
- 39461 string characters out of 6136260
- 110654 words of memory out of 5000000
- 6182 multiletter control sequences out of 15000+600000
+ 2671 strings out of 493030
+ 39624 string characters out of 6136260
+ 110664 words of memory out of 5000000
+ 6184 multiletter control sequences out of 15000+600000
  7338 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  33i,5n,32p,1283b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on texreport.dvi (24 pages, 91432 bytes).
+Output written on texreport.dvi (25 pages, 92700 bytes).

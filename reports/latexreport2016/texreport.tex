@@ -213,7 +213,13 @@
         \subsection{Component Property Analysis}
           After binarization the image may still have irrelevant objects such images amongst the text or other irrelevant objects. One method to exclude these objects is to compare several properties of found components with pre-defined parameters. These properties can be for example object area, number of holes in the object and its major and minor axis lengths.
 
-          The MATLABs image processing toolbox  provides function \code{regionprops(BW,properties)} which has many useful methods to find numerical data of objects in binarized image. \code{BW} is in this case the binarized image and \code{properties} is used to define the wanted property. Properties that were used were object area and Euler number. Euler number is in this case the difference between the number of objects and holes in the selected area. For example one object with two holes has the Euler number of -1.
+          The MATLABs image processing toolbox  provides function \code{regionprops(BW,properties)} which has many useful methods to find numerical data of objects in binarized image. \code{BW} is in this case the binarized image and \code{properties} is used to define the wanted property. Properties that were used were object area and Euler number. Euler number is in this case the difference between the number of objects and holes in the selected area. For example one object with two holes has the Euler number of -1. Due to noise or stroke width the Euler number can be quite unpredictable and it can be quite difficult to find threshold value to discard some of the components according to the number of holes in it.
+
+          \begin{figure}[!ht]
+            \centering
+            \includegraphics[natwidth=2825,natheight=2238,scale=0.07]{eulernumbercomparisonarrows.png}
+            \caption{Objects may have unpredictable Euler numbers due to noisy image or thin strokes. The component on left has one object and one hole manking the Euler number 0 and the object on the right has two holes making the Euler number -1. Ideally the left object would be removed. However the Euler number of these two objects is close making the threshold selection difficult.   \label{fig:eulernumbercomp} }
+          \end{figure}
 
         \subsection{Stroke Thickness Variation Analysis}
           Characteristically handwriting consists of strokes. More sophisticated method to exclude irrelevant objects from text is to analyze the found objects' thickness variation. This method was proposed by Li et.al. \cite{Li} The concept of this method is that objects with little to none variation in thickness can be considered to be written characters, compared to other non-textual objects which can have significantly higher variation. Stroke width transform is visualized in figure \ref{fig:strokewidth}. The objects are then excluded if the scalar value describing the stroke width variation is higher than defined threshold value $T_{swv}$.
@@ -302,7 +308,7 @@
             \begin{figure}[!ht]
               \centering
               \includegraphics[natwidth=5147, natheight=3576,scale=0.09]{houghfromcentroids.png}
-              \caption{Left images: Input image with handwritten text and corresponding subset 1. block centroids. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM database entry a01-000u. \label{fig:blockandacc} }
+              \caption{Left images: Input image with handwritten text and corresponding subset 1. block centroids. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM handwriting database entry a01-000u. \label{fig:blockandacc} }
             \end{figure}
 
           \subsubsection{Additional Constraints and Techniques}
@@ -321,7 +327,7 @@
             \begin{figure}[!ht]
               \centering
               \includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
-              \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subset 2. objects intersecting multiple lines are split, however in some cases incorrectly. Used image: six handwritten lines from IAM database entry a01-011x \label{fig:finallines} }
+              \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subset 2. objects intersecting multiple lines are split, however in some cases incorrectly. Used image: six handwritten lines from IAM handwriting database entry a01-011x \label{fig:finallines} }
             \end{figure}
 
   \newpage
@@ -350,7 +356,7 @@
       A = 1-\frac{|L_r-L_d|}{L_r}
     \end{equation}
 
-    Where $A$ is the accuracy, $L_r$ is the true amount of lines acquired from IAM database meta data, and $L_d$ is the number of lines detected by algorithm. This metric can only give so much information whether the chosen values work or not. In many cases the output had to be evaluated visually to get more detailed information what the output actually is.
+    Where $A$ is the accuracy, $L_r$ is the true amount of lines acquired from IAM handwriting database meta data, and $L_d$ is the number of lines detected by algorithm. This metric can only give so much information whether the chosen values work or not. In many cases the output had to be evaluated visually to get more detailed information what the output actually is.
 
 
   \subsection{Contrast Enhancement}
@@ -359,14 +365,14 @@
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=2909, natheight=912, scale=0.15]{histeq_fail.png}
-      \caption{Left image: input image. Right image: same image after histogram equalization was applied to it. Histogram equalization made rest of the recognition process more difficult by increasing the noise in the image. Used image: handwritten part of IAM database entry a01-000u.
+      \caption{Left image: input image. Right image: same image after histogram equalization was applied to it. Histogram equalization made rest of the recognition process more difficult by increasing the noise in the image. Used image: handwritten part of IAM handwriting database entry a01-000u.
       \label{fig:histeqfail}}
     \end{figure}
 
   \subsection{Adaptive Wiener Filtering}
     The adaptive Wiener filter was also evaluated. The only parameter that could be evaluated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M * N$. For this test the dimensions were selected to be identical in size making the window square shaped.
 
-    IAM database didn't have much noise in the images to begin with, so this filtering didn't have a large impact on the recognition process. Only the smallest sizes 0 and 1 made the rest of the recognition process impossible resulting in zero lines for each image. Chosen value for this parameter was the window size 3. The consistency of results can be seen in \ref{fig:wienertest}.
+    IAM handwriting database didn't have much noise in the images to begin with, so this filtering didn't have a large impact on the recognition process. Only the smallest sizes 0 and 1 made the rest of the recognition process impossible resulting in zero lines for each image. Chosen value for this parameter was the window size 3. The consistency of results can be seen in figure \ref{fig:wienertest}.
 
     \begin{figure}[!ht]
       \centering
@@ -376,11 +382,11 @@
     \end{figure}
 
   \subsection{Binarization}
-    The binarization results were mostly evaluated by visually inspecting the output of Sauvola algorithm and other binarization algorithms such as using constant threshold for whole image or. Several images were inputted with varying shadows and the output was monitored. As for IAM Handwriting database the scan quality is high and does not include any noticeable shadows that could affect the recognition process. For that reason the using IAM database images no insight on shadows effect could be gained. Using IAM database the effect on detected text line numbers with different constant parameter values could be monitored without shadows impact. More extensive experiments are required where simulated uneven lightning is applied to shadowless handwriting database images and the results are compared.
+    The binarization results were mostly evaluated by visually inspecting the output of Sauvola algorithm and other binarization algorithms such as using constant threshold for whole image or. Several images were inputted with varying shadows and the output was monitored. As for IAM Handwriting database the scan quality is high and does not include any noticeable shadows that could affect the recognition process. For that reason the using IAM handwriting database images no insight on shadows effect could be gained. Using IAM handwriting database the effect on detected text line numbers with different constant parameter values could be monitored without shadows impact. More extensive experiments are required where simulated uneven lightning is applied to shadowless handwriting database images and the results are compared.
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=2140,natheight=546,scale=0.24]{binarization.png}
+      \includegraphics[natwidth=2138,natheight=550,scale=0.24]{binarization.png}
       \caption{Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate arguments resulting in noticeably better performance. \label{fig:binarization}}
     \end{figure}
 
@@ -398,7 +404,7 @@
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=2178,natheight=1048,scale=0.18]{sauvola_5_40.png}
-      \caption{Three rows extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$  the lower image uses $W = 40$. Used threshold value $k_s = 0.6$. \label{fig:sauvola540}}
+      \caption{Three rows extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$  the lower image uses $W = 40$. Used threshold value $k_s = 0.6$. Used image: three handwritten lines from IAM handwriting database entry A01-049. \label{fig:sauvola540}}
     \end{figure}
 
 
@@ -437,7 +443,7 @@
         \item $m_{sl}$ Margin used with distance $d$ to the nearest line to define whether a object, not yet assigned to any line, is used to create new line $(d > m_{sl})$ or is assigned to be part of old existing one $(d \leq m_{sl})$.
       \end{itemize}
 
-    The variables $n_1$ and $n_2$ were described in the articles by Louloudis et.al.. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis.
+    The variables $n_1$ and $n_2$ were described in the articles by Louloudis et.al. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis.
 
     \subsubsection{Optimal Values for Block Based Hough Transform Mapping}
     \begin{figure}[!ht]
