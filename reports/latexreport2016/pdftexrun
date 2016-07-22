@@ -1,0 +1,7 @@
+#!/bin/sh
+
+pdflatex texreport
+bibtex texreport.aux
+pdflatex texreport
+pdflatex texreport
+pdflatex texreport

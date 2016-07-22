@@ -13,8 +13,8 @@ function hwrTest2(folderPath)
     
 
      testName = 'n1_votermargin_Test';
-     n1TestValues = 1:20;
-     vmTestValues = 0:20;
+     n1TestValues = 1:14;
+     vmTestValues = 0:14;
 
 
     %% Testing process
@@ -43,7 +43,7 @@ function hwrTest2(folderPath)
                 xmlStruct = parseXML(xmlName);
                 realLines = getLineAmounts(xmlStruct);
 
-                accuracy = 1-abs(foundLines-realLines)/realLines;
+                accuracy = 1-(abs(foundLines-realLines)/realLines);
                 initialAccuracyArray(i,j,k)=accuracy;
                 initialLineDetTimeArray(i,j,k)=rowDetTime;
 
@@ -61,8 +61,8 @@ function hwrTest2(folderPath)
     avgLineDetTimeArray = avgAccuracyArray;
     for i = 1:size(initialAccuracyArray,1)
         for j = 1:size(initialAccuracyArray,2)
-            meanLineDetTime = mean(initialAccuracyArray(i,j,:));
-            meanAccuracy = mean(initialLineDetTimeArray(i,j,:));
+            meanAccuracy = mean(initialAccuracyArray(i,j,:));
+            meanLineDetTime = mean(initialLineDetTimeArray(i,j,:));
             avgLineDetTimeArray(i,j,:) = meanLineDetTime;
             avgAccuracyArray(i,j,:) = meanAccuracy;
         end

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2016.5.10)  20 JUL 2016 11:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.5.10)  22 JUL 2016 15:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -32,7 +32,7 @@ Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 )
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is not detected.
+Package ifpdf Info: pdfTeX in PDF mode is detected.
 )
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
 Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
@@ -78,10 +78,18 @@ Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
 File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: dvips.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 95.
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvips.def
-File: dvips.def 2015/12/30 v3.0k Driver-dependent file (DPC,SPQR)
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count91
 ))
 \Gin@req@height=\dimen112
 \Gin@req@width=\dimen113
@@ -91,15 +99,15 @@ Package: mathtools 2015/11/12 v1.18 mathematical typesetting tools
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count91
-\calc@Bcount=\count92
+\calc@Acount=\count92
+\calc@Bcount=\count93
 \calc@Adimen=\dimen114
 \calc@Bdimen=\dimen115
 \calc@Askip=\skip44
 \calc@Bskip=\skip45
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count93
+\calc@Ccount=\count94
 \calc@Cskip=\skip46
 )
 (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
@@ -125,13 +133,13 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count94
+\inf@bad=\count95
 LaTeX Info: Redefining \frac on input line 199.
-\uproot@=\count95
-\leftroot@=\count96
+\uproot@=\count96
+\leftroot@=\count97
 LaTeX Info: Redefining \overline on input line 297.
-\classnum@=\count97
-\DOTSCASE@=\count98
+\classnum@=\count98
+\DOTSCASE@=\count99
 LaTeX Info: Redefining \ldots on input line 394.
 LaTeX Info: Redefining \dots on input line 397.
 LaTeX Info: Redefining \cdots on input line 518.
@@ -140,15 +148,15 @@ LaTeX Info: Redefining \cdots on input line 518.
 \big@size=\dimen118
 LaTeX Font Info:    Redeclaring font encoding OML on input line 630.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
-\macc@depth=\count99
-\c@MaxMatrixCols=\count100
+\macc@depth=\count100
+\c@MaxMatrixCols=\count101
 \dotsspace@=\muskip11
-\c@parentequation=\count101
-\dspbrk@lvl=\count102
+\c@parentequation=\count102
+\dspbrk@lvl=\count103
 \tag@help=\toks18
-\row@=\count103
-\column@=\count104
-\maxfields@=\count105
+\row@=\count104
+\column@=\count105
+\maxfields@=\count106
 \andhelp@=\toks19
 \eqnshift@=\dimen119
 \alignsep@=\dimen120
@@ -167,7 +175,7 @@ LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 129.
 LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
 LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
 LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
-\g_MT_multlinerow_int=\count106
+\g_MT_multlinerow_int=\count107
 \l_MT_multwidth_dim=\dimen125
 \origjot=\skip50
 \l_MT_shortvdotswithinadjustabove_dim=\dimen126
@@ -177,7 +185,7 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 \l_MT_above_shortintertext_sep=\dimen130
 \l_MT_below_shortintertext_sep=\dimen131
 )
-\enitdp@abbrv=\count107
+\enitdp@abbrv=\count108
  (./texreport.aux)
 \openout1 = `texreport.aux'.
 
@@ -195,9 +203,9 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
 LaTeX Font Info:    ... okay on input line 13.
 
 *geometry* driver: auto-detecting
-*geometry* detected driver: dvips
+*geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
-* driver: dvips
+* driver: pdftex
 * paper: <default>
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
@@ -228,23 +236,95 @@ LaTeX Font Info:    ... okay on input line 13.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count109
+\scratchdimen=\dimen132
+\scratchbox=\box29
+\nofMPsegments=\count110
+\nofMParguments=\count111
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count112
+\MPscratchDim=\dimen133
+\MPnumerator=\count113
+\makeMPintoPDFobject=\count114
+\everyMPtoPDFconversion=\toks23
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
 [1
 
-] [1] (./texreport.toc)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [1] (./texreport.toc)
 \tf@toc=\write3
 \openout3 = `texreport.toc'.
 
- [2] [3] [4]
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/flowgraph2.png Graphic file (type eps)
 
+[2] [3] [4]
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/flowgraph2.png> [5]
+s/flowgraph2.png, id=26, 581.17125pt x 367.3725pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/feature_extraction.png Graphic file (type eps)
+x_imgs/flowgraph2.png Graphic file (type png)
 
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/flowgraph2.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/flowgraph2.png used on input line 117.
+(pdftex.def)             Requested size: 290.58492pt x 183.68579pt.
+ [5]
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/feature_extraction.png>
+s/feature_extraction.png, id=31, 186.6975pt x 184.43906pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/feature_extraction.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/feature_extraction.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/feature_extraction.png used on input line 138.
+(pdftex.def)             Requested size: 112.01935pt x 110.66428pt.
+ [6 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/flowgraph2.png> </home/perttu/Programming/Handwriting-recognition/reports
+/report_images/tex_imgs/feature_extraction.png>]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 148.
 
 
@@ -253,116 +333,269 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 148.
- [6]
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/knn.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/knn.png> [7] [8]
+s/knn.png, id=38, 220.825pt x 199.74625pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/tire_histeq.gif Graphic file (type eps)
+x_imgs/knn.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/knn.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/knn.png used on input line 162.
+(pdftex.def)             Requested size: 132.496pt x 119.84866pt.
+ [7 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/knn.png>] [8]
+
+! LaTeX Error: Unknown graphics extension: .gif.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.188 ...natheight=205,scale=0.7]{tire_histeq.gif}
+                                                  
+? 
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/tire_histeq.gif> [9]
+s/sauvola_threshold_visualization.png, id=46, 737.00343pt x 194.97844pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/sauvola_threshold_visualization.png Graphic file (type eps)
+x_imgs/sauvola_threshold_visualization.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/sauvola_threshold_visualization.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/sauvola_threshold_visualization.png used on input lin
+e 205.
+(pdftex.def)             Requested size: 368.50081pt x 97.48897pt.
+ [9]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/eulernumbercomparisonarrows.png, id=52, 680.5425pt x 539.1342pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/eulernumbercomparisonarrows.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/eulernumbercomparisonarrows.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/eulernumbercomparisonarrows.png used on input line 22
+0.
+(pdftex.def)             Requested size: 47.64284pt x 37.74324pt.
+ [10 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/sauvola_threshold_visualization.png> </home/perttu/Programming/Handwriti
+ng-recognition/reports/report_images/tex_imgs/eulernumbercomparisonarrows.png>]
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/sauvola_threshold_visualization.png> [10]
+s/strokecomparison.png, id=58, 649.67719pt x 179.92218pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/eulernumbercomparisonarrows.png Graphic file (type eps)
+x_imgs/strokecomparison.png Graphic file (type png)
 
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/eulernumbercomparisonarrows.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/strokecomparison.png Graphic file (type eps)
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/strokecomparison.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/strokecomparison.png used on input line 231.
+(pdftex.def)             Requested size: 259.86627pt x 71.96759pt.
 
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/strokecomparison.png> [11]
 Overfull \hbox (2.79219pt too wide) in paragraph at lines 238--239
 []\OT1/cmr/m/n/10 For the im-ple-men-ta-tion MAT-LAB im-age pro-cess-ing tool-b
 ox pro-vides the func-tion \OT1/cmtt/m/n/10 regionprops(BW,properties)
  []
 
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/rlsademo.png Graphic file (type eps)
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/rlsademo.png> [12]
+s/rlsademo.png, id=59, 1141.26375pt x 686.565pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/subsetspace.png Graphic file (type eps)
+x_imgs/rlsademo.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/rlsademo.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/rlsademo.png used on input line 245.
+(pdftex.def)             Requested size: 342.38176pt x 205.97108pt.
+ [11 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/strokecomparison.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/subsetspace.png, id=64, 499.1448pt x 342.3189pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/subsetspace.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/subsetspace.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/subsetspace.png used on input line 282.
+(pdftex.def)             Requested size: 49.9174pt x 34.23389pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/subsetspace.png> [13]
+s/objectsubsets.png, id=65, 438.13687pt x 186.6975pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/houghTransform.png Graphic file (type eps)
+x_imgs/objectsubsets.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/objectsubsets.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/objectsubsets.png used on input line 288.
+(pdftex.def)             Requested size: 175.25163pt x 74.67767pt.
+ [12 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/rlsademo.png> </home/perttu/Programming/Handwriting-recognition/reports/
+report_images/tex_imgs/subsetspace.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/houghTransform.png, id=72, 282.0939pt x 112.9821pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/houghTransform.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/houghTransform.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/houghTransform.png used on input line 306.
+(pdftex.def)             Requested size: 93.09126pt x 37.2842pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/houghTransform.png> [14]
+s/houghfromcentroids.png, id=73, 1239.9123pt x 861.4584pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/houghfromcentroids.png Graphic file (type eps)
+x_imgs/houghfromcentroids.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/houghfromcentroids.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/houghfromcentroids.png used on input line 316.
+(pdftex.def)             Requested size: 111.58728pt x 77.52791pt.
+ [13 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/objectsubsets.png> </home/perttu/Programming/Handwriting-recognition/rep
+orts/report_images/tex_imgs/houghTransform.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/011_lines_detail.png, id=79, 345.2097pt x 138.2766pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/011_lines_detail.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/011_lines_detail.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/011_lines_detail.png used on input line 335.
+(pdftex.def)             Requested size: 103.5637pt x 41.48329pt.
+ [14 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/houghfromcentroids.png> </home/perttu/Programming/Handwriting-recognitio
+n/reports/report_images/tex_imgs/011_lines_detail.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/iamsample.png, id=85, 1117.17375pt x 445.665pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/iamsample.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/iamsample.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/iamsample.png used on input line 350.
+(pdftex.def)             Requested size: 223.43079pt x 89.13141pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/houghfromcentroids.png>
+s/histeq_fail.png, id=86, 2189.93156pt x 686.565pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/011_lines_detail.png Graphic file (type eps)
+x_imgs/histeq_fail.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/histeq_fail.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/histeq_fail.png used on input line 373.
+(pdftex.def)             Requested size: 328.47556pt x 102.9803pt.
+ [15 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/iamsample.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/wiener_graph.png, id=91, 417.05812pt x 328.22626pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/wiener_graph.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/wiener_graph.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/wiener_graph.png used on input line 385.
+(pdftex.def)             Requested size: 166.82028pt x 131.28816pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/011_lines_detail.png> [15]
+s/binarization.png, id=92, 1609.51312pt x 414.04688pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/iamsample.png Graphic file (type eps)
+x_imgs/binarization.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/binarization.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/binarization.png used on input line 395.
+(pdftex.def)             Requested size: 386.29105pt x 99.37328pt.
+ [16 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/histeq_fail.png> </home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/wiener_graph.png (PNG copy)>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/sauvolathreshold_test.png, id=97, 421.575pt x 316.18124pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/sauvolathreshold_test.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/sauvolathreshold_test.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/sauvolathreshold_test.png used on input line 406.
+(pdftex.def)             Requested size: 168.627pt x 126.47025pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/iamsample.png> [16]
+s/sauvola_5_40.png, id=98, 1639.62563pt x 788.9475pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/histeq_fail.png Graphic file (type eps)
+x_imgs/sauvola_5_40.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/sauvola_5_40.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/sauvola_5_40.png used on input line 412.
+(pdftex.def)             Requested size: 295.11987pt x 142.00441pt.
+ [17 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/binarization.png> </home/perttu/Programming/Handwriting-recognition/repo
+rts/report_images/tex_imgs/sauvolathreshold_test.png (PNG copy)> </home/perttu/
+Programming/Handwriting-recognition/reports/report_images/tex_imgs/sauvola_5_40
+.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/strokewidth_graph.png, id=104, 421.575pt x 316.18124pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/strokewidth_graph.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/strokewidth_graph.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/strokewidth_graph.png used on input line 424.
+(pdftex.def)             Requested size: 168.627pt x 126.47025pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/histeq_fail.png>
+s/rlsafail_zoom.png, id=105, 1641.9744pt x 519.8622pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/wiener_graph.png Graphic file (type eps)
+x_imgs/rlsafail_zoom.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/rlsafail_zoom.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/rlsafail_zoom.png used on input line 435.
+(pdftex.def)             Requested size: 98.5142pt x 31.19038pt.
+ [18 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/strokewidth_graph.png (PNG copy)> </home/perttu/Programming/Handwriting-
+recognition/reports/report_images/tex_imgs/rlsafail_zoom.png>]
+</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
+s/n1n2_acc.png, id=111, 791.20593pt x 327.47343pt>
+File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/n1n2_acc.png Graphic file (type png)
+
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/n1n2_acc.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/n1n2_acc.png used on input line 457.
+(pdftex.def)             Requested size: 316.47676pt x 130.98705pt.
 
 </home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/wiener_graph.png> [17]
+s/votermargin_graph.png, id=112, 421.575pt x 316.18124pt>
 File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/binarization.png Graphic file (type eps)
+x_imgs/votermargin_graph.png Graphic file (type png)
 
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/binarization.png>
-Overfull \hbox (14.57199pt too wide) in paragraph at lines 389--390
- [][] 
- []
-
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/sauvolathreshold_test.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/sauvolathreshold_test.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/sauvola_5_40.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/sauvola_5_40.png> [18]
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/strokewidth_graph.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/strokewidth_graph.png> [19]
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/rlsafail_zoom.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/rlsafail_zoom.png> [20]
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/n1n2_acc.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/n1n2_acc.png>
-File: /home/perttu/Programming/Handwriting-recognition/reports/report_images/te
-x_imgs/votermargin_graph.png Graphic file (type eps)
-
-</home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_img
-s/votermargin_graph.png> [21] [22] [23] (./texreport.bbl
+<use /home/perttu/Programming/Handwriting-recognition/reports/report_images/tex
+_imgs/votermargin_graph.png>
+Package pdftex.def Info: /home/perttu/Programming/Handwriting-recognition/repor
+ts/report_images/tex_imgs/votermargin_graph.png used on input line 468.
+(pdftex.def)             Requested size: 168.627pt x 126.47025pt.
+ [19 </home/perttu/Programming/Handwriting-recognition/reports/report_images/te
+x_imgs/n1n2_acc.png>] [20 </home/perttu/Programming/Handwriting-recognition/rep
+orts/report_images/tex_imgs/votermargin_graph.png (PNG copy)>] [21] (./texrepor
+t.bbl
 Underfull \hbox (badness 1072) in paragraph at lines 43--46
 []\OT1/cmr/m/n/10 T. Breuel, ``An-nounc-ing the OCRo-pus Open Source OCR Sys-te
 m.'' $\OT1/cmtt/m/n/10 https : / / web . archive . org / web /
@@ -386,14 +619,30 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--77
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
-) [24] (./texreport.aux) ) 
+) [22] (./texreport.aux) ) 
 Here is how much of TeX's memory you used:
- 2671 strings out of 493030
- 39624 string characters out of 6136260
- 110664 words of memory out of 5000000
- 6184 multiletter control sequences out of 15000+600000
+ 3655 strings out of 493029
+ 60856 string characters out of 6136234
+ 129555 words of memory out of 5000000
+ 7126 multiletter control sequences out of 15000+600000
  7338 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 33i,5n,32p,1283b,260s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,6n,32p,1283b,264s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cme
+x10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmtt10.pfb>
+Output written on texreport.pdf (23 pages, 5284385 bytes).
+PDF statistics:
+ 163 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-Output written on texreport.dvi (25 pages, 92700 bytes).
