@@ -9,8 +9,8 @@
 
 \newlist{abbrv}{itemize}{1}
 \setlist[abbrv,1]{label=,labelwidth=1in,align=parleft,itemsep=0.1\baselineskip,leftmargin=!}
-\graphicspath{ {/home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_imgs/} }
-%\graphicspath{ {/home/perttu/Dropbox/latexreport2016/tex_imgs/} }
+%\graphicspath{ {/home/perttu/Programming/Handwriting-recognition/reports/report_images/tex_imgs/} }
+\graphicspath{ {/home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex_imgs/} }
 
 \begin{document}
 
@@ -116,7 +116,8 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=772,natheight=488,scale=0.5]{flowgraph2.png}
+      %\includegraphics[natwidth=772,natheight=488,scale=0.5]{flowgraph2.png}
+      \includegraphics[natwidth=772,natheight=488,scale=0.7]{flowgraph2.png}
       \caption{Flow graph of handwriting recognition systems working displaying the current research's focus. The input is an image file with seven lines of text in it. After thresholding a binarized image is acquired and after layout analysis individual lines are detected.  \label{fig:flow} }
     \end{figure}
 
@@ -137,7 +138,8 @@
 
         \begin{figure}[!ht]
           \centering
-          \includegraphics[natwidth=248,natheight=245,scale = 0.6]{feature_extraction.png}
+          %\includegraphics[natwidth=248,natheight=245,scale = 0.6]{feature_extraction.png}
+          \includegraphics[natwidth=248,natheight=245,scale = 0.7]{feature_extraction.png}
           \caption{For example horizontal and vertical projection histograms can be used as features to describe the shape of an object.\label{fig:feature}}
         \end{figure}
 
@@ -187,7 +189,7 @@
 
           \begin{figure}[!ht]
             \centering
-            \includegraphics[natwidth=537,natheight=205,scale=0.7]{tire_histeq.gif}
+            \includegraphics[natwidth=537,natheight=205,scale=0.7]{tire_histeq.png}
             \caption{Histogram equalization can be applied to enhance the contrast and bring out details in an image. Left image: original image. Right image: same image with equalized histogram. Image source: http://www.mathworks.com/help/images/ref/histeq.html \label{fig:histeq} }
           \end{figure}
 
@@ -204,7 +206,8 @@
 
           \begin{figure}[!ht]
             \centering
-            \includegraphics[natwidth=979,natheight=259,scale=0.5]{sauvola_threshold_visualization.png}
+            %\includegraphics[natwidth=979,natheight=259,scale=0.5]{sauvola_threshold_visualization.png}
+            \includegraphics[natwidth=979,natheight=259,scale=0.7]{sauvola_threshold_visualization.png}
             \caption{Visualization of adaptive thresholding done with Sauvola algorithm. Left image: input image with shadows. Middle image: threshold of each pixel visualized. Pixel which intensity value are under given threshold are set as one, otherwise they are set as zero. Right image: binarized output image. \label{fig:sauvolathresholdvis} }
           \end{figure}
 
@@ -219,7 +222,8 @@
 
           \begin{figure}[!ht]
             \centering
-            \includegraphics[natwidth=2825,natheight=2238,scale=0.07]{eulernumbercomparisonarrows.png}
+            %\includegraphics[natwidth=2825,natheight=2238,scale=0.07]{eulernumbercomparisonarrows.png}
+            \includegraphics[natwidth=2825,natheight=2238,scale=0.25]{eulernumbercomparisonarrows.png}
             \caption{Objects may have unpredictable Euler numbers due to noisy image or thin strokes. The component on left has one object and one hole manking the Euler number 0 and the object on the right has two holes making the Euler number -1. Ideally the left object would be removed. However the Euler number of these two objects is close making the threshold selection difficult.   \label{fig:eulernumbercomp} }
           \end{figure}
 
@@ -230,7 +234,8 @@
 
           \begin{figure}[!ht]
             \centering
-            \includegraphics[natwidth=863,natheight=239,scale=0.4]{strokecomparison.png}
+            %\includegraphics[natwidth=863,natheight=239,scale=0.4]{strokecomparison.png}
+            \includegraphics[natwidth=863,natheight=239,scale=0.5]{strokecomparison.png}
             \caption{Visualization of distance transform with two different components using same color map scale. The colors represent the distance from foreground pixel to nearest background pixel. The character A has only a small amount of variation in stroke width, mainly around junction points. The other object, not representing any textual information, has noticeable variation in stroke width. \label{fig:strokewidth} }
           \end{figure}
 
@@ -244,7 +249,8 @@
 
           \begin{figure}[!ht]
             \centering
-            \includegraphics[natwidth=1516,natheight=912,scale=0.3]{rlsademo.png}
+            %\includegraphics[natwidth=1516,natheight=912,scale=0.3]{rlsademo.png}
+            \includegraphics[natwidth=1516,natheight=912,scale=0.35]{rlsademo.png}
             \caption{The process of RLSA. Upper left image is the binarized input image. Upper right image is resulting image after RLSA is applied. In lower left image the individual lines are represented by the cyan colored boxes. Lastly in lower right image the same boxes are applied to the input image to represent individual text lines. For this case the RLSA performs well except for the small object under the word ``Gaitskell''. \label{fig:workingrlsa} }
           \end{figure}
 
@@ -281,13 +287,15 @@
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=2072, natheight=1421, scale = 0.1]{subsetspace.png}
+              %\includegraphics[natwidth=2072, natheight=1421, scale = 0.1]{subsetspace.png}
+              \includegraphics[natwidth=2072, natheight=1421, scale = 0.5]{subsetspace.png}
               \caption{Component space partitioned to 3 subsets. Here AH and AW are average height and average width of components respectively \cite{Louloudis1}. \label{fig:subsetspace}}
             \end{figure}
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=582,natheight=248,scale=0.4]{objectsubsets.png}
+              %\includegraphics[natwidth=582,natheight=248,scale=0.4]{objectsubsets.png}
+              \includegraphics[natwidth=582,natheight=248,scale=0.6]{objectsubsets.png}
               \caption{Components marked with bounding boxes corresponding to subset. Yellow boxes represent subset 1. The result of splitting can also be seen. Cyan boxes are subset 2 components and magenta colored boxes belong to subset 3.  \label{fig:subsetboxes} }
             \end{figure}
 
@@ -305,7 +313,8 @@
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=1171,natheight=469,scale=0.33]{houghTransform.png}
+              %\includegraphics[natwidth=1171,natheight=469,scale=0.33]{houghTransform.png}
+              \includegraphics[natwidth=1171,natheight=469,scale=1]{houghTransform.png}
               \caption{ Left image: Cartesian space with two data points. Red and blue lines show how $\theta$ and $\rho$ can be used to describe any line in Cartesian space. The Red line is the actual line and the perpendicular blue line is used to visualize the distance $\rho$ from origin. Right image: The green lines represent all $\theta$ and $\rho$ pairs that can produce a line which crosses either of the two data points. A line is found with the $\theta$ and $\rho$ values of the intersection point of these two sinusoidal lines. \label{fig:houghtransform}}
             \end{figure}
 
@@ -315,7 +324,8 @@
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=5147, natheight=3576,scale=0.09]{houghfromcentroids.png}
+              %\includegraphics[natwidth=5147, natheight=3576,scale=0.09]{houghfromcentroids.png}
+              \includegraphics[natwidth=5147, natheight=3576,scale=0.3]{houghfromcentroids.png}
               \caption{Left images: Input image with handwritten text and corresponding subset 1. block centroids. Right image: Hough transform accumulator array generated with given data points. Seven distinct lines can be detected from this accumulator array. Used image: handwritten part of IAM handwriting database entry a01-000u. \label{fig:blockandacc} }
             \end{figure}
 
@@ -334,7 +344,8 @@
 
             \begin{figure}[!ht]
               \centering
-              \includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
+              %\includegraphics[natwidth=1433, natheight=574,scale=0.3]{011_lines_detail.png}
+              \includegraphics[natwidth=1433, natheight=574,scale=1]{011_lines_detail.png}
               \caption{Resulting lines are labeled after line detection. Image displays final lines detected with current implementation. Some subset 2. objects intersecting multiple lines are split, however in some cases incorrectly. Used image: six handwritten lines from IAM handwriting database entry a01-011x \label{fig:finallines} }
             \end{figure}
 
@@ -349,13 +360,13 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=2479,natheight=3524,scale=0.07]{a01-000u.png}
+      \includegraphics[natwidth=2479,natheight=3524,scale=0.06]{a01-000u.png}
       \caption{Full page entry of IAM handwriting database. The scanned page contains both machine printed original text and the handwritten version of it. \label{fig:iamsample} }
     \end{figure}
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=1530,natheight=660,scale=0.2]{iamsample.png}
+      \includegraphics[natwidth=1530,natheight=660,scale=0.3]{iamsample.png}
       \caption{Three small extracts from hand written parts in IAM handwriting database. The same text can have distinctly different writing styles. \label{fig:iamsample} }
     \end{figure}
 
@@ -372,13 +383,19 @@
 
     Where $A$ is the accuracy, $L_r$ is the true amount of lines acquired from IAM handwriting database meta data, and $L_d$ is the number of lines detected by algorithm. This metric can only give so much information whether the chosen values work or not. In many cases the output had to be evaluated visually to get more detailed information what the output actually is.
 
+    \begin{figure}[!ht]
+      \centering
+      \includegraphics[natwidth=536, natheight=513, scale=0.6]{testprocess.png}
+      \caption{Flowgraph of the test process. The process consists of two nested loops which iterate through all tested parameter values and images.
+      \label{fig:testprocess}}
+    \end{figure}
 
   \subsection{Contrast Enhancement}
     Intuitively the contrast enhancement would enhance the image quality making the further processing better. However during the evaluation with IAM handwriting database it was noted how contrast enhancement actually made small particles such as paper texture or noise more prominent and made the further process counterintuitively worse. The images in the handwriting database had good contrast from the start so contrast enhancement was unnecessary. See figure \ref{fig:histeqfail}. The contrast could be manually adjusted in each case separately but this process would be time consuming and unconventional when the desired automatic preprocessing execution would involve as little manual user input as possible. For these reasons the contrast enhancement feature was discarded from the preprocessing methods.
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=2909, natheight=912, scale=0.15]{histeq_fail.png}
+      \includegraphics[natwidth=2909, natheight=912, scale=0.17]{histeq_fail.png}
       \caption{Left image: input image. Right image: same image after histogram equalization was applied to it. Histogram equalization made rest of the recognition process more difficult by increasing the noise in the image. Used image: handwritten part of IAM handwriting database entry a01-000u.
       \label{fig:histeqfail}}
     \end{figure}
@@ -390,7 +407,7 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=554, natheight=436, scale=0.4]{wiener_graph.png}
+      \includegraphics[natwidth=554, natheight=436, scale=0.5]{wiener_graph.png}
       \caption{The adaptive Wiener filter performed poorly only with window sizes 0 and 1.
       \label{fig:wienertest}}
     \end{figure}
@@ -400,7 +417,7 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=2138,natheight=550,scale=0.24]{binarization.png}
+      \includegraphics[natwidth=2138,natheight=550,scale=0.28]{binarization.png}
       \caption{Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate arguments resulting in noticeably better performance. \label{fig:binarization}}
     \end{figure}
 
@@ -411,7 +428,7 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=560,natheight=420,scale=0.4]{sauvolathreshold_test.png}
+      \includegraphics[natwidth=560,natheight=420,scale=0.5]{sauvolathreshold_test.png}
       \caption{Especially lowest threshold values for Sauvola binarization algorithm resulted in bad performance. Best results were acquired with threshold size 0.5. \label{fig:sauvolathreshold}}
     \end{figure}
 
@@ -429,19 +446,25 @@
 
       \begin{figure}[!ht]
         \centering
-        \includegraphics[natwidth=560,natheight=420,scale=0.4]{strokewidth_graph.png}
+        \includegraphics[natwidth=560,natheight=420,scale=0.5]{strokewidth_graph.png}
         \caption{Value 0.4 was chosen for parameter $T_{swv}$. Values higher than 0.4 didn't have much effect on the output. \label{fig:strokewidthresults}}
       \end{figure}
 
     \subsection{RLSA}
       The simple approach for line and word detection was to utilize run length smearing algorithm. The RLSA assumes the lines and words to be vertically separate from each other. The algorithm can be considered a quick and simple approach only for high quality images with orderly structure of lines and words.
 
-      Even though the figure \ref{fig:workingrlsa} displays the algorithm performing well, the experiments proved that the algorithm performed poorly. The algorithm was tested with multiple values of threshold parameter $T_{RLSA}$. In many cases the RLSA detected much more lines than there actually were. The current implementation of RLSA counts each object that remains in the resulting smeared image as an individual line. The output image usually had some fragmented objects which couldn't be assigned into any line by executing the algorithm horizontally. This left the object to remain in the output as individual lines.
+      Even though the figure \ref{fig:workingrlsa} displays the algorithm performing well, the experiments proved that the algorithm performed poorly. The algorithm was tested with multiple values of threshold parameter $T_{RLSA}$. In many cases the RLSA detected much more lines than there actually were. And in some cases it smeared overlapping lines into fewer bigger lines. The current implementation of RLSA counts each object that remains in the resulting smeared image as an individual line. The output image usually had some fragmented objects which couldn't be assigned into any line by executing the algorithm horizontally. This left the objects to remain in the output as individual lines. Figures \ref{fig:rlsafailzoom} and \ref{fig:rlsafailoverlap} show examples of poor RLSA performance.
 
       \begin{figure}[!ht]
         \centering
-        \includegraphics[natwidth=6816,natheight=2158,scale=0.06]{rlsafail_zoom.png}
-        \caption{Closer inspection of these three lines produced by RLSA shows that there are many small fractions around them. The current implementation counts all of the parts as individual lines. Used threshold value $T_{RLSA} = 300$.  \label{fig:rlsafail}}
+        \includegraphics[natwidth=6816,natheight=2158,scale=0.25]{rlsafail_zoom.png}
+        \caption{Closer inspection of these three lines produced by RLSA shows that there are many small fractions around them. The current implementation counts all of the parts as individual lines. Used threshold value $T_{RLSA} = 300$.  \label{fig:rlsafailzoom}}
+      \end{figure}
+
+      \begin{figure}[!ht]
+        \centering
+        \includegraphics[natwidth=2012,natheight=560,scale=0.3]{rlsafail_overlap.png}
+        \caption{Another case where RLSA can't detect lines correctly. The binarized image on the left had many characters that overlapped multiple lines. Only two ``lines'' can be found from the resulting RLSA image on the right.  \label{fig:rlsafailoverlap}}
       \end{figure}
 
     \subsection{Block Based Hough Transform Mapping}
@@ -462,7 +485,7 @@
     \subsubsection{Optimal Values for Block Based Hough Transform Mapping}
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=1051,natheight=435,scale=0.4]{n1n2_acc.png}
+      \includegraphics[natwidth=1051,natheight=435,scale=0.5]{n1n2_acc.png}
       \caption{Both parameters $n_1$ and $n_2$ were tested with values ranging from 1 to 20. Best value for $n_1$ can be seen to be 6 but no noticeably best value can be found for $n_2$.
       \label{fig:n1n2}}
     \end{figure}
@@ -473,7 +496,7 @@
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=560,natheight=420,scale=0.4]{votermargin_graph.png}
+      \includegraphics[natwidth=560,natheight=420,scale=0.5]{votermargin_graph.png}
       \caption{$N_m$ performed best with value 7.
       \label{fig:votermargin}}
     \end{figure}
