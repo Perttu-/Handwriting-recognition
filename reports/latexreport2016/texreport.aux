@@ -80,9 +80,9 @@
 \@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{17}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Dataset}{17}}
 \@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Full page entry of IAM handwriting database. The scanned page contains both machine printed original text and the handwritten version of it.  }}{17}}
-\newlabel{fig:iamsample}{{14}{17}}
+\newlabel{fig:iamsamplepage}{{14}{17}}
 \@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Three small extracts from hand written parts in IAM handwriting database. The same text can have distinctly different writing styles.  }}{17}}
-\newlabel{fig:iamsample}{{15}{17}}
+\newlabel{fig:iamsamplelines}{{15}{17}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Experiments}{18}}
 \@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Flowgraph of the test process. The process consists of two nested loops which iterate through all tested parameter values and images. }}{18}}
 \newlabel{fig:testprocess}{{16}{18}}
@@ -95,10 +95,10 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Binarization}{19}}
 \@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces Original input image with varying lightning on the left and the results of two different binarization approaches. The middle image is as result of binarizing the original image with constant threshold for each pixel. For the rightmost image the Sauvola binarization algorithm was used with appropriate arguments resulting in noticeably better performance. }}{20}}
 \newlabel{fig:binarization}{{19}{20}}
-\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces Especially lowest threshold values for Sauvola binarization algorithm resulted in bad performance. Best results were acquired with threshold size 0.5. }}{20}}
-\newlabel{fig:sauvolathreshold}{{20}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces Results for parameters $k_s$ and $W_s$ Especially lowest threshold $k_s$ values for Sauvola binarization algorithm resulted in bad performance. Best results were acquired with $k_s$ value 0.5. On the other hand the changes in used window size $W_s$ didn't have much effect on the output. Manual inspection of the output was required. }}{20}}
+\newlabel{fig:sauvolaresults}{{20}{20}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Stroke Thickness Variation Analysis}{20}}
-\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces Three lines extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$ the lower image uses $W = 40$. Used threshold value $k_s = 0.6$. Used image: three handwritten lines from IAM handwriting database entry A01-049. }}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces Three lines extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W_s = 5$ the lower image uses $W_s = 40$. Used threshold value $k_s = 0.6$. Used image: three handwritten lines from IAM handwriting database entry A01-049. }}{21}}
 \newlabel{fig:sauvola540}{{21}{21}}
 \@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces Value 0.4 was chosen for parameter $T_{swv}$. Values higher than 0.4 didn't have much effect on the output. }}{21}}
 \newlabel{fig:strokewidthresults}{{22}{21}}
@@ -114,15 +114,18 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.8.1}Optimal Values for Block Based Hough Transform Mapping}{22}}
 \@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces Both parameters $n_1$ and $n_2$ were tested with values ranging from 1 to 20. Best value for $n_1$ can be seen to be 6 but no noticeably best value can be found for $n_2$. }}{23}}
 \newlabel{fig:n1n2}{{25}{23}}
-\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces $N_m$ performed best with value 7. }}{23}}
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces $N_m$ performed best with value 6. }}{23}}
 \newlabel{fig:votermargin}{{26}{23}}
 \citation{Louloudis2}
-\citation{OpenCV}
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces Parameters $n_1$ and $N_m$ (voter margin) together to see whether they are dependant on each other. This plot shows the colorcoded accuracy results darker color meaning low accuracy and light color high accuracy. The highest accuracy with both parameter values $n_1$ and $N_m$ being 6 is hilighted with square. }}{24}}
+\newlabel{fig:n1vm}{{27}{24}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{24}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Findings About Hough Transform Mapping}{24}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Remaining Problems}{24}}
-\newlabel{sec:remainingproblems}{{6.2}{24}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Future Work}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Final Parameter Values}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Findings About Hough Transform Mapping}{24}}
+\citation{OpenCV}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Remaining Problems}{25}}
+\newlabel{sec:remainingproblems}{{6.3}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Future Work}{25}}
 \bibstyle{ieeetr}
 \bibdata{hwr_bibliography}
 \bibcite{Cheriet2007}{1}

@@ -4,6 +4,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{mathtools}
+\usepackage{multirow}
 
 \def\code#1{\texttt{#1}}
 
@@ -70,13 +71,15 @@
     \item[$m_{sl}$] Margin to define whether a undetected object is assigned to be part of existing line.
     \item[$n_1$] Minimum contribution for a new line to be detected.
     \item[$n_2$] Constraint to determine if excessive skew constraint is applied.
-    \item[$N_m$] Neighbor margin. Determines how many neighboring cells are used with line detection from Hough accumulator array.
+    \item[$N_m$] Neighbor margin/voter margin Determines how many neighboring cells contribute to voting with line detection from Hough accumulator array.
     \item[$N * M$] Dimensions of the window. $N$ rows and $M$ columns.
     \item[$R$] Dynamic range of grayscale image. Used in Sauvola algorithm.
     \item[$S_l$] Skew deviation limit. Used with constraint $n_2$.
     \item[$T_{swv}$] Stroke width variation threshold. Determines which objects are considered text and which are not.
     \item[$T_{RLSA}$] RLSA threshold. Defines the largest gap of zero pixels in between two one pixels that are ``smeared'' together.
     \item[$W$] Window. Rectangular region selected from image or signal. Used to do calculations or to apply function.
+    \item[$W_s$] Window size used in Sauvola binarization algorithm.
+    \item[$W_w$] Window size used in adaptive Wiener filtering.
     \item[$\rho$] Distance from origin to line in Cartesian space. Used in Hough transform.
     \item[$\theta$] Angle of a line in Cartesian space. Used in Hough transform.
    \end{abbrv}
@@ -361,13 +364,13 @@
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=2479,natheight=3524,scale=0.06]{a01-000u.png}
-      \caption{Full page entry of IAM handwriting database. The scanned page contains both machine printed original text and the handwritten version of it. \label{fig:iamsample} }
+      \caption{Full page entry of IAM handwriting database. The scanned page contains both machine printed original text and the handwritten version of it. \label{fig:iamsamplepage} }
     \end{figure}
 
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=1530,natheight=660,scale=0.3]{iamsample.png}
-      \caption{Three small extracts from hand written parts in IAM handwriting database. The same text can have distinctly different writing styles. \label{fig:iamsample} }
+      \caption{Three small extracts from hand written parts in IAM handwriting database. The same text can have distinctly different writing styles. \label{fig:iamsamplelines} }
     \end{figure}
 
   \subsection{Experiments}
@@ -401,9 +404,9 @@
     \end{figure}
 
   \subsection{Adaptive Wiener Filtering}
-    The adaptive Wiener filter was also evaluated. The only parameter that could be evaluated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M * N$. For this test the dimensions were selected to be identical in size making the window square shaped.
+    The adaptive Wiener filter was also evaluated. The only parameter that could be evaluated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M * N$. For this test the dimensions were selected to be identical in size making the window $W_w$ square shaped.
 
-    IAM handwriting database didn't have much noise in the images to begin with, so this filtering didn't have a large impact on the recognition process. Only the smallest sizes 0 and 1 made the rest of the recognition process impossible resulting in zero lines for each image. Chosen value for this parameter was the window size 3. The consistency of results can be seen in figure \ref{fig:wienertest}.
+    IAM handwriting database didn't have much noise in the images to begin with, so this filtering didn't have a large impact on the recognition process. Only the smallest sizes 0 and 1 made the rest of the recognition process impossible resulting in zero lines for each image. Chosen value for the parameter $W_w$ was 3. The consistency of results can be seen in figure \ref{fig:wienertest}.
 
     \begin{figure}[!ht]
       \centering
@@ -422,20 +425,20 @@
     \end{figure}
 
 
-    The tested parameters for Sauvola algorithm were the window size $W$ and the user defined parameter i.e. sensitivity $k$. The window size was tested with sizes ranging from 20 to 400 but no particular window size was prominently better considering the number of lines. However when reviewing the output images manually some findings were made: Smaller windows sizes such as window size 5, makes the components in output image more and more fractioned an the text unrecognizable. Additionally it was noted when the output contains large amount of small objects the rest of the processing takes more time. Figure \ref{fig:sauvola540} demonstrates the effect of window size on binarization. Best performance was acquired with $W = 40$.
+    The tested parameters for Sauvola algorithm were the window size $W$ and the user defined parameter i.e. sensitivity $k$. The window size was tested with sizes ranging from 20 to 400 but no particular window size was prominently better considering the number of lines. However when reviewing the output images manually some findings were made: Smaller windows sizes such as window size 5, makes the components in output image more and more fractioned an the text unrecognizable. Additionally it was noted when the output contains large amount of small objects the rest of the processing takes more time. Figure \ref{fig:sauvola540} demonstrates the effect of window size on binarization. Best performance was acquired with $W_s = 40$.
 
     The sensitivity parameter $k_s$ had an noticeable effect on the output accuracy. For the smallest threshold values the binarization resulted in fractioned output similarly to small window sizes. For the parameter $k_s$ the chosen value is 0.5.
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=560,natheight=420,scale=0.5]{sauvolathreshold_test.png}
-      \caption{Especially lowest threshold values for Sauvola binarization algorithm resulted in bad performance. Best results were acquired with threshold size 0.5. \label{fig:sauvolathreshold}}
+      \includegraphics[natwidth=1016,natheight=444,scale=0.5]{bothsauvolaresults.png}
+      \caption{Results for parameters $k_s$ and $W_s$ Especially lowest threshold $k_s$ values for Sauvola binarization algorithm resulted in bad performance. Best results were acquired with $k_s$ value 0.5. On the other hand the changes in used window size $W_s$ didn't have much effect on the output. Manual inspection of the output was required. \label{fig:sauvolaresults}}
     \end{figure}
 
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=2178,natheight=1048,scale=0.18]{sauvola_5_40.png}
-      \caption{Three lines extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W = 5$  the lower image uses $W = 40$. Used threshold value $k_s = 0.6$. Used image: three handwritten lines from IAM handwriting database entry A01-049. \label{fig:sauvola540}}
+      \caption{Three lines extracted from image binarized with Sauvola algorithm using different window sizes and same $k_s$. Upper image uses $W_s = 5$  the lower image uses $W_s = 40$. Used threshold value $k_s = 0.6$. Used image: three handwritten lines from IAM handwriting database entry A01-049. \label{fig:sauvola540}}
     \end{figure}
 
 
@@ -483,6 +486,7 @@
     The variables $n_1$ and $n_2$ were described in the articles by Louloudis et.al. Other variables were chosen during the implementation process. While studying the paper, some significant constraints were found. For example the described method assumes the text to be single column horizontal text. In many cases this is applicable but the method would need some adjustments to provide more advanced layout analysis.
 
     \subsubsection{Optimal Values for Block Based Hough Transform Mapping}
+
     \begin{figure}[!ht]
       \centering
       \includegraphics[natwidth=1051,natheight=435,scale=0.5]{n1n2_acc.png}
@@ -492,22 +496,51 @@
 
     Figure \ref{fig:n1n2} shows the th results for the tests with $n_1$ and $n_2$. For $n_1$ the value 6 produces highest accuracy. Louloudis et.al. in article \cite{Louloudis2} proposed this value to be 5, so the tests resulted quite similar results. No noticeably best value can be seen from the graph resulted from $n_2$ test. The values 1--7 have marginally better (0.07\%) accuracy compared to the next best accuracy. This difference can be considered insignificant and the value for $n_2$ is chosen to be 9 as proposed in the article \cite{Louloudis2}.
 
-    Tests with different values for the parameter $N_m$ had a noticeable effect on line detection accuracy. The value of $N_m$ is vital part of the recognition process as it is used when processing the Hough accumulator array to find lines. The effect of the changes with this parameter can be clearly seen in figure \ref{fig:votermargin}. For further processing the chosen value for this parameter was 7 as it resulted in highest accuracy.
+    Tests with different values for the parameter $N_m$ had a noticeable effect on line detection accuracy. The value of $N_m$ is vital part of the recognition process as it is used when processing the Hough accumulator array to find lines. The effect of the changes with this parameter can be clearly seen in figure \ref{fig:votermargin}. For further processing the chosen value for this parameter was 6 as it resulted in highest accuracy.
 
     \begin{figure}[!ht]
       \centering
-      \includegraphics[natwidth=560,natheight=420,scale=0.5]{votermargin_graph.png}
-      \caption{$N_m$ performed best with value 7.
+      \includegraphics[natwidth=560,natheight=420,scale=0.5]{votermargin_graph_fixed.png}
+      \caption{$N_m$ performed best with value 6.
       \label{fig:votermargin}}
     \end{figure}
 
-    The tests for $S_l$ didn't produce any significant results. The output of the implementation didn't have much difference in regard of detection accuracy when the value of $S_l$ was changed. The performance of the line skew constraint is also dependent on the value of $n_2$ which didn't show any significant changes in line detection either. The reason for no significant changes in accuracy may be because the text lines in IAM handwriting database didn't have much variation in line skew. More comprehensive test may be needed.
+    As the parameters $n1$ and $N_m$ had the most effect on the number of lines additional test was conducted to see whether these parameters are dependable of each other. This theory was tested by iterating through both $n1$ and $N_m$ values and monitoring the accuracy in similar manner to other tests. The resulting accuracy was the same when these values were tested independently, which means that these parameters are not dependand on each other. The chosen values for remain the same.
 
-    Likewise with values $m_{ad}$ and $m_{sl}$ no significant results could be found as these parameters doesn't have much effect on the number of lines. Only the value $m_{ad}$ could have had an effect on the number of lines. However with the test with both these parameters using the current dataset, the system performed consistently with all different values.
+    \begin{figure}[!ht]
+      \centering
+      \includegraphics[natwidth=516,natheight=388,scale=0.7]{n1vm_array.png}
+      \caption{Parameters $n_1$ and $N_m$ (voter margin) together to see whether they are dependant on each other. This plot shows the colorcoded accuracy results darker color meaning low accuracy and light color high accuracy. The highest accuracy with both parameter values $n_1$ and $N_m$ being 6 is hilighted with square.
+      \label{fig:n1vm}}
+    \end{figure}
+
+    The tests for $S_l$ didn't produce any significant results. The output of the implementation didn't have much difference in regard of detection accuracy when the value of $S_l$ was changed. The performance of the line skew constraint is also dependent on the value of $n_2$ which didn't show any significant changes in line detection either. The reason for no significant changes in accuracy may be because the text lines in IAM handwriting database didn't have much variation in line skew. More comprehensive test may be needed. At this point the value for $S_l$ was chosen to be 7.
+
+    Likewise with values $m_{ad}$ and $m_{sl}$ no significant results could be found as these parameters doesn't have much effect on the number of lines. Only the value $m_{ad}$ could have had an effect on the number of lines. However with the test with both these parameters using the current dataset, the system performed consistently with all different values. The final values where $m_{ad}$ is 0.7 and $m_{sl}$ is 0.5 were chosen by examining the output manually.
 
   \newpage
   \section{Conclusions}
     The main motivation for this research was to gain insight on image processing aspects of handwriting recognition. Many methods were tested and the parameter values effect on the output could be examined. And a good understanding of the inner works of handwriting recognition was achieved.
+
+    \subsection{Final Parameter Values}
+      One of the goals of this evaluation procedure was to find the optimal value for each parameter considering the IAM handwriting database. After all the experiments were done the values were chosen according to the resulting accuracy. The chosen parameters are as follows:
+
+      \begin{center}
+          \begin{tabular}{|l|l|r|}
+              \hline
+              Method: & Parameter: & Chosen Value: \\ \hline
+              Noise removal & $W_w$ & 3 \\ \hline
+              \multirow{2}{*}{Sauvola binarization} & $W_s$ & 40 \\
+              & $S_k$ & 0.5 \\ \hline
+              Stroke width analysis & $T_{swv}$ & 0.4 \\ \hline
+              \multirow{6}{*}{Block based Hough transform mapping} & $n1$ & 6 \\
+              & $n2$ & 9 \\
+              & $N_m$ & 6 \\
+              & $S_l$ & 7 \\
+              & $m_{ad}$ & 0.7 \\
+              & $m_{sl}$ & 0.5 \\ \hline
+          \end{tabular}
+      \end{center}
 
     \subsection{Findings About Hough Transform Mapping}
       During the implementation process some restrictions could be found especially regarding the Hough transform mapping. The system could only handle horizontal text containing only single column text lines. Other than that the algorithm performed very well with inputs having aforementioned data. The test results in article \cite{Louloudis2} give the detection accuracy of 90.8\% which outperforms other available implementations for the same purpose. The results of the tests also confirm the good performance of this method with the line detection getting accuracy rate around 95\%. Although not as convincing tests could be done for this research.

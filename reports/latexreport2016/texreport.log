@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.3.25)  26 JUL 2016 16:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.3.25)  27 JUL 2016 15:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -185,26 +185,25 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 \l_MT_above_shortintertext_sep=\dimen130
 \l_MT_below_shortintertext_sep=\dimen131
 )
-\enitdp@abbrv=\count108
- (./texreport.aux
-
-LaTeX Warning: Label `fig:iamsample' multiply defined.
-
+(/usr/share/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen132
 )
+\enitdp@abbrv=\count108
+ (./texreport.aux)
 \openout1 = `texreport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -243,13 +242,13 @@ LaTeX Font Info:    ... okay on input line 15.
 (/usr/share/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count109
-\scratchdimen=\dimen132
+\scratchdimen=\dimen133
 \scratchbox=\box29
 \nofMPsegments=\count110
 \nofMParguments=\count111
 \everyMPshowfont=\toks22
 \MPscratchCnt=\count112
-\MPscratchDim=\dimen133
+\MPscratchDim=\dimen134
 \MPnumerator=\count113
 \makeMPintoPDFobject=\count114
 \everyMPtoPDFconversion=\toks23
@@ -311,7 +310,7 @@ s/tex_imgs/flowgraph2.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/flowgraph2.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/flowgraph2.png used on input line 120.
+eports/report_images/tex_imgs/flowgraph2.png used on input line 123.
 (pdftex.def)             Requested size: 406.8171pt x 257.15898pt.
  [5]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -322,16 +321,16 @@ s/tex_imgs/feature_extraction.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/feature_extraction.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/feature_extraction.png used on input line 142.
+eports/report_images/tex_imgs/feature_extraction.png used on input line 145.
 (pdftex.def)             Requested size: 130.68735pt x 129.10645pt.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 152.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 155.
 
 
 (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 152.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 155.
  [6 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/flowgraph2.png>]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -342,7 +341,7 @@ s/tex_imgs/knn.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/knn.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/knn.png used on input line 166.
+eports/report_images/tex_imgs/knn.png used on input line 169.
 (pdftex.def)             Requested size: 132.496pt x 119.84866pt.
  [7 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/feature_extraction.png> </home/perttu/projects/MATLAB/Handwriting-rec
@@ -355,7 +354,7 @@ s/tex_imgs/tire_histeq.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/tire_histeq.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/tire_histeq.png used on input line 192.
+eports/report_images/tex_imgs/tire_histeq.png used on input line 195.
 (pdftex.def)             Requested size: 282.98029pt x 108.02785pt.
  [9 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/tire_histeq.png>]
@@ -368,10 +367,10 @@ s/tex_imgs/sauvola_threshold_visualization.png Graphic file (type png)
 /tex_imgs/sauvola_threshold_visualization.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
 eports/report_images/tex_imgs/sauvola_threshold_visualization.png used on input
- line 210.
+ line 213.
 (pdftex.def)             Requested size: 515.89888pt x 136.48396pt.
 
-Overfull \hbox (15.41489pt too wide) in paragraph at lines 210--211
+Overfull \hbox (15.41489pt too wide) in paragraph at lines 213--214
  [][] 
  []
 
@@ -386,7 +385,7 @@ s/tex_imgs/eulernumbercomparisonarrows.png Graphic file (type png)
 /tex_imgs/eulernumbercomparisonarrows.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
 eports/report_images/tex_imgs/eulernumbercomparisonarrows.png used on input lin
-e 226.
+e 229.
 (pdftex.def)             Requested size: 170.13521pt x 134.78322pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -397,11 +396,11 @@ s/tex_imgs/strokecomparison.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/strokecomparison.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/strokecomparison.png used on input line 238.
+eports/report_images/tex_imgs/strokecomparison.png used on input line 241.
 (pdftex.def)             Requested size: 324.8378pt x 89.96086pt.
  [11 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/eulernumbercomparisonarrows.png>]
-Overfull \hbox (2.79219pt too wide) in paragraph at lines 245--246
+Overfull \hbox (2.79219pt too wide) in paragraph at lines 248--249
 []\OT1/cmr/m/n/10 For the im-ple-men-ta-tion MAT-LAB im-age pro-cess-ing tool-b
 ox pro-vides the func-tion \OT1/cmtt/m/n/10 regionprops(BW,properties)
  []
@@ -415,7 +414,7 @@ s/tex_imgs/rlsademo.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/rlsademo.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/rlsademo.png used on input line 253.
+eports/report_images/tex_imgs/rlsademo.png used on input line 256.
 (pdftex.def)             Requested size: 399.4483pt x 240.30135pt.
  [12 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/strokecomparison.png>]
@@ -427,7 +426,7 @@ s/tex_imgs/subsetspace.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/subsetspace.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/subsetspace.png used on input line 291.
+eports/report_images/tex_imgs/subsetspace.png used on input line 294.
 (pdftex.def)             Requested size: 249.5718pt x 171.15901pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -438,7 +437,7 @@ s/tex_imgs/objectsubsets.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/objectsubsets.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/objectsubsets.png used on input line 298.
+eports/report_images/tex_imgs/objectsubsets.png used on input line 301.
 (pdftex.def)             Requested size: 262.88414pt x 112.01935pt.
  [13 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/rlsademo.png>]
@@ -450,7 +449,7 @@ s/tex_imgs/houghTransform.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/houghTransform.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/houghTransform.png used on input line 317.
+eports/report_images/tex_imgs/houghTransform.png used on input line 320.
 (pdftex.def)             Requested size: 282.0932pt x 112.98181pt.
  [14 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/subsetspace.png> </home/perttu/projects/MATLAB/Handwriting-recogniti
@@ -465,7 +464,7 @@ s/tex_imgs/houghfromcentroids.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/houghfromcentroids.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/houghfromcentroids.png used on input line 328.
+eports/report_images/tex_imgs/houghfromcentroids.png used on input line 331.
 (pdftex.def)             Requested size: 371.97656pt x 258.43951pt.
  [15 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/houghfromcentroids.png>]
@@ -477,7 +476,7 @@ s/tex_imgs/011_lines_detail.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/011_lines_detail.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/011_lines_detail.png used on input line 348.
+eports/report_images/tex_imgs/011_lines_detail.png used on input line 351.
 (pdftex.def)             Requested size: 345.20885pt x 138.27625pt.
  [16 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/011_lines_detail.png>]
@@ -489,7 +488,7 @@ s/tex_imgs/a01-000u.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/a01-000u.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/a01-000u.png used on input line 363.
+eports/report_images/tex_imgs/a01-000u.png used on input line 366.
 (pdftex.def)             Requested size: 149.29134pt x 213.30774pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -500,7 +499,7 @@ s/tex_imgs/iamsample.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/iamsample.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/iamsample.png used on input line 369.
+eports/report_images/tex_imgs/iamsample.png used on input line 372.
 (pdftex.def)             Requested size: 335.15471pt x 133.70053pt.
  [17 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/a01-000u.png (PNG copy)> </home/perttu/projects/MATLAB/Handwriting-r
@@ -513,7 +512,7 @@ s/tex_imgs/testprocess.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/testprocess.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/testprocess.png used on input line 388.
+eports/report_images/tex_imgs/testprocess.png used on input line 391.
 (pdftex.def)             Requested size: 242.10637pt x 231.71745pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -524,7 +523,7 @@ s/tex_imgs/histeq_fail.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/histeq_fail.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/histeq_fail.png used on input line 398.
+eports/report_images/tex_imgs/histeq_fail.png used on input line 401.
 (pdftex.def)             Requested size: 372.28345pt x 116.7145pt.
  [18 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/testprocess.png>]
@@ -536,7 +535,7 @@ s/tex_imgs/wiener_graph.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/wiener_graph.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/wiener_graph.png used on input line 410.
+eports/report_images/tex_imgs/wiener_graph.png used on input line 413.
 (pdftex.def)             Requested size: 208.52855pt x 164.11272pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -547,22 +546,21 @@ s/tex_imgs/binarization.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/binarization.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/binarization.png used on input line 420.
+eports/report_images/tex_imgs/binarization.png used on input line 423.
 (pdftex.def)             Requested size: 450.66061pt x 115.93233pt.
  [19 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/histeq_fail.png> </home/perttu/projects/MATLAB/Handwriting-recogniti
 on/reports/report_images/tex_imgs/wiener_graph.png (PNG copy)>]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
-_imgs/sauvolathreshold_test.png, id=112, 421.575pt x 316.18124pt>
+_imgs/bothsauvolaresults.png, id=112, 764.8575pt x 334.24875pt>
 File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
-s/tex_imgs/sauvolathreshold_test.png Graphic file (type png)
+s/tex_imgs/bothsauvolaresults.png Graphic file (type png)
 
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
-/tex_imgs/sauvolathreshold_test.png>
+/tex_imgs/bothsauvolaresults.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/sauvolathreshold_test.png used on input line 431.
-
-(pdftex.def)             Requested size: 210.78697pt x 158.09023pt.
+eports/report_images/tex_imgs/bothsauvolaresults.png used on input line 434.
+(pdftex.def)             Requested size: 382.42781pt x 167.12396pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
 _imgs/sauvola_5_40.png, id=113, 1639.62563pt x 788.9475pt>
@@ -572,7 +570,7 @@ s/tex_imgs/sauvola_5_40.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/sauvola_5_40.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/sauvola_5_40.png used on input line 437.
+eports/report_images/tex_imgs/sauvola_5_40.png used on input line 440.
 (pdftex.def)             Requested size: 295.11987pt x 142.00441pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
@@ -583,62 +581,75 @@ s/tex_imgs/strokewidth_graph.png Graphic file (type png)
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/strokewidth_graph.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/strokewidth_graph.png used on input line 449.
+eports/report_images/tex_imgs/strokewidth_graph.png used on input line 452.
 (pdftex.def)             Requested size: 210.78697pt x 158.09023pt.
  [20 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/binarization.png> </home/perttu/projects/MATLAB/Handwriting-recognit
-ion/reports/report_images/tex_imgs/sauvolathreshold_test.png (PNG copy)>]
+ion/reports/report_images/tex_imgs/bothsauvolaresults.png>]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
-_imgs/rlsafail_zoom.png, id=119, 1641.9744pt x 519.8622pt>
+_imgs/rlsafail_zoom.png, id=120, 1641.9744pt x 519.8622pt>
 File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/rlsafail_zoom.png Graphic file (type png)
 
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/rlsafail_zoom.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/rlsafail_zoom.png used on input line 460.
+eports/report_images/tex_imgs/rlsafail_zoom.png used on input line 463.
 (pdftex.def)             Requested size: 410.4926pt x 129.96523pt.
 
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
-_imgs/rlsafail_overlap.png, id=120, 1514.65875pt x 421.575pt>
+_imgs/rlsafail_overlap.png, id=121, 1514.65875pt x 421.575pt>
 File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/rlsafail_overlap.png Graphic file (type png)
 
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/rlsafail_overlap.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/rlsafail_overlap.png used on input line 466.
+eports/report_images/tex_imgs/rlsafail_overlap.png used on input line 469.
 (pdftex.def)             Requested size: 454.40114pt x 126.47346pt.
  [21 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/sauvola_5_40.png> </home/perttu/projects/MATLAB/Handwriting-recognit
 ion/reports/report_images/tex_imgs/strokewidth_graph.png (PNG copy)>]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
-_imgs/n1n2_acc.png, id=125, 791.20593pt x 327.47343pt>
+_imgs/n1n2_acc.png, id=126, 791.20593pt x 327.47343pt>
 File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/n1n2_acc.png Graphic file (type png)
 
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
 /tex_imgs/n1n2_acc.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/n1n2_acc.png used on input line 488.
+eports/report_images/tex_imgs/n1n2_acc.png used on input line 492.
 (pdftex.def)             Requested size: 395.60199pt x 163.73631pt.
  [22 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/rlsafail_zoom.png> </home/perttu/projects/MATLAB/Handwriting-recogni
 tion/reports/report_images/tex_imgs/rlsafail_overlap.png>]
 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
-_imgs/votermargin_graph.png, id=131, 421.575pt x 316.18124pt>
+_imgs/votermargin_graph_fixed.png, id=132, 388.45125pt x 292.09125pt>
 File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
-s/tex_imgs/votermargin_graph.png Graphic file (type png)
+s/tex_imgs/votermargin_graph_fixed.png Graphic file (type png)
 
 <use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
-/tex_imgs/votermargin_graph.png>
+/tex_imgs/votermargin_graph_fixed.png>
 Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
-eports/report_images/tex_imgs/votermargin_graph.png used on input line 499.
-(pdftex.def)             Requested size: 210.78697pt x 158.09023pt.
+eports/report_images/tex_imgs/votermargin_graph_fixed.png used on input line 50
+3.
+(pdftex.def)             Requested size: 194.22514pt x 146.04526pt.
+
+</home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex
+_imgs/n1vm_array.png, id=133, 388.45125pt x 292.09125pt>
+File: /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
+s/tex_imgs/n1vm_array.png Graphic file (type png)
+
+<use /home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images
+/tex_imgs/n1vm_array.png>
+Package pdftex.def Info: /home/perttu/projects/MATLAB/Handwriting-recognition/r
+eports/report_images/tex_imgs/n1vm_array.png used on input line 512.
+(pdftex.def)             Requested size: 271.914pt x 204.46246pt.
  [23 </home/perttu/projects/MATLAB/Handwriting-recognition/reports/report_image
 s/tex_imgs/n1n2_acc.png> </home/perttu/projects/MATLAB/Handwriting-recognition/
-reports/report_images/tex_imgs/votermargin_graph.png (PNG copy)>] [24] (./texre
-port.bbl
+reports/report_images/tex_imgs/votermargin_graph_fixed.png (PNG copy)>] [24 </h
+ome/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex_im
+gs/n1vm_array.png (PNG copy)>] [25] (./texreport.bbl
 Underfull \hbox (badness 1072) in paragraph at lines 43--46
 []\OT1/cmr/m/n/10 T. Breuel, ``An-nounc-ing the OCRo-pus Open Source OCR Sys-te
 m.'' $\OT1/cmtt/m/n/10 https : / / web . archive . org / web /
@@ -662,33 +673,29 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--77
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
-) [25] (./texreport.aux)
-
-LaTeX Warning: There were multiply-defined labels.
-
- ) 
+) [26] (./texreport.aux) ) 
 Here is how much of TeX's memory you used:
- 3667 strings out of 493054
- 62232 string characters out of 6140586
- 129358 words of memory out of 5000000
- 7123 multiletter control sequences out of 15000+600000
+ 3686 strings out of 493054
+ 62959 string characters out of 6140586
+ 129551 words of memory out of 5000000
+ 7137 multiletter control sequences out of 15000+600000
  7338 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,6n,32p,1283b,264s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
-/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
->
-Output written on texreport.pdf (26 pages, 7971742 bytes).
+ 38i,8n,32p,1283b,264s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></
+usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.
+pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmtt10.pfb>
+Output written on texreport.pdf (27 pages, 7992606 bytes).
 PDF statistics:
- 180 PDF objects out of 1000 (max. 8388607)
- 93 compressed objects within 1 object stream
+ 185 PDF objects out of 1000 (max. 8388607)
+ 95 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 131 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 136 words of extra memory for PDF output out of 10000 (max. 10000000)
 
