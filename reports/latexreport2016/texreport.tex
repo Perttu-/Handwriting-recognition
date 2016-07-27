@@ -71,8 +71,8 @@
     \item[$m_{sl}$] Margin to define whether a undetected object is assigned to be part of existing line.
     \item[$n_1$] Minimum contribution for a new line to be detected.
     \item[$n_2$] Constraint to determine if excessive skew constraint is applied.
-    \item[$N_m$] Neighbor margin/voter margin Determines how many neighboring cells contribute to voting with line detection from Hough accumulator array.
-    \item[$N * M$] Dimensions of the window. $N$ rows and $M$ columns.
+    \item[$N_m$] Neighbor margin/voter margin. Determines how many neighboring cells contribute to voting with line detection from Hough accumulator array.
+    \item[$N \times M$] Dimensions of the window. $N$ rows and $M$ columns.
     \item[$R$] Dynamic range of grayscale image. Used in Sauvola algorithm.
     \item[$S_l$] Skew deviation limit. Used with constraint $n_2$.
     \item[$T_{swv}$] Stroke width variation threshold. Determines which objects are considered text and which are not.
@@ -183,7 +183,7 @@
         \subsection{Noise Removal}
           Noise in image can affect negatively to the rest of the recognition process. For that reason it is important to remove as much noise as possible without losing any textual information. For this purpose adaptive Wiener filter was chosen. Prior to using this filter image is converted to grayscale. Adaptive Wieners main advantage is that it can apply varying amounts of filtering to areas having different variations thus preserving textual information better than linear filtering \cite{TheMathWorksWiener}.
 
-          Noise reduction can be done with $N * M$ adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighborhood size \code{[m n]} as arguments. In this case the neighborhood size will be adjusted according to input data and experiment results.
+          Noise reduction can be done with $N \times M$ adaptive Wiener filter provided in MATLAB image processing toolbox \code{wiener2(I,[m n])}. Which takes input image \code{I} and neighborhood size \code{[m n]} as arguments. In this case the neighborhood size will be adjusted according to input data and experiment results.
 
         \subsection{Contrast Enhancement}
           To make the text more prominent the contrast of the image can be enhanced. A simple histogram equalization function can be utilized for this purpose.
@@ -200,12 +200,12 @@
           For further processing it is important to binarize the image as well as possible. Several image processing methods require the image to be in a binarized format to work. The binarization provides the system to differentiate between foreground and background pixels in this case the foreground is the written text and background is the writing surface. The threshold value for each pixel is calculated with following formula:
 
           \begin{equation}
-            T(x,y) = m(x,y)*\left[1+k_s*\left(\frac{s(x,y)}{R}-1\right)\right]
+            T(x,y) = m(x,y) \times \left[1+k_s \times \left(\frac{s(x,y)}{R}-1\right)\right]
           \end{equation}
 
           Where $T(x,y)$ is the new threshold for pixel $(x,y)$. $m(x,y)$ is mean intensity value of pixels in window size $W$ and $s(x,y)$ is the standard deviation in same window, these two values are as in Nilback formula. $k_s$ is user defined parameter i.e.``sensitivity'' and  $R$ is the dynamic range of standard deviation e.g. 128 with 8-bit gray level images. This calculation is applied for each pixel to find appropriate threshold for it. In figure \ref{fig:sauvolathresholdvis} the corresponding thresholds are visualized. Higher intensity values correspond to light color and lower to darker colors in grayscale image. The thresholding sets pixels to zero if their intensity is under the threshold and to one if vice versa. After the binarization pixels with value one correspond to foreground and zeros are background.
 
-          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm \cite{Sauvola2000}.  Following constraints must be defined prior to binarization procedure: The window size $W$ that define the $M * N$ neighborhood used to determine the adaptive threshold for that area. Threshold $k_s$ ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of $k_s$ remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and in during this research the values are found with tests. In this implementation the input image is assumed to have dark text on light background.
+          Sauvola algorithm was chosen as it has been developed specifically for document image binarization. The algorithm is enhanced version of Nilback algorithm \cite{Sauvola2000}.  Following constraints must be defined prior to binarization procedure: The window size $W$ that define the $M \times N$ neighborhood used to determine the adaptive threshold for that area. Threshold $k_s$ ``sensitivity'' is user defined parameter which is used the Nilback binarization algorithm to define how the algorithm handles noise. Smaller values of $k_s$ remove more noise but result in more fractioned results. There is no consensus for choosing the aforementioned values so they should be chosen case by case basis and in during this research the values are found with tests. In this implementation the input image is assumed to have dark text on light background.
 
           \begin{figure}[!ht]
             \centering
@@ -272,19 +272,19 @@
             Subset 1. Contains majority of the elements being around the average height and wider than half of the average width. The objects are categorized into subset 1 if they satisfy the following constraints:
 
             \begin{equation}
-              (0.5*AH \geq H < 3*AH) \quad \textrm{and} \quad (0.5*AW \geq W)
+              (0.5 \times AH \geq H < 3 \times AH) \quad \textrm{and} \quad (0.5 \times AW \geq W)
             \end{equation}
 
             Larger objects having large height and any size width are categorized into subset 2. For subset 2 the constraint is:
 
             \begin{equation}
-              H \leq 3*AH
+              H \leq 3 \times AH
             \end{equation}
 
             All small or very wide objects such as accents are included into subset 3. For subset 3 the constraints are:
 
             \begin{equation}
-              ((H < 3*AH)\quad \textrm{and} \quad (0.5*AW > W)) \quad \textrm{or} \quad((H < 0.5*AH)\quad \textrm{and} \quad(0.5*AW < W))
+              ((H < 3 \times AH)\quad \textrm{and} \quad (0.5 \times AW > W)) \quad \textrm{or} \quad((H < 0.5 \times AH)\quad \textrm{and} \quad(0.5 \times AW < W))
             \end{equation}
 
 
@@ -340,7 +340,7 @@
             In the case if some objects are not categorized into any of the lines an additional technique is applied. In this technique the subset 1. components distance is monitored. If half of one subset 1. components block centroids are around the average distance of two adjacent lines, it can be considered to belong in a new line. The distance is around average distance if it satisfies following constraint:
 
             \begin{equation}
-              d >  m_{ad}*d_a
+              d >  m_{ad} \times d_a
             \end{equation}
 
             Where $d$ is the distance between processed component and nearest line, $m_{ad}$ is the margin value that defines how near the line can be to previously detected lines and $d_a$ is average distance of adjacent lines. On the other hand, to define if the new object is assigned to already existing line it must distance smaller than $m_{sl}$ from the nearest line. The effect of margin values $m_{ad}$ and $m_{sl}$ is explained further in chapter \ref{sec:houghtransformevaluation}. The article \cite{Louloudis2} also describes word segmentation procedure. Unfortunately it was not implemented for this research because of lack of time.
@@ -404,7 +404,7 @@
     \end{figure}
 
   \subsection{Adaptive Wiener Filtering}
-    The adaptive Wiener filter was also evaluated. The only parameter that could be evaluated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M * N$. For this test the dimensions were selected to be identical in size making the window $W_w$ square shaped.
+    The adaptive Wiener filter was also evaluated. The only parameter that could be evaluated with the MATLABs function \code{wiener2(I,[m n])} was the window size $M \times N$. For this test the dimensions were selected to be identical in size making the window $W_w$ square shaped.
 
     IAM handwriting database didn't have much noise in the images to begin with, so this filtering didn't have a large impact on the recognition process. Only the smallest sizes 0 and 1 made the rest of the recognition process impossible resulting in zero lines for each image. Chosen value for the parameter $W_w$ was 3. The consistency of results can be seen in figure \ref{fig:wienertest}.
 
