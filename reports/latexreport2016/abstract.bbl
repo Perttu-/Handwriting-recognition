@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{TheMathWorksWiener}
+{The MathWorks}, ``{Noise Removal}.''
+  \url{http://www.mathworks.com/help/images/noise-removal.html#buh9ylp-72}.
+
+\bibitem{Sauvola2000}
+J.~Sauvola and M.~Pietik{\"{a}}inen, ``{Adaptive document image
+  binarization},'' {\em Pattern Recognition}, vol.~33, no.~2, pp.~225--236,
+  2000.
+
+\bibitem{MathworksTextRecognition}
+{The MathWorks}, ``{Automatically Detect and Recognize Text in Natural
+  Images}.''
+  \url{http://www.mathworks.com/help/vision/examples/automatically-detect-and-recognize-text-in-natural-images.html?s_tid=gn_loc_drop}.
+
+\bibitem{Louloudis2}
+P.~H. Louloudis, Gatos, ``{Text line and word segmentation of handwritten
+  documents},'' {\em Pattern Recognition 42}, 2008.
+
+\bibitem{IAM}
+U.~Marti and H.~Bunke, ``The iam-database: An english sentence database for
+  off-line handwriting recognition.,'' {\em Int. Journal on Document Analysis
+  and Recognition, Volume 5, pages 39 - 46}, 2002.
+
+\end{thebibliography}

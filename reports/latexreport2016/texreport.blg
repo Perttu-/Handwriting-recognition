@@ -3,11 +3,14 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: texreport.aux
 The style file: ieeetr.bst
 Database file #1: hwr_bibliography.bib
+I was expecting a `,' or a `}'---line 190 of file hwr_bibliography.bib
+ : 
+ : year = {1999}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Warning--empty publisher in Cheriet2007
-Warning--empty journal in Dalal
-Warning--empty journal in Beyer
+Warning--empty year in Beyer
 Warning--empty journal in ABBYY
-Warning--empty year in ABBYY
 Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis1
 while executing---line 969 of file ieeetr.bst
 Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis2
@@ -16,43 +19,43 @@ Too many commas in name 3 of "Zaidi, Razak and Khansa, Zulkiflee and Mohd, Yaman
 while executing---line 969 of file ieeetr.bst
 You've used 22 entries,
             1876 wiz_defined-function locations,
-            594 strings with 7024 characters,
-and the built_in function-call counts, 3817 in all, are:
-= -- 340
+            596 strings with 7190 characters,
+and the built_in function-call counts, 3995 in all, are:
+= -- 367
 > -- 150
 < -- 0
 + -- 62
 - -- 40
-* -- 218
-:= -- 569
-add.period$ -- 22
+* -- 228
+:= -- 588
+add.period$ -- 23
 call.type$ -- 22
 change.case$ -- 21
 chr.to.int$ -- 0
-cite$ -- 27
-duplicate$ -- 185
-empty$ -- 438
+cite$ -- 25
+duplicate$ -- 193
+empty$ -- 451
 format.name$ -- 40
-if$ -- 925
+if$ -- 974
 int.to.chr$ -- 0
 int.to.str$ -- 22
 missing$ -- 14
 newline$ -- 70
 num.names$ -- 22
-pop$ -- 103
+pop$ -- 98
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 118
+skip$ -- 130
 stack$ -- 0
-substring$ -- 128
-swap$ -- 42
+substring$ -- 160
+swap$ -- 52
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 5
-while$ -- 34
+warning$ -- 3
+while$ -- 37
 width$ -- 24
-write$ -- 175
-(There were 3 error messages)
+write$ -- 178
+(There were 4 error messages)

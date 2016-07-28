@@ -13,26 +13,28 @@ H.~Pesch, M.~Hamdani, J.~Forster, and H.~Ney, ``{Analysis of Preprocessing
 \bibitem{Dalal2005}
 N.~Dalal and B.~Triggs, ``{Histograms of Oriented Gradients for Human
   Detection},'' {\em CVPR '05: Proceedings of the 2005 IEEE Computer Society
-  Conference on Computer Vision and Pattern Recognition (CVPR'05) - Volume 1},
+  Conference on Computer Vision and Pattern Recognition - Volume 1},
   pp.~886--893, 2005.
 
 \bibitem{Dalal}
 M.~S. Dalal, ``{A Survey for Feature Extraction Methods in Handwritten Script
-  Identification},'' 2011.
+  Identification},'' {\em First International Conference on Emerging Trends in
+  Engineering and Technology}, 2011.
 
 \bibitem{SAS}
 S.~Institute, ``Machine learning: What it is and why it matters.''
-  \url{http://www.sas.com/it_it/insights/analytics/machine-learning.html}.
+  \url{http://www.sas.com/it_it/insights/analytics/machine-learning.html}, 2016.
 
 \bibitem{Beyer}
-Beyer, ``{When Is "Nearest Neighbor" Meaningful?},'' 1999.
+Beyer, ``{When Is "Nearest Neighbor" Meaningful?},'' {\em Database Theory ICDT 7th International Conference Jerusalem, Israel}, pp.~217--235, 1999.
 
 \bibitem{Kelly}
 B.~Kelly, ``{How Evernote's Image Recognition Works}.''
-  \url{https://blog.evernote.com/tech/2013/07/18/how-evernotes-image-recognition-works/}.
+  \url{https://blog.evernote.com/tech/2013/07/18/how-evernotes-image-recognition-works/}, 2013.
 
 \bibitem{ABBYY}
 ABBYY, ``{ABBYY FineReader},''
+  \url{https://www.abbyy.com/finereader/}, 2016.
 
 \bibitem{Smith2007a}
 R.~Smith, ``{An overview of the tesseract OCR engine},'' {\em Proceedings of
@@ -50,16 +52,16 @@ T.~Breuel, ``{Announcing the OCRopus Open Source OCR System}.''
 
 \bibitem{CognitiveTechnologies2016}
 {Cognitive Technologies}, ``{CuneiForm}.''
-  \url{http://cognitiveforms.com/products{\_}and{\_}services/cuneiform}, 2016.
+  \url{http://cognitiveforms.com/products_and_services/cuneiform}, 2016.
 
 \bibitem{Angelica}
 A.~D. Angelica and J.~Schmidhuber, ``{How bio-inspired deep learning keeps
   winning competitions}.''
-  \url{http://www.kurzweilai.net/how-bio-inspired-deep-learning-keeps-winning-competitions}.
+  \url{http://www.kurzweilai.net/how-bio-inspired-deep-learning-keeps-winning-competitions}, 2012.
 
 \bibitem{TheMathWorksWiener}
-I.~{The MathWorks}, ``{Noise Removal}.''
-  \url{http://www.mathworks.com/help/images/noise-removal.html#buh9ylp-72}.
+{The MathWorks}, ``{Noise Removal}.''
+  \url{http://www.mathworks.com/help/images/noise-removal.html#buh9ylp-72}, 2016.
 
 \bibitem{Sauvola2000}
 J.~Sauvola and M.~Pietik{\"{a}}inen, ``{Adaptive document image
@@ -71,9 +73,9 @@ Li and Lu, ``{Scene text detection via stroke width.},'' {\em Pattern
   Recognition (ICPR), 2012 21st International Conference on. IEEE}, 2012.
 
 \bibitem{MathworksTextRecognition}
-I.~{The MathWorks}, ``{Automatically Detect and Recognize Text in Natural
+{The MathWorks}, ``{Automatically Detect and Recognize Text in Natural
   Images}.''
-  \url{http://www.mathworks.com/help/vision/examples/automatically-detect-and-recognize-text-in-natural-images.html?s_tid=gn_loc_drop}.
+  \url{http://www.mathworks.com/help/vision/examples/automatically-detect-and-recognize-text-in-natural-images.html?s_tid=gn_loc_drop}, 2016.
 
 \bibitem{Louloudis1}
 P.~H. Louloudis, Gatos, ``{A Block-Based Hough Transform Mapping for Text Line
@@ -96,6 +98,6 @@ U.~Marti and H.~Bunke, ``The iam-database: An english sentence database for
   and Recognition, Volume 5, pages 39 - 46}, 2002.
 
 \bibitem{OpenCV}
-Itseez, ``Opencv.'' \url{http://opencv.org/}.
+Itseez, ``OpenCV.'' \url{http://opencv.org/}, 2016.
 
 \end{thebibliography}

@@ -42,7 +42,7 @@
 
     The experimented methods for preprocessing include noise reduction and binarization. For layout analysis the stroke width variation is used to distinguish textual and non-textual elements. Block-based Hough transform approach by Louloudis et.al. is used to find individual lines of text and overlapping lines and accents are also grouped into corresponding text lines. This algorithm is closely examined during this research. Some other methods were also experimented with. All implementation for these methods and their experiments were done with MATLAB with image processing toolbox. Several parameter values were applied to these algorithms and the results were studied to find appropriate values for tested dataset and to examine their effect on the output.
 
-    The proposed methods performed well when the results were evaluated using the number of detected text lines as the meter. The resulting amount of lines were compared with the true amount of lines to gain information about the accuracy. After the optimal values found by evaluation were applied, the system reached around 97\% accuracy regarding text line amounts. However the implementation of word detection and more extensive tests are required for more informative results.
+    Current implementation is capable of detecting individual text lines. The evaluation process used IAM handwriting database which also has the metadata in addition to the handwritten text samples. Tests were done using 100 random sample pages from the IAM handwriting database. The proposed methods performed well when the results were evaluated using the number of detected text lines as the meter. The resulting amount of lines were compared with the true amount of lines to gain information about the accuracy. After the optimal values found by evaluation were applied, the system reached around 97\% accuracy regarding text line amounts. However the implementation of word detection and more extensive tests are required for more informative results.
 
    \newpage
    \addcontentsline{toc}{section}{Table of Contents}
@@ -354,7 +354,7 @@
 
   \newpage
   \section{Evaluation}
-    To gain insight on the chosen methods and their effect on output several experiments were conducted mainly focusing on the goal of choosing the appropriate parameters for each method. The following chapter describes in detail the evaluation methods and the produced results.
+    To gain insight on the chosen methods and their effect on output several experiments were conducted mainly focusing on the goal of choosing the appropriate parameters for each method. The following chapter describes in detail the evaluation methods and the produced results. All tests were done with MATLAB R2016a using Intel(R) Core(TM) i5-2400 CPU 3.10GHz processor.
 
   \subsection{Dataset}
     To measure the performance evaluation process needs suitable data containing various styles of handwriting in image format. For comparable test results and performance evaluation the dataset should provide constant image quality and sufficient meta data for the tests. The IAM handwriting database meets all these conditions.
@@ -553,7 +553,7 @@
 
       One problem found regarding line detection is that the method is capable of handling only single column data. The Hough transform is only suitable finding infinitely long lines, not line segments. This makes the Hough transform unable to differentiate between one line and two lines with same height but different columns. For this purpose the image should be split into smaller sections representing columns or other text bodies and the line detection process could be applied to these sections independently.
 
-      The program code is not very efficient at the moment. The processing including preprocessing and line detection takes around 14 seconds to complete with current MATLAB implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz.
+      The program code is not very efficient at the moment. The processing including preprocessing and line detection takes around 14 seconds to complete with current MATLAB R2016a implementation using Intel(R) Core(TM) i5-2400 CPU 3.10GHz.
 
       The conducted tests could use the number of lines as the only metric of its accuracy. This metric can't give the whole picture about the quality of the output. The number of lines can be correct even if some of the characters or words are assigned to wrong lines or if the text lines have superfluous objects.
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.3.25)  27 JUL 2016 16:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.3.25)  28 JUL 2016 13:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -650,30 +650,30 @@ s/tex_imgs/n1n2_acc.png> </home/perttu/projects/MATLAB/Handwriting-recognition/
 reports/report_images/tex_imgs/votermargin_graph_fixed.png (PNG copy)>] [24 </h
 ome/perttu/projects/MATLAB/Handwriting-recognition/reports/report_images/tex_im
 gs/n1vm_array.png (PNG copy)>] [25] (./texreport.bbl
-Underfull \hbox (badness 1072) in paragraph at lines 43--46
+Underfull \hbox (badness 1072) in paragraph at lines 45--48
 []\OT1/cmr/m/n/10 T. Breuel, ``An-nounc-ing the OCRo-pus Open Source OCR Sys-te
 m.'' $\OT1/cmtt/m/n/10 https : / / web . archive . org / web /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 43--46
+Underfull \hbox (badness 10000) in paragraph at lines 45--48
 \OT1/cmtt/m/n/10 20150313051644 / http : / / googlecode . blogspot . com / 2007
  / 04 / announcing-[]ocropus-[]open-[]source-[]ocr .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--54
-[]\OT1/cmr/m/n/10 Cognitive Tech-nolo-gies, ``CuneiForm.'' $\OT1/cmtt/m/n/10 ht
-tp : / / cognitiveforms . com / products{\ _ }and{\ _ }services /
+Underfull \hbox (badness 5592) in paragraph at lines 63--65
+[]\OT1/cmr/m/n/10 The Math-Works, ``Noise Re-moval.'' $\OT1/cmtt/m/n/10 http : 
+/ / www . mathworks . com / help / images / noise-[]removal . html #
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 74--77
+Underfull \hbox (badness 10000) in paragraph at lines 76--79
 \OT1/cmtt/m/n/10 com / help / vision / examples / automatically-[]detect-[]and-
 []recognize-[]text-[]in-[]natural-[]images . html ? s _
  []
 
-) [26] (./texreport.aux) ) 
+[26]) [27] (./texreport.aux) ) 
 Here is how much of TeX's memory you used:
  3686 strings out of 493054
  62959 string characters out of 6140586
@@ -682,20 +682,20 @@ Here is how much of TeX's memory you used:
  7338 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,8n,32p,1283b,264s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></
-usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.
-pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmtt10.pfb>
-Output written on texreport.pdf (27 pages, 7992587 bytes).
+</usr/share/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pf
+b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmtt10.pfb>
+Output written on texreport.pdf (28 pages, 7993179 bytes).
 PDF statistics:
- 185 PDF objects out of 1000 (max. 8388607)
- 95 compressed objects within 1 object stream
+ 188 PDF objects out of 1000 (max. 8388607)
+ 97 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  136 words of extra memory for PDF output out of 10000 (max. 10000000)
 

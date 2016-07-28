@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Arch Linux)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: abstract.aux
+The style file: ieeetr.bst
+Database file #1: hwr_bibliography.bib
+Too many commas in name 1 of "Louloudis, Gatos, Pratikakis, Halatsis" for entry Louloudis2
+while executing---line 969 of file ieeetr.bst
+You've used 5 entries,
+            1876 wiz_defined-function locations,
+            506 strings with 4322 characters,
+and the built_in function-call counts, 876 in all, are:
+= -- 81
+> -- 28
+< -- 0
++ -- 12
+- -- 7
+* -- 49
+:= -- 135
+add.period$ -- 5
+call.type$ -- 5
+change.case$ -- 5
+chr.to.int$ -- 0
+cite$ -- 5
+duplicate$ -- 43
+empty$ -- 101
+format.name$ -- 7
+if$ -- 212
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 3
+newline$ -- 18
+num.names$ -- 5
+pop$ -- 19
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 30
+stack$ -- 0
+substring$ -- 32
+swap$ -- 11
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 8
+width$ -- 6
+write$ -- 43
+(There was 1 error message)
